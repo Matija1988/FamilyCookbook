@@ -62,6 +62,14 @@ RecipeId int
 
 );
 
+create table Comment(
+Id int primary key identity(1,1),
+MemberId int,
+RecipeId int,
+Text varchar(1200),
+Rating int
+);
+
 ----------------------------------- ALTERS --------------------------
 
 alter table Member add foreign key (RoleId) references Role(Id);
@@ -70,3 +78,5 @@ alter table Recipe add foreign key (CategoryId) references Category(Id);
 alter table Recipe add foreign key (PictureId) references Picture(Id);
 alter table MemberRecipe add foreign key (MemberId) references Member(Id);
 alter table MemberRecipe add foreign key (RecipeId) references Recipe(Id);
+alter table Comment add foreign key(MemberId) references Member(Id);
+alter table Comment add foreign key(RecipeId) references Recipe(Id);
