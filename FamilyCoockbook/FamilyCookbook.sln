@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34607.119
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FamilyCookbook", "FamilyCoockbook\FamilyCookbook.csproj", "{FE8236AB-6C61-4CD0-8B62-6B524B6952FA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FamilyCookbook.Repository", "FamilyCookbook.Repository\FamilyCookbook.Repository.csproj", "{AE75E877-EAF2-48D6-9144-5D1ADA410EED}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FE8236AB-6C61-4CD0-8B62-6B524B6952FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE8236AB-6C61-4CD0-8B62-6B524B6952FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE8236AB-6C61-4CD0-8B62-6B524B6952FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE8236AB-6C61-4CD0-8B62-6B524B6952FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE75E877-EAF2-48D6-9144-5D1ADA410EED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE75E877-EAF2-48D6-9144-5D1ADA410EED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE75E877-EAF2-48D6-9144-5D1ADA410EED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE75E877-EAF2-48D6-9144-5D1ADA410EED}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E30B94AD-A43D-47C5-9400-4E8C2D57016A}
+	EndGlobalSection
+EndGlobal
