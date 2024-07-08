@@ -7,11 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <ProjectReference Include="..\FamilyCookbook.Model\FamilyCookbook.Model.csproj" />
+    <ProjectReference Include="..\FamilyCookbook.Repository\FamilyCookbook.Repository.csproj" />
+    <ProjectReference Include="..\FamilyCookbook.Service\FamilyCookbook.Service.csproj" />
   </ItemGroup>
 
 </Project>

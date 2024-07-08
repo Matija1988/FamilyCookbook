@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Net.NetworkInformation;
@@ -13,8 +14,10 @@ namespace FamilyCookbook.Model
         public int Id { get; set; }
 
         public Guid UniqueId { get; set; }
+        [Display(Name = "First name")]
         public string FirstName { get; set; }
 
+        [Display(Name = "Last name")]
         public string LastName { get; set; }
 
         public DateOnly DateOfBirth { get; set; }

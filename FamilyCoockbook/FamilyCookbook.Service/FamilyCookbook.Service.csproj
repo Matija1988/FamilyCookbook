@@ -6,4 +6,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FamilyCookbook.Model\FamilyCookbook.Model.csproj" />
+    <ProjectReference Include="..\FamilyCookbook.Respository.Common\FamilyCookbook.Repository.Common.csproj" />
+    <ProjectReference Include="..\FamilyCookbook.Service.Common\FamilyCookbook.Service.Common.csproj" />
+  </ItemGroup>
+
 </Project>
