@@ -1,5 +1,7 @@
 ﻿
+using FamilyCookbook.Mapping;
 using FamilyCookbook.Model;
+using FamilyCookbook.REST_Models.Category;
 using FamilyCookbook.Service.Common;
 using Microsoft.AspNetCore.Mvc;
 
@@ -45,9 +47,14 @@ namespace FamilyCookbook.Controllers
         [HttpPost]
         [Route("create")]
 
-        public async Task<IActionResult> CreateAsync(Category entity)
+        public async Task<IActionResult> CreateAsync(CategoryCreate entity)
         {
-            var response = await _service.CreateAsync(entity);
+            var category = new Category();
+
+            var mapper = new CategoryMapper();
+            category = mapper.CategoryCreateToCategory(entity);
+
+            var response = await _service.CreateAsync(category);
 
             if (response.Success == false)
             {

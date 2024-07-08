@@ -12,11 +12,13 @@ namespace FamilyCookbook.Repository
             builder.RegisterType<DapperDBContext>().AsSelf().SingleInstance();
 
             builder.RegisterType<CategoryRepository>()
-                .As<IRepository<Category>>().InstancePerLifetimeScope();
+                .As<ICategoryRepository>().InstancePerLifetimeScope();
 
             builder.RegisterType<RoleRepository>()
               .As<IRoleRepository>()
               .InstancePerLifetimeScope();
+
+
 
 
         }

@@ -1,4 +1,5 @@
 ﻿using FamilyCookbook.Model;
+using FamilyCookbook.Repository.Common;
 using FamilyCookbook.Respository.Common;
 using FamilyCookbook.Service.Common;
 using System;
@@ -11,8 +12,8 @@ namespace FamilyCookbook.Service
 {
     public class CategoryService : IService<Category>
     {
-        private readonly IRepository<Category> _repository;
-        public CategoryService(IRepository<Category> repository)
+        private readonly ICategoryRepository _repository;
+        public CategoryService(ICategoryRepository repository)
         {
             _repository = repository;
             

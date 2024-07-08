@@ -14,5 +14,12 @@ namespace FamilyCookbook.Common
 
             return sb.Append("Entity: " + entityName + " deleted!");
         }
+
+        public static StringBuilder EntityCreated()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            return sb.Append("Entity created!");
+        }
     }
 }
