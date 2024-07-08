@@ -28,6 +28,19 @@ namespace FamilyCookbook.Controllers
 
             return Ok(response);
         }
+
+        [HttpGet]
+        [Route("{id:int}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var response = await _roleService.GetByIdAsync(id);
+
+            if (response.Success == false) 
+            {
+                return NotFound(response.Message);
+            }
+            return Ok(response.Items);
+        } 
         
     }
 }

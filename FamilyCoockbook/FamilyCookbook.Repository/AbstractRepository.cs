@@ -57,11 +57,37 @@ namespace FamilyCookbook.Repository
 
         }
 
-        public Task<RepositoryResponse<T>> GetByIdAsync(int id)
+        public async Task<RepositoryResponse<T>> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
-        }
+            var response = new RepositoryResponse<T>();
 
+            try
+            {
+                string tableName = GetTableName();
+
+                string query = $"SELECT * FROM {tableName} WHERE Id = {id};";
+
+                var connection = _context.CreateConnection();
+
+                var entity = await connection.QueryFirstOrDefaultAsync<T>(query, new { id });
+
+                response.Items = entity;
+                response.Success = true;
+
+                return response;
+
+            } catch (Exception ex) 
+            {
+                response.Success = false;
+                response.Message = ErrorMessages.NotFound(id).ToString() + " " + ex.Message;
+                return response;
+            }
+            finally
+            {
+                _context.CreateConnection().Close();
+            }
+
+        }
 
         private string GetTableName()
         {

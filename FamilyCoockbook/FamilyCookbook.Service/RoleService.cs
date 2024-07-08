@@ -23,9 +23,9 @@ namespace FamilyCookbook.Service
             return await _repository.GetAllAsync();
         }
 
-        public Task<RepositoryResponse<Role>> GetByIdAsync(int id)
+        public async Task<RepositoryResponse<Role>> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+           return await _repository.GetByIdAsync(id);
         }
     }
 }
