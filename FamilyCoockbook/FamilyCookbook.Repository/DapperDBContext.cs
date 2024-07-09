@@ -13,7 +13,7 @@ namespace FamilyCookbook.Repository
         {
             _connectionString = config.GetConnectionString("DefaultConnection");
         }
-
+            
         public IDbConnection CreateConnection() 
         {
             return new SqlConnection(_connectionString);

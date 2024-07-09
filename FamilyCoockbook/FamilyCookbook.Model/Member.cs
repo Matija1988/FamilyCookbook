@@ -11,6 +11,7 @@ namespace FamilyCookbook.Model
 {
     public class Member
     {
+        [Key]
         public int Id { get; set; }
 
         public Guid UniqueId { get; set; }
@@ -20,15 +21,15 @@ namespace FamilyCookbook.Model
         [Display(Name = "Last name")]
         public string LastName { get; set; }
 
-        public DateOnly DateOfBirth { get; set; }
+        public DateTime DateOfBirth { get; set; }
 
         public string Bio { get; set; }
 
         public bool IsActive { get; set; }
 
-        public DateOnly DateCreated { get; set; }
+        public DateTime DateCreated { get; set; }
 
-        public DateOnly DateUpdated { get; set; }
+        public DateTime DateUpdated { get; set; }
 
         public string Username { get; set; }
 

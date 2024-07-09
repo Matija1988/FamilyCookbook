@@ -18,31 +18,31 @@ Name varchar (30) not null
 
 create table Member(
 Id int primary key identity(1,1),
-UniqueId uniqueidentifier,
-FirstName varchar(30),
-LastName varchar(30),
-DateOfBirth date,
+UniqueId uniqueidentifier not null,
+FirstName varchar(30) not null,
+LastName varchar(30) not null,
+DateOfBirth datetime not null,
 Bio varchar(1200),
-IsActive bit,
-DateCreated date,
-DateUpdated date,
-Username varchar(50),
-Password varchar(255),
-RoleId int,
+IsActive bit not null,
+DateCreated datetime not null,
+DateUpdated datetime,
+Username varchar(50) not null,
+Password varchar(255) not null,
+RoleId int not null,
 PictureId int
 
 );
 
 create table Category (
 Id int primary key identity(1,1),
-Name varchar(50),
-Description varchar(500)
+Name varchar(50) not null,
+Description varchar(500) 
 );
 
 create table Picture(
 Id int primary key identity (1,1),
-Name varchar (100),
-Location varchar(255)
+Name varchar (100) not null,
+Location varchar(255) not null
 );
 
 create table Recipe(
