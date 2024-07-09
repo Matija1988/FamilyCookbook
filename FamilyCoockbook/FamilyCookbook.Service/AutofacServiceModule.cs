@@ -16,6 +16,8 @@ namespace FamilyCookbook.Service
             builder.RegisterType<CategoryService>().As<IService<Category>>().InstancePerDependency();
 
             builder.RegisterType<RoleService>().As<IRoleService>().InstancePerDependency();
+
+            builder.RegisterType<PictureService>().As<IService<Picture>>().InstancePerDependency();
         }
 
 

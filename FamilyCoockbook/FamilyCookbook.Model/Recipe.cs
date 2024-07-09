@@ -28,5 +28,7 @@ namespace FamilyCookbook.Model
 
         [ForeignKey("PictureId")]
         public Picture PictureId { get; set; }
+
+        public IList<Member> Members { get; set; }
     }
 }

@@ -40,5 +40,7 @@ namespace FamilyCookbook.Model
         [ForeignKey("PictureId")]
         public Picture? Picture { get; set; }
 
+        public IList<Recipe> Recipes { get; set; }
+
     }
 }

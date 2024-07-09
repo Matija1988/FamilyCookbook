@@ -18,6 +18,9 @@ namespace FamilyCookbook.Repository
               .As<IRoleRepository>()
               .InstancePerLifetimeScope();
 
+            builder.RegisterType<PictureRepository>()
+                .As<IPictureRespository>().InstancePerLifetimeScope();
+
 
 
 
