@@ -66,15 +66,21 @@ namespace FamilyCookbook.Controllers
         [HttpPut]
         [Route("update/{id:int}")]
 
-        public async Task<IActionResult> UpdateAsync(int id, Category entity)
+        public async Task<IActionResult> UpdateAsync(int id, CategoryCreate entity)
         {
-            var response = await _service.UpdateAsync(id, entity);
+            var category = new Category();
+
+            var mapper = new CategoryMapper();
+            category = mapper.CategoryCreateToCategory(entity);
+
+
+            var response = await _service.UpdateAsync(id, category);
 
             if(response.Success == false)
             {
                 return BadRequest(response.Message);
             }
-            return Ok(response);
+            return Ok(response.Message);
         }
 
         [HttpDelete]
@@ -88,7 +94,7 @@ namespace FamilyCookbook.Controllers
             {
                 return BadRequest(response.Message);
             }
-            return Ok(response);
+            return Ok(response.Message);
 
         }
 

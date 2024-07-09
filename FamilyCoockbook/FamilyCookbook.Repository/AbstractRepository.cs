@@ -127,6 +127,152 @@ namespace FamilyCookbook.Repository
 
        }
 
+        public async Task<RepositoryResponse<T>> UpdateAsync(int id, T entity)
+        {
+            var response = new RepositoryResponse<T>();
+
+            int rowsAffected = 0;
+
+            try
+            {
+                string tableName = GetTableName();
+                string keyColumn = GetKeyColumnName();
+                string keyProperty = GetKeyPropertyName();
+
+                StringBuilder query = new StringBuilder();
+
+                query.Append($"UPDATE {tableName} SET ");
+
+                foreach (var property in GetProperties(true))
+                {
+                    var columnAttr = property.GetCustomAttribute<ColumnAttribute>();
+
+                    string columnName = columnAttr?.Name ?? property.Name;
+
+                    string propertyName = property.Name;
+
+                    query.Append($"{columnName} = @{propertyName},");
+                }
+
+                query.Remove(query.Length - 1, 1);
+
+                query.Append($" WHERE {keyColumn} = @{keyProperty};");
+
+                var parameters = new DynamicParameters(entity);
+                parameters.Add(keyProperty, id);
+
+                using var connection = _context.CreateConnection();
+
+                rowsAffected = connection.Execute(query.ToString(), parameters);
+
+                response.Success = rowsAffected > 0;
+                response.Message = SuccessResponses.EntityUpdated().ToString();
+
+                return response;
+
+
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = ErrorMessages.NotFound(id).ToString() + ex.Message;
+                return response;
+            }
+            finally
+            {
+                _context.CreateConnection().Close();
+            }
+
+        }
+
+
+        public async Task<RepositoryResponse<T>> DeleteAsync(int id)
+        {
+            var response = new RepositoryResponse<T>(); 
+
+            int rowsAffected = 0;
+
+            try
+            {
+                string tableName = GetTableName();
+                string keyColumn = GetKeyColumnName();
+                string keyProperty = GetKeyPropertyName();
+                string query = $"DELETE FROM {tableName} WHERE {keyColumn} = @{keyProperty};";
+
+                using var connection =  _context.CreateConnection();
+
+                rowsAffected = await connection.ExecuteAsync(query, new { id });
+
+                response.Success = rowsAffected > 0;
+                response.Message = SuccessResponses.EntityDeleted(tableName).ToString();
+                return response;
+
+            } 
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = ErrorMessages.NotFound(id).ToString();
+                return response;
+            }
+            finally
+            {
+                _context.CreateConnection().Close();
+            }
+
+        }
+
+        #region PRIVATE METHODS
+
+        private IEnumerable<PropertyInfo> GetProperties(bool excludeKey = false)
+        {
+            var properties = typeof(T).GetProperties()
+                .Where(p => !excludeKey || p.GetCustomAttribute<KeyAttribute>() == null);
+
+            return properties;
+        }
+
+        private string GetKeyPropertyName()
+        {
+            var properties = typeof(T).GetProperties()
+                .Where(p => p.GetCustomAttribute<KeyAttribute>() != null);
+
+            if (properties.Any())
+            {
+                return properties.FirstOrDefault().Name;
+            }
+            return null;
+
+        }
+
+        private static string GetKeyColumnName()
+        {
+            PropertyInfo[] properties = typeof(T).GetProperties();
+
+            foreach (PropertyInfo property in properties)
+            {
+                object[] keyAttributes = property.GetCustomAttributes(typeof(KeyAttribute), true);
+                if (keyAttributes.Length > 0)
+                {
+                    object[] columnAttr = property.GetCustomAttributes(typeof(ColumnAttribute), true);
+                    if (columnAttr != null && columnAttr.Length > 0)
+                    {
+                        ColumnAttribute columnAttribute = (ColumnAttribute)columnAttr[0];
+                        return columnAttribute.Name;
+                    }
+                    else
+                    {
+                        return property.Name;
+                    }
+                }
+
+            }
+            return null;
+        }
+
+
+
+
+
         private string GetPropertyNames(bool excludeKey)
         {
             var properties = typeof(T).GetProperties()
@@ -157,7 +303,7 @@ namespace FamilyCookbook.Repository
         private string GetTableName()
         {
             string tableName = "";
-            
+
             var type = typeof(T);
             var tableAttr = type.GetCustomAttribute<TableAttribute>();
 
@@ -170,20 +316,7 @@ namespace FamilyCookbook.Repository
             return type.Name;
         }
 
-
-
-        public Task<RepositoryResponse<T>> UpdateAsync(int id, T entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<RepositoryResponse<T>> DeleteAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-
-
+        #endregion
 
     }
 }

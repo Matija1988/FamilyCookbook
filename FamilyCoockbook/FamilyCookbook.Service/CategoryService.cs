@@ -41,7 +41,14 @@ namespace FamilyCookbook.Service
 
         public async Task<RepositoryResponse<Category>> UpdateAsync(int id, Category entity)
         {
-            return await _repository.UpdateAsync(id, entity);
+            var response = await _repository.UpdateAsync(id, entity);
+
+            if(response.Success == false)
+            {
+                return response;
+            }
+
+            return response;
         }
     }
 }

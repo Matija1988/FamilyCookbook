@@ -21,5 +21,12 @@ namespace FamilyCookbook.Common
 
             return sb.Append("Entity created!");
         }
+
+        public static StringBuilder EntityUpdated()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            return sb.Append("Entity updated!");
+        }
     }
 }

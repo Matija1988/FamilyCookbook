@@ -13,68 +13,68 @@ namespace FamilyCookbook.Repository
         {
             _context = context;
         }
-        public async Task<RepositoryResponse<Category>> DeleteAsync(int id)
-        {
-            var response = new RepositoryResponse<Category>();
+        //public async Task<RepositoryResponse<Category>> DeleteAsync(int id)
+        //{
+        //    var response = new RepositoryResponse<Category>();
 
-            try
-            {
-                var query = "DELETE FROM Category " +
-                    "WHERE Id = @Id;";
+        //    try
+        //    {
+        //        var query = "DELETE FROM Category " +
+        //            "WHERE Id = @Id;";
                 
-                using var connection = _context.CreateConnection();
+        //        using var connection = _context.CreateConnection();
 
-                await connection.ExecuteAsync(query, new { Id = id});
+        //        await connection.ExecuteAsync(query, new { Id = id});
 
-                response.Success = true;
-                response.Message = SuccessResponses.EntityDeleted("Category").ToString();
+        //        response.Success = true;
+        //        response.Message = SuccessResponses.EntityDeleted("Category").ToString();
 
-                return response;
+        //        return response;
 
-            }
-            catch (Exception ex)
-            {
-                response.Success = false;
-                response.Message = ErrorMessages.NotFound(id).ToString();
-                return response;
-            }
-            finally 
-            { 
-                _context.CreateConnection().Close();
-            }
-        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        response.Success = false;
+        //        response.Message = ErrorMessages.NotFound(id).ToString();
+        //        return response;
+        //    }
+        //    finally 
+        //    { 
+        //        _context.CreateConnection().Close();
+        //    }
+        //}
 
-        public async Task<RepositoryResponse<Category>> UpdateAsync(int id, Category entity)
-        {
-            var response = new RepositoryResponse<Category>();
+        //public async Task<RepositoryResponse<Category>> UpdateAsync(int id, Category entity)
+        //{
+        //    var response = new RepositoryResponse<Category>();
 
-            try
-            {
-                var query = "UPDATE Category " +
-                    "SET Name = @Name, " + 
-                    "Description = @Description " +
-                    "WHERE Id = @Id";
+        //    try
+        //    {
+        //        var query = "UPDATE Category " +
+        //            "SET Name = @Name, " + 
+        //            "Description = @Description " +
+        //            "WHERE Id = @Id";
 
-                using var connection = _context.CreateConnection();
+        //        using var connection = _context.CreateConnection();
 
-                await connection.ExecuteAsync(query, entity);
+        //        await connection.ExecuteAsync(query, entity);
 
-                response.Success = true;
+        //        response.Success = true;
 
-                return response;
-            }
-            catch (Exception ex) 
-            {
-                response.Success= false;
-                response.Message = ErrorMessages.NotFound(id).ToString();
-                return response;    
-            }
-            finally 
-            { 
-                _context.CreateConnection().Close();    
-            }
+        //        return response;
+        //    }
+        //    catch (Exception ex) 
+        //    {
+        //        response.Success= false;
+        //        response.Message = ErrorMessages.NotFound(id).ToString();
+        //        return response;    
+        //    }
+        //    finally 
+        //    { 
+        //        _context.CreateConnection().Close();    
+        //    }
 
-        }
+        //}
 
 
         //public async Task<RepositoryResponse<Category>> CreateAsync(Category entity)
