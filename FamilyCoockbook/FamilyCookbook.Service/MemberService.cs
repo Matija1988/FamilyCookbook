@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace FamilyCookbook.Service
 {
-    public class MemberService : IService<Member>
+    public class MemberService : IMemberService
     {
         private readonly IMemberRepository _repository;
 
@@ -19,14 +19,24 @@ namespace FamilyCookbook.Service
             _repository = repository;
         }
 
-        public Task<RepositoryResponse<Member>> CreateAsync(Member entity)
+        public async Task<RepositoryResponse<Member>> CreateAsync(Member entity)
         {
-            throw new NotImplementedException();
+            entity.UniqueId = Guid.NewGuid();
+            entity.IsActive = true;
+            entity.DateCreated = DateTime.Now;
+            entity.DateUpdated = DateTime.Now;
+
+
+            var response = await _repository.CreateAsync(entity);
+
+            return response;
         }
 
-        public Task<RepositoryResponse<Member>> DeleteAsync(int id)
+        public async Task<RepositoryResponse<Member>> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var response = await _repository.DeleteAsync(id);
+            
+            return response;
         }
 
         public async Task<RepositoryResponse<List<Member>>> GetAllAsync()
@@ -36,14 +46,29 @@ namespace FamilyCookbook.Service
             return response;
         }
 
-        public Task<RepositoryResponse<Member>> GetByIdAsync(int id)
+        public async Task<RepositoryResponse<Member>> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var response = await _repository.GetByIdAsync(id);
+
+            return response;
         }
 
-        public Task<RepositoryResponse<Member>> UpdateAsync(int id, Member entity)
+        public async Task<RepositoryResponse<Member>> UpdateAsync(int id, Member entity)
         {
-            throw new NotImplementedException();
+            entity.DateUpdated = DateTime.Now;
+
+            var response = await _repository.UpdateAsync(id, entity);
+
+            return response;
+
         }
+
+        public async Task<RepositoryResponse<Member>> PermaDeleteAsync(int id)
+        {
+            var response = await _repository.PermaDeleteAsync(id);
+
+            return response;
+        }
+
     }
 }

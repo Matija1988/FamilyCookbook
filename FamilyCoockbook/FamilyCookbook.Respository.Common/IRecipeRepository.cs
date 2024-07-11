@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace FamilyCookbook.Repository.Common
 {
-    public interface IMemberRepository : IRepository<Member>
+    public interface IRecipeRepository : IRepository<Recipe>
     {
-        Task<RepositoryResponse<Member>> PermaDeleteAsync(int id);
+
     }
 }

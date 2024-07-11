@@ -19,14 +19,14 @@ namespace FamilyCookbook.Common
         {
             StringBuilder sb = new StringBuilder();
 
-            return sb.Append("Error accessing database!!! Unable to get " + entityName);
+            return sb.Append("Error accessing database!!! Unable to get " + entityName + "! ");
         }
 
         public static StringBuilder ErrorCreatingEntity(string entityName)
         {
             StringBuilder sb = new StringBuilder();
 
-            return sb.Append("Error inserting entity into database!!! Unable to create " + entityName);
+            return sb.Append("Error inserting entity into database!!! Unable to create " + entityName + "! ");
         }
 
 

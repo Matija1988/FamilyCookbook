@@ -26,6 +26,7 @@ namespace FamilyCookbook.Model
         public DateOnly DateUpdated { get; set; }
 
         [ForeignKey("CategoryId")]
+        public int CategoryId { get; set; }
         public Category Category { get; set; }
 
         [ForeignKey("PictureId")]

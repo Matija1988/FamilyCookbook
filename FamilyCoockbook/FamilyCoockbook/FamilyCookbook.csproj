@@ -19,4 +19,8 @@
     <ProjectReference Include="..\FamilyCookbook.Service\FamilyCookbook.Service.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="REST_Models\Recipe\" />
+  </ItemGroup>
+
 </Project>

@@ -19,7 +19,7 @@ namespace FamilyCookbook.Service
 
             builder.RegisterType<PictureService>().As<IService<Picture>>().InstancePerDependency();
 
-            builder.RegisterType<MemberService>().As<IService<Member>>().InstancePerDependency();
+            builder.RegisterType<MemberService>().As<IMemberService>().InstancePerDependency();
         }
 
 
