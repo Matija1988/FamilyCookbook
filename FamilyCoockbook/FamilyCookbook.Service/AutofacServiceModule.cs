@@ -20,6 +20,10 @@ namespace FamilyCookbook.Service
             builder.RegisterType<PictureService>().As<IService<Picture>>().InstancePerDependency();
 
             builder.RegisterType<MemberService>().As<IMemberService>().InstancePerDependency();
+
+            builder.RegisterType<RecipeService>().As<IRecipeService>().InstancePerDependency();
+
+           
         }
 
 

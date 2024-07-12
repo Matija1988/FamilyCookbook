@@ -1,4 +1,6 @@
-﻿using FamilyCookbook.Model;
+﻿using Dapper;
+using FamilyCookbook.Common;
+using FamilyCookbook.Model;
 using FamilyCookbook.Repository.Common;
 using System;
 using System.Collections.Generic;
@@ -17,17 +19,276 @@ namespace FamilyCookbook.Repository
             _context = context;
         }
 
-        public Task<RepositoryResponse<Recipe>> CreateAsync(Recipe entity)
+        public async Task<RepositoryResponse<Recipe>> AddMemberToRecipeAsync(MemberRecipe entity)
         {
-            throw new NotImplementedException();
+            var response = new RepositoryResponse<Recipe>();
+
+            int rowsAffected = 0;
+
+            try
+            {
+                string query = "INSERT INTO MemberRecipe (MemberId, RecipeId)" +
+                    "VALUES(@MemberId, @RecipeId)";
+
+                using var connection = _context.CreateConnection();
+
+                rowsAffected = await connection.ExecuteAsync(query, entity);
+
+                response.Success = rowsAffected > 0;
+                response.Message = SuccessResponses.EntityCreated().ToString();
+
+                return response;
+
+            }
+            catch (Exception ex) 
+            {
+                response.Success = false;
+                response.Message = ErrorMessages.ErrorAccessingDb("MemberRecipe").ToString();
+                return response;
+            } 
+            finally
+            {
+                _context.CreateConnection().Close();
+            }
+
         }
 
-        public Task<RepositoryResponse<Recipe>> DeleteAsync(int id)
+        public async Task<RepositoryResponse<Recipe>> CreateAsync(Recipe entity)
         {
-            throw new NotImplementedException();
+            var response = new RepositoryResponse<Recipe>();
+
+            
+            try
+            {
+                string query = "INSERT INTO Recipe " +
+                    "(Title, " +
+                    "Subtitle, " +
+                    "Text, " +
+                    "IsActive, " +
+                    "DateCreated, " +
+                    "DateUpdated, " +
+                    "CategoryId)" +
+                    "OUTPUT INSERTED.Id, INSERTED.Title, INSERTED.Subtitle, INSERTED.Text," +
+                    "INSERTED.IsActive, INSERTED.DateCreated, INSERTED.DateUpdated, INSERTED.CategoryId  " +
+                    "VALUES (@Title, " +
+                    "@Subtitle, " +
+                    "@Text, " +
+                    "@IsActive, " +
+                    "@DateCreated, " +
+                    "@DateUpdated," +
+                    "@CategoryId); ";
+
+                using var connection = _context.CreateConnection();
+
+                var insertEntity = await connection.QuerySingleAsync<Recipe>(query, entity);
+
+                response.Success = true;
+                response.Message = SuccessResponses.EntityCreated().ToString();
+                response.Items = insertEntity;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = ErrorMessages.ErrorCreatingEntity(" Recipe ").ToString();
+                return response;
+            }
+            finally 
+            { 
+             _context.CreateConnection().Close();
+            }
+
         }
 
-        public Task<RepositoryResponse<List<Recipe>>> GetAllAsync()
+        public async Task<RepositoryResponse<Recipe>> DeleteAsync(int id)
+        {
+            var response = new RepositoryResponse<Recipe>();
+
+            int rowsAffected = 0;
+
+            try
+            {
+                string query = "UPDATE Recipe " +
+                    "SET IsActive = 0 " +
+                    "Where Id = @Id";
+
+                using var connection = _context.CreateConnection();
+
+                rowsAffected = await connection.ExecuteAsync(query, new { Id = id });
+
+                response.Success = rowsAffected > 0;
+                response.Message = SuccessResponses.EntityUpdated().ToString();
+
+                return response; 
+            }
+            catch (Exception ex) 
+            { 
+                response.Success= false;
+                response.Message = ErrorMessages.NotFound(id).ToString() + ex.Message;
+
+                return response;
+            }
+            finally
+            {
+                _context.CreateConnection().Close();
+            }
+
+        }
+
+        #region GET METHODS
+        public async Task<RepositoryResponse<List<Recipe>>> GetAllAsync()
+        {
+            var response = new RepositoryResponse<List<Recipe>>();
+
+            try
+            {
+                string query = "SELECT " +
+                    "a.Id, " +
+                    "a.Title, " +
+                    "a.Subtitle, " +
+                    "a.Text, " +
+                    "c.Id AS MemberId, " +
+                    "c.FirstName, " +
+                    "c.LastName, " +
+                    "d.Id AS CategoryId, " +
+                    "d.Name " +
+                    "FROM Recipe a " +
+                    "JOIN MemberRecipe b on a.Id = b.RecipeId " +
+                    "JOIN Member c on b.MemberId = c.Id " +
+                    "LEFT JOIN Category d on d.Id = a.CategoryId " +
+                    "order by a.Title;";
+
+                var entityDictionary = new Dictionary<int, Recipe>();
+
+                using var connection =  _context.CreateConnection();
+
+                var entities = await connection.QueryAsync<Recipe, Member, Category, Recipe>
+                    (query,
+                    (recipe, member, category) =>
+                    {
+                        if (!entityDictionary.TryGetValue(recipe.Id, out var existingEntity))
+                        {
+                            existingEntity = recipe;
+                            existingEntity.Members = new List<Member>();
+                            entityDictionary.Add(existingEntity.Id, existingEntity);
+                        }
+                      
+                        if(member != null)
+                        {
+                            existingEntity.Members.Add(member);
+                        }
+
+                        if (category != null)
+                        {
+                            existingEntity.Category = category;
+                        }
+
+                        return existingEntity;
+                    },
+                    splitOn: "MemberId, CategoryId");
+
+                response.Success = true;
+                response.Items = entityDictionary.Values.ToList();
+
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = ErrorMessages.ErrorAccessingDb("Recipe").ToString() + ex.Message;
+                return response;
+            }
+            finally 
+            { 
+                _context.CreateConnection().Close();    
+            }
+
+        }
+
+        public  async Task<RepositoryResponse<Recipe>> GetByIdAsync(int id)
+        {
+            var response = new RepositoryResponse<Recipe>();
+
+            try
+            {
+                string query = "SELECT " +
+                    "a.Id, " +
+                    "a.Title, " +
+                    "a.Subtitle, " +
+                    "a.Text, " +
+                    "c.Id AS MemberId, " +
+                    "c.FirstName, " +
+                    "c.LastName, " +
+                    "d.Id AS CategoryId, " +
+                    "d.Name " +
+                    "FROM Recipe a " +
+                    "JOIN MemberRecipe b on a.Id = b.RecipeId " +
+                    "JOIN Member c on b.MemberId = c.Id " +
+                    "LEFT JOIN Category d on d.Id = a.CategoryId " +
+                    "WHERE a.Id = @Id " +
+                    "order by a.Title;";
+
+                var entityDictionary = new Dictionary<int, Recipe>();
+
+                using var connection = _context.CreateConnection();
+
+                var entities = await connection.QueryAsync<Recipe, Member, Category, Recipe>
+                    (query,
+                    (recipe, member, category) =>
+                    {
+                        if (!entityDictionary.TryGetValue(recipe.Id, out var existingEntity))
+                        {
+                            existingEntity = recipe;
+                            existingEntity.Members = new List<Member>();
+                            entityDictionary.Add(existingEntity.Id, existingEntity);
+                        }
+
+                        if (member != null)
+                        {
+                            existingEntity.Members.Add(member);
+                        }
+
+                        if (category != null)
+                        {
+                            existingEntity.Category = category;
+                        }
+
+                        return existingEntity;
+                    },
+                    new {Id = id},
+                    splitOn: "MemberId, CategoryId");
+
+                var result = entityDictionary.Values.FirstOrDefault();
+
+                if(result is null)
+                {
+                    response.Success = false;
+                    response.Message = ErrorMessages.NotFound(id).ToString();
+
+                    return response;
+                }
+
+                response.Success = true;
+                response.Items = result;
+
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = ErrorMessages.ErrorAccessingDb("Recipe").ToString() + ex.Message;
+                return response;
+            }
+            finally
+            {
+                _context.CreateConnection().Close();
+            }
+
+        }
+
+        public Task<RepositoryResponse<List<Recipe>>> GetNotActiveAsync()
         {
             var response = new RepositoryResponse<List<Recipe>>();
 
@@ -35,26 +296,76 @@ namespace FamilyCookbook.Repository
             {
 
             }
-            catch (Exception ex)
-            {
-
-            }
-            finally 
+            catch (Exception ex) 
             { 
             
             }
+            finally 
+            { 
+                _context.CreateConnection().Close(); 
+            }
 
             throw new NotImplementedException();
         }
 
-        public Task<RepositoryResponse<Recipe>> GetByIdAsync(int id)
+        public Task<RepositoryResponse<List<Recipe>>> GetRecipesWithoutAuthor()
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+
+
+
+        public Task<RepositoryResponse<Recipe>> PermaDeleteAsync(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<RepositoryResponse<Recipe>> UpdateAsync(int id, Recipe entity)
+        public async Task<RepositoryResponse<Recipe>> UpdateAsync(int id, Recipe entity)
         {
-            throw new NotImplementedException();
+            var response = new RepositoryResponse<Recipe>();
+
+            int rowAffected = 0;
+
+            try
+            {
+                var query = "UPDATE Recipe " +
+                    "SET Title = @Title, " +
+                    "Subtitle = @Subtitle, " +
+                    "Text = @Text, " +
+                    "DateUpdated = @DateUpdated, " +
+                    "IsActive = @IsActive, " +
+                    "CategoryId = @CategoryId " +
+                    "WHERE Id = @Id";
+
+                using var connection = _context.CreateConnection();
+
+                rowAffected = await connection.ExecuteAsync(query, new {
+                    entity.Title,
+                    entity.Subtitle,
+                    entity.Text,
+                    entity.DateUpdated,
+                    entity.IsActive,
+                    entity.CategoryId,
+                    Id = id
+                });
+
+                response.Success = rowAffected > 0;
+                response.Message = SuccessResponses.EntityUpdated().ToString();
+
+                return response;
+            }
+            catch (Exception ex) 
+            {
+                response.Success = false;
+                response.Message = ErrorMessages.ErrorAccessingDb("Recipe").ToString() + ex.Message;
+                return response;
+            } 
+            finally
+            {
+                _context.CreateConnection().Close();
+            }
+
         }
     }
 }

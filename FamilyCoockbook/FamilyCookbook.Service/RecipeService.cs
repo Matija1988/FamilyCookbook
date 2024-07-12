@@ -1,0 +1,84 @@
+﻿using FamilyCookbook.Model;
+using FamilyCookbook.Repository.Common;
+using FamilyCookbook.Service.Common;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace FamilyCookbook.Service
+{
+    public class RecipeService : IRecipeService
+    {
+        private readonly IRecipeRepository _repository;
+
+        public RecipeService(IRecipeRepository repository)
+        {
+            _repository = repository;
+        }
+
+        public async Task<RepositoryResponse<Recipe>> AddMemberToRecipe(MemberRecipe entity)
+        {
+            var response = await _repository.AddMemberToRecipeAsync(entity);
+
+            return response;
+        }
+
+        public async Task<RepositoryResponse<Recipe>> CreateAsync(Recipe entity)
+        {
+            entity.DateCreated = DateTime.Now;
+            entity.DateUpdated = DateTime.Now;
+            entity.IsActive = true;
+
+            var response = await _repository.CreateAsync(entity);
+
+            if (entity.Members is not null)
+            {
+                foreach (var member in entity.Members)
+                {
+                    var mergeEntity = new MemberRecipe
+                    {
+                        MemberId = member.Id,
+                        RecipeId = response.Items.Id
+                    };
+
+                    await _repository.AddMemberToRecipeAsync(mergeEntity);
+                }
+
+            }
+
+            return response;
+        }
+
+        public async Task<RepositoryResponse<Recipe>> DeleteAsync(int id)
+        {
+            var response = await _repository.DeleteAsync(id);
+
+            return response;
+        }
+
+        public async Task<RepositoryResponse<List<Recipe>>> GetAllAsync()
+        {
+            var response = await _repository.GetAllAsync();
+
+            return response;
+        }
+
+        public async Task<RepositoryResponse<Recipe>> GetByIdAsync(int id)
+        {
+            var response = await _repository.GetByIdAsync(id);
+
+            return response;
+        }
+
+        public async Task<RepositoryResponse<Recipe>> UpdateAsync(int id, Recipe entity)
+        {
+            entity.DateUpdated = DateTime.Now;
+
+            var response = await _repository.UpdateAsync(id, entity);
+
+            return response;
+        }
+    }
+}

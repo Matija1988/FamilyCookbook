@@ -21,9 +21,9 @@ namespace FamilyCookbook.Model
 
         public bool IsActive { get; set; }
 
-        public DateOnly DateCreated { get; set; }
+        public DateTime DateCreated { get; set; }
 
-        public DateOnly DateUpdated { get; set; }
+        public DateTime DateUpdated { get; set; }
 
         [ForeignKey("CategoryId")]
         public int CategoryId { get; set; }

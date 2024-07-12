@@ -265,3 +265,7 @@ When you’re ready to bake, you can either pull them out to defrost the night bef
 1);
 
 insert into MemberRecipe(MemberId, RecipeId) values (1,1),(1,2);
+
+
+select * from Member;
+
