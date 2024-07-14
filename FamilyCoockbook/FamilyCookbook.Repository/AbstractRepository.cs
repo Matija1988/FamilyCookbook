@@ -8,6 +8,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,13 +17,15 @@ namespace FamilyCookbook.Repository
     public abstract class AbstractRepository<T> : IRepository<T> where T : class
     {
         private readonly DapperDBContext _context;
-
+        private readonly IErrorMessages _errorMessages;
+        private readonly ISuccessResponses _successResponses;
         
         
-        public AbstractRepository(DapperDBContext context)
+        public AbstractRepository(DapperDBContext context, IErrorMessages errorMessages, ISuccessResponses successResponses)
         {
             _context = context;
-
+            _errorMessages = errorMessages;
+            _successResponses = successResponses;
         }
 
         public async Task<RepositoryResponse<List<T>>> GetAllAsync()
@@ -47,7 +50,7 @@ namespace FamilyCookbook.Repository
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = ErrorMessages.ErrorAccessingDb(GetTableName()).ToString();
+                response.Message = _errorMessages.ErrorAccessingDb(GetTableName()).ToString();
                 return response;
             }
             finally 
@@ -73,6 +76,14 @@ namespace FamilyCookbook.Repository
                 var entity = await connection.QueryFirstOrDefaultAsync<T>(query, new { id });
 
                 response.Items = entity;
+
+                if(entity == null)
+                {
+                    response.Success = false;
+                    response.Message = _errorMessages.NotFound(id).ToString();
+                    return response;
+                }
+
                 response.Success = true;
 
                 return response;
@@ -80,7 +91,7 @@ namespace FamilyCookbook.Repository
             } catch (Exception ex) 
             {
                 response.Success = false;
-                response.Message = ErrorMessages.NotFound(id).ToString() + " " + ex.Message;
+                response.Message = _errorMessages.ErrorAccessingDb(GetTableName()).ToString() + " " + ex.Message;
                 return response;
             }
             finally
@@ -109,7 +120,7 @@ namespace FamilyCookbook.Repository
                 rowsAffected = await connection.ExecuteAsync(query, entity);
 
                 response.Success = rowsAffected > 0;
-                response.Message = SuccessResponses.EntityCreated().ToString();
+                response.Message = _successResponses.EntityCreated().ToString();
 
                 return response;
 
@@ -117,7 +128,7 @@ namespace FamilyCookbook.Repository
             catch (Exception ex) 
             {
                 response.Success = false;
-                response.Message = ErrorMessages.ErrorCreatingEntity(tableName).ToString() + " " + ex.Message;
+                response.Message = _errorMessages.ErrorCreatingEntity(tableName).ToString() + " " + ex.Message;
                 return response;
             }
             finally 
@@ -166,7 +177,7 @@ namespace FamilyCookbook.Repository
                 rowsAffected = connection.Execute(query.ToString(), parameters);
 
                 response.Success = rowsAffected > 0;
-                response.Message = SuccessResponses.EntityUpdated().ToString();
+                response.Message = _successResponses.EntityUpdated().ToString();
 
                 return response;
 
@@ -175,7 +186,7 @@ namespace FamilyCookbook.Repository
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = ErrorMessages.NotFound(id).ToString() + ex.Message;
+                response.Message = _errorMessages.NotFound(id).ToString() + ex.Message;
                 return response;
             }
             finally
@@ -203,14 +214,14 @@ namespace FamilyCookbook.Repository
                 rowsAffected = await connection.ExecuteAsync(query, new { id });
 
                 response.Success = rowsAffected > 0;
-                response.Message = SuccessResponses.EntityDeleted(tableName).ToString();
+                response.Message = _successResponses.EntityDeleted(tableName).ToString();
                 return response;
 
             } 
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = ErrorMessages.NotFound(id).ToString();
+                response.Message = _errorMessages.NotFound(id).ToString();
                 return response;
             }
             finally

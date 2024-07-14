@@ -14,9 +14,14 @@ namespace FamilyCookbook.Repository
     public class MemberRepository : IMemberRepository
     {
         private readonly DapperDBContext _context;
-        public MemberRepository(DapperDBContext context)
+        private readonly IErrorMessages _errorMessages;
+        private readonly ISuccessResponses _successResponses;
+        public MemberRepository
+            (DapperDBContext context, IErrorMessages errorMessages, ISuccessResponses successResponses)
         {
             _context = context;
+            _errorMessages = errorMessages;
+            _successResponses = successResponses;
         }
 
         public async Task<RepositoryResponse<Member>> CreateAsync(Member entity)
@@ -57,7 +62,7 @@ namespace FamilyCookbook.Repository
                 rowsAffeted = await connection.ExecuteAsync(query, entity);
 
                 response.Success = rowsAffeted > 0;
-                response.Message = SuccessResponses.EntityCreated().ToString();
+                response.Message = _successResponses.EntityCreated().ToString();
 
                 return response;
 
@@ -65,7 +70,7 @@ namespace FamilyCookbook.Repository
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = ErrorMessages.ErrorCreatingEntity(" Member ").ToString() + ex.Message;
+                response.Message = _errorMessages.ErrorCreatingEntity(" Member ").ToString() + ex.Message;
                 return response;
             }
             finally
@@ -92,7 +97,7 @@ namespace FamilyCookbook.Repository
                 rowAffected = await connection.ExecuteAsync(query, new { Id = id });
 
                 response.Success = rowAffected > 0;
-                response.Message = SuccessResponses.EntityUpdated().ToString();
+                response.Message = _successResponses.EntityUpdated().ToString();
 
                 return response;
 
@@ -100,7 +105,7 @@ namespace FamilyCookbook.Repository
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = ErrorMessages.NotFound(id).ToString() + ex.Message;
+                response.Message = _errorMessages.NotFound(id).ToString() + ex.Message;
 
                 return response;
             }
@@ -117,27 +122,20 @@ namespace FamilyCookbook.Repository
             try
             {
 
-                var query = "SELECT DISTINCT a.*, " +
-                    "b.Id AS RoleId, " +
-                    "b.*, " +
-                    "c.Id AS PictureId, " +
-                    "c.*, " +
-                    "e.Id AS RecipeId, " +
-                    "e.Title " +
+                var query = "SELECT  a.*, " +
+                    "b.Id AS RoleRoleId, " +
+                    "b.* " +
                     "FROM Member a " +
                     "LEFT JOIN Role b on a.RoleId = b.Id " +
-                    "LEFT JOIN Picture c on a.PictureId = c.Id " +
-                    "LEFT JOIN MemberRecipe d on a.Id = d.MemberId " +
-                    "LEFT JOIN Recipe e on d.RecipeId = e.Id " +
                     "WHERE a.IsActive = 1;";
 
                 var entityDictionary = new Dictionary<int, Member>();
 
                 using var connection = _context.CreateConnection();
 
-                var entities = await connection.QueryAsync<Member, Role, Picture, Recipe, Member>
+                var entities = await connection.QueryAsync<Member, Role, Member>
                     (query,
-                    (entity, role, picture, recipe) =>
+                    (entity, role ) =>
                 {
                     if (!entityDictionary.TryGetValue(entity.Id, out var existingEntity))
                     {
@@ -151,17 +149,9 @@ namespace FamilyCookbook.Repository
                         existingEntity.Role = role;
                     }
 
-                    if (picture != null)
-                    {
-                        existingEntity.Picture = picture;
-                    }
-                    if (recipe != null)
-                    {
-                        existingEntity.Recipes.Add(recipe);
-                    }
                     return existingEntity;
                 },
-                splitOn: "RoleId, PictureId, RecipeId");
+                splitOn: "RoleRoleId");
 
                 response.Success = true;
                 response.Items = entityDictionary.Values.ToList();
@@ -172,7 +162,7 @@ namespace FamilyCookbook.Repository
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = ErrorMessages.ErrorAccessingDb("Member").ToString() + ex.Message;
+                response.Message = _errorMessages.ErrorAccessingDb("Member").ToString() + ex.Message;
                 return response;
             }
             finally
@@ -182,34 +172,28 @@ namespace FamilyCookbook.Repository
 
         }
 
-        public async Task<RepositoryResponse<Member>> GetByIdAsync(int id)
+        public async Task<RepositoryResponse<Member>> GetByGuidAsync(Guid uniqueId)
         {
             var response = new RepositoryResponse<Member>();
 
             try
             {
 
-                var query = "SELECT a.*, " +
+                var query = "SELECT a.Id as MemberId," +
+                    "a.*, " +
                     "b.Id AS RoleId, " +
-                    "b.*, " +
-                    "c.Id AS PictureId, " +
-                    "c.*, " +
-                    "e.Id AS RecipeId, " +
-                    "e.Title " +
+                    "b.* " +
                     "FROM Member a " +
                     "LEFT JOIN Role b on a.RoleId = b.Id " +
-                    "LEFT JOIN Picture c on a.PictureId = c.Id " +
-                    "LEFT JOIN MemberRecipe d on a.Id = d.MemberId " +
-                    "LEFT JOIN Recipe e on d.RecipeId = e.Id " +
-                    "WHERE a.Id = @Id;";
+                    "WHERE a.UniqueId = @UniqueId;";
 
                 var entityDictionary = new Dictionary<int, Member>();
 
                 using var connection = _context.CreateConnection();
 
-                var entities = await connection.QueryAsync<Member, Role, Picture, Recipe, Member>
+                var entities = await connection.QueryAsync<Member, Role, Member>
                     (query,
-                    (entity, role, picture, recipe) =>
+                    (entity, role) =>
                     {
                         if (!entityDictionary.TryGetValue(entity.Id, out var existingEntity))
                         {
@@ -223,25 +207,17 @@ namespace FamilyCookbook.Repository
                             existingEntity.Role = role;
                         }
 
-                        if (picture != null)
-                        {
-                            existingEntity.Picture = picture;
-                        }
-                        if (recipe != null)
-                        {
-                            existingEntity.Recipes.Add(recipe);
-                        }
                         return existingEntity;
                     },
-                    new { Id = id },
-                splitOn: "RoleId, PictureId, RecipeId");
+                    new { UniqueId = uniqueId },
+                splitOn: "RoleId");
 
                 var result = entityDictionary.Values.FirstOrDefault();
 
                 if (result is null)
                 {
                     response.Success = false;
-                    response.Message = ErrorMessages.NotFound(id).ToString();
+                    response.Message = _errorMessages.NotFoundByGuid().ToString();
                     return response;
                 }
 
@@ -254,7 +230,74 @@ namespace FamilyCookbook.Repository
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = ErrorMessages.ErrorAccessingDb("Member").ToString() + ex.Message;
+                response.Message = _errorMessages.ErrorAccessingDb("Member").ToString() + ex.Message;
+                return response;
+            }
+            finally
+            {
+                _context.CreateConnection().Close();
+            }
+        }
+
+        public async Task<RepositoryResponse<Member>> GetByIdAsync(int id)
+        {
+            var response = new RepositoryResponse<Member>();
+
+            try
+            {
+
+                var query = "SELECT a.Id as MemberId," +
+                    "a.*, " +
+                    "b.Id AS RoleId, " +
+                    "b.* " +
+                    "FROM Member a " +
+                    "LEFT JOIN Role b on a.RoleId = b.Id " +
+                    "WHERE a.Id = @Id;";
+
+                var entityDictionary = new Dictionary<int, Member>();
+
+                using var connection = _context.CreateConnection();
+
+                var entities = await connection.QueryAsync<Member, Role, Member>
+                    (query,
+                    (entity, role) =>
+                    {
+                        if (!entityDictionary.TryGetValue(entity.Id, out var existingEntity))
+                        {
+                            existingEntity = entity;
+                            existingEntity.Recipes = new List<Recipe>();
+                            entityDictionary.Add(existingEntity.Id, existingEntity);
+                        }
+                        if (role != null)
+                        {
+
+                            existingEntity.Role = role;
+                        }
+ 
+                        return existingEntity;
+                    },
+                    new { Id = id },
+                splitOn: "RoleId");
+
+                var result = entityDictionary.Values.FirstOrDefault();
+
+                if (result is null)
+                {
+                    response.Success = false;
+                    response.Message = _errorMessages.NotFound(id).ToString();
+                    return response;
+                }
+
+                response.Success = true;
+                response.Items = result;
+
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = _errorMessages.ErrorAccessingDb("Member").ToString() + ex.Message;
                 return response;
             }
             finally
@@ -278,14 +321,14 @@ namespace FamilyCookbook.Repository
                 rowAffected = await connection.ExecuteAsync(query, new { Id = id });
 
                 response.Success = rowAffected > 0;
-                response.Message = SuccessResponses.EntityDeleted("Member").ToString();
+                response.Message = _successResponses.EntityDeleted("Member").ToString();
                 return response;
         
             }
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = ErrorMessages.NotFound(id).ToString() + ex.Message;
+                response.Message = _errorMessages.NotFound(id).ToString() + ex.Message;
                 return response;
             }
             finally
@@ -329,7 +372,7 @@ namespace FamilyCookbook.Repository
                 });
 
                 response.Success = rowAffected > 0;
-                response.Message = SuccessResponses.EntityUpdated().ToString();
+                response.Message = _successResponses.EntityUpdated().ToString();
 
                 return response;
 
@@ -337,7 +380,7 @@ namespace FamilyCookbook.Repository
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = ErrorMessages.ErrorAccessingDb("Member").ToString() + ex.Message;    
+                response.Message = _errorMessages.ErrorAccessingDb("Member").ToString() + ex.Message;    
                 return response;
             }
             finally

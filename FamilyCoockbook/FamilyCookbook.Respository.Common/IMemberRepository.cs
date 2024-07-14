@@ -11,5 +11,7 @@ namespace FamilyCookbook.Repository.Common
     public interface IMemberRepository : IRepository<Member>
     {
         Task<RepositoryResponse<Member>> PermaDeleteAsync(int id);
+
+        Task<RepositoryResponse<Member>> GetByGuidAsync(Guid uniqueId);
     }
 }

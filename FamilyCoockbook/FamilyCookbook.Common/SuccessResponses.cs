@@ -6,23 +6,27 @@ using System.Threading.Tasks;
 
 namespace FamilyCookbook.Common
 {
-    public  static class SuccessResponses
+    public  class SuccessResponses : ISuccessResponses
     {
-        public static StringBuilder EntityDeleted(string entityName)
+        public SuccessResponses()
+        {
+            
+        }
+        public  StringBuilder EntityDeleted(string entityName)
         {
             StringBuilder sb = new StringBuilder();
 
             return sb.Append("Entity: " + entityName + " deleted!");
         }
 
-        public static StringBuilder EntityCreated()
+        public  StringBuilder EntityCreated()
         {
             StringBuilder sb = new StringBuilder();
 
             return sb.Append("Entity created!");
         }
 
-        public static StringBuilder EntityUpdated()
+        public  StringBuilder EntityUpdated()
         {
             StringBuilder sb = new StringBuilder();
 

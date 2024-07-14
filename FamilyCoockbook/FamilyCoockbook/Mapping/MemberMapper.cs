@@ -9,6 +9,8 @@ namespace FamilyCookbook.Mapping
     {
         public  partial List<MemberRead> MemberToMemberReadList(List<Member> member);
 
+        public partial List<RecipeTitleList> RecipeToRecipeTitleList(List<Recipe> recipes);
+
         public  partial MemberRead MemberToMemberRead(Member member);
 
         public partial Member MemberCreateToMember(MemberCreate memberCreate);

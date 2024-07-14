@@ -53,6 +53,26 @@ namespace FamilyCookbook.Controllers
 
             return Ok(member);  
         }
+
+        [HttpGet]
+        [Route("{uniqueId:guid}")]
+
+        public async Task<IActionResult> GetByGuid(Guid uniqueId)
+        {
+            var response = await _service.GetByGuidAsync(uniqueId);
+
+            if (response.Success == false)
+            {
+                return NotFound(response.Message);
+            }
+
+            var mapper = new MemberMapper();
+
+            var member = mapper.MemberToMemberRead(response.Items);
+
+            return Ok(member);
+
+        }
         [HttpPost]
         [Route("create")] 
         public async Task<IActionResult> CreateAsync(MemberCreate memberCreate)
@@ -114,5 +134,7 @@ namespace FamilyCookbook.Controllers
             }
             return Ok(response.Message);
         }
+
+        
     }
 }

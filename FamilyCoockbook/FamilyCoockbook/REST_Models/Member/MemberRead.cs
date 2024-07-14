@@ -1,4 +1,6 @@
-﻿namespace FamilyCookbook.REST_Models.Member
+﻿using FamilyCookbook.Model;
+
+namespace FamilyCookbook.REST_Models.Member
 {
     public class MemberRead
     {
@@ -14,8 +16,6 @@
         public string Bio { get; set; }
 
         public string RoleName { get; set; }
-
-        public List<RecipeTitleList> Recipes { get; set; }
 
 
     }

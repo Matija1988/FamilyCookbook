@@ -70,5 +70,11 @@ namespace FamilyCookbook.Service
             return response;
         }
 
+        public async Task<RepositoryResponse<Member>> GetByGuidAsync(Guid uniqueId)
+        {
+            var response = await _repository.GetByGuidAsync(uniqueId);  
+
+            return response;
+        }
     }
 }

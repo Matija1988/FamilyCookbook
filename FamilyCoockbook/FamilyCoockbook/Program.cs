@@ -2,6 +2,7 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using FamilyCookbook;
+using FamilyCookbook.Common;
 using FamilyCookbook.Repository;
 using FamilyCookbook.Service;
 
@@ -15,6 +16,7 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 builder.Host.ConfigureContainer<ContainerBuilder>(builder => {
     builder.RegisterModule(new AutofacRepositoryModule());
     builder.RegisterModule(new AutofacServiceModule());
+    builder.RegisterModule(new AutofacCommonModule());
 });
 
 builder.Services.AddControllers();
