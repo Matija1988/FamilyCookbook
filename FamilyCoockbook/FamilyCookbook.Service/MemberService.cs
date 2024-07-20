@@ -1,4 +1,5 @@
-﻿using FamilyCookbook.Model;
+﻿using FamilyCookbook.Common;
+using FamilyCookbook.Model;
 using FamilyCookbook.Repository.Common;
 using FamilyCookbook.Respository.Common;
 using FamilyCookbook.Service.Common;
@@ -39,7 +40,7 @@ namespace FamilyCookbook.Service
             return response;
         }
 
-        public async Task<RepositoryResponse<List<Member>>> GetAllAsync()
+        public async Task<RepositoryResponse<List<Member>>> GetAllAsync(Paging paging)
         {
             var response = await _repository.GetAllAsync();
 

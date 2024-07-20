@@ -127,14 +127,17 @@ namespace FamilyCookbook.Repository
                     "b.* " +
                     "FROM Member a " +
                     "LEFT JOIN Role b on a.RoleId = b.Id " +
-                    "WHERE a.IsActive = 1;";
+                    "WHERE a.IsActive = 1;" +
+                    "" +
+                    "SELECT COUNT(*) FROM Member WHERE IsActive = 1;";
 
                 var entityDictionary = new Dictionary<int, Member>();
 
                 using var connection = _context.CreateConnection();
 
-                var entities = await connection.QueryAsync<Member, Role, Member>
-                    (query,
+                using var multipleQuery = await connection.QueryMultipleAsync(query);
+
+                var members = multipleQuery.Read<Member, Role, Member>(
                     (entity, role ) =>
                 {
                     if (!entityDictionary.TryGetValue(entity.Id, out var existingEntity))
@@ -152,6 +155,8 @@ namespace FamilyCookbook.Repository
                     return existingEntity;
                 },
                 splitOn: "RoleRoleId");
+
+                response.TotalCount = multipleQuery.ReadSingle<int>();
 
                 response.Success = true;
                 response.Items = entityDictionary.Values.ToList();

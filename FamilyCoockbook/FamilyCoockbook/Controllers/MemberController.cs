@@ -1,4 +1,5 @@
-﻿using FamilyCookbook.Mapping;
+﻿using FamilyCookbook.Common;
+using FamilyCookbook.Mapping;
 using FamilyCookbook.Model;
 using FamilyCookbook.REST_Models.Member;
 using FamilyCookbook.Service.Common;
@@ -18,9 +19,10 @@ namespace FamilyCookbook.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync() 
+        public async Task<IActionResult> GetAllAsync(
+            [FromQuery] Paging paging) 
         { 
-            var response = await _service.GetAllAsync();
+            var response = await _service.GetAllAsync(paging);
 
             if (response.Success == false)
             {
@@ -31,8 +33,14 @@ namespace FamilyCookbook.Controllers
 
             var members = mapper.MemberToMemberReadList(response.Items);
 
+            var finalResponse = new RepositoryResponse<List<MemberRead>>();
 
-            return Ok(members);
+            finalResponse.Items = members;
+            finalResponse.TotalCount = response.TotalCount;
+            finalResponse.Message = response.Message;
+            finalResponse.Success = response.Success;
+
+            return Ok(finalResponse);
         }
 
         [HttpGet]

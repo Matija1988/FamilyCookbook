@@ -1,4 +1,5 @@
-﻿using FamilyCookbook.Model;
+﻿using FamilyCookbook.Common;
+using FamilyCookbook.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace FamilyCookbook.Service.Common
 {
     public interface IService<T> where T : class
     {
-        Task<RepositoryResponse<List<T>>> GetAllAsync();
+        Task<RepositoryResponse<List<T>>> GetAllAsync(Paging paging);
 
         Task<RepositoryResponse<T>> GetByIdAsync(int id);
 

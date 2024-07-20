@@ -1,4 +1,5 @@
-﻿using FamilyCookbook.Mapping;
+﻿using FamilyCookbook.Common;
+using FamilyCookbook.Mapping;
 using FamilyCookbook.Model;
 using FamilyCookbook.REST_Models.Picture;
 using FamilyCookbook.Service.Common;
@@ -19,9 +20,9 @@ namespace FamilyCookbook.Controllers
 
         [HttpGet]
 
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync(Paging paging)
         {
-            var response = await _service.GetAllAsync();
+            var response = await _service.GetAllAsync(paging);
 
             if (response.Success == false)
             {

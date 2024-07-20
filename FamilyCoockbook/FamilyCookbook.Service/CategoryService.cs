@@ -1,4 +1,5 @@
-﻿using FamilyCookbook.Model;
+﻿using FamilyCookbook.Common;
+using FamilyCookbook.Model;
 using FamilyCookbook.Repository.Common;
 using FamilyCookbook.Respository.Common;
 using FamilyCookbook.Service.Common;
@@ -29,7 +30,7 @@ namespace FamilyCookbook.Service
             return await _repository.DeleteAsync(id);
         }
 
-        public async Task<RepositoryResponse<List<Category>>> GetAllAsync()
+        public async Task<RepositoryResponse<List<Category>>> GetAllAsync(Paging paging)
         {
            return await _repository.GetAllAsync();
         }
