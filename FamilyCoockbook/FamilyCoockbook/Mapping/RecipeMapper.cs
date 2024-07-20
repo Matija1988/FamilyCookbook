@@ -12,6 +12,11 @@ namespace FamilyCookbook.Mapping
 
         public partial RecipeRead RecipeToRecipeRead(Recipe recipe);
 
-        public partial Recipe RecipeCreateToRecipe(RecipeCreate newRecipe);
+         public partial Recipe RecipeCreateToRecipe(RecipeCreate newRecipe);
+
     }
+
+   
 }
+
+

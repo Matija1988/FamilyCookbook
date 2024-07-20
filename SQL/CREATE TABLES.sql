@@ -114,7 +114,17 @@ values('d7b19efe-39aa-4d25-b802-21ac8fa0b0f4',
 '08-07-2024',
 'samsung',
 'galaxyA52',
-'4');
+'4'),
+('a86823ad-f120-4a8c-94ff-d3d37330653a',
+'Test',
+'Tester',
+'Temp bio',
+'1',
+'20-07-2024',
+'20-07-2024',
+'apple',
+'iPhone14',
+'1');
 
 insert into Recipe 
 (Title, 

@@ -33,21 +33,6 @@ namespace FamilyCookbook.Service
 
             var response = await _repository.CreateAsync(entity);
 
-            if (entity.Members is not null)
-            {
-                foreach (var member in entity.Members)
-                {
-                    var mergeEntity = new MemberRecipe
-                    {
-                        MemberId = member.Id,
-                        RecipeId = response.Items.Id
-                    };
-
-                    await _repository.AddMemberToRecipeAsync(mergeEntity);
-                }
-
-            }
-
             return response;
         }
 

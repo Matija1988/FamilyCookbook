@@ -84,11 +84,12 @@ namespace FamilyCookbook.Repository
 
                 using var connection = _context.CreateConnection();
 
-                var insertEntity = await connection.QuerySingleAsync<Recipe>(query, entity);
+                var id = await connection.ExecuteScalarAsync<int>(query, entity);
+                entity.Id = id;
 
                 response.Success = true;
                 response.Message = _successResponses.EntityCreated().ToString();
-                response.Items = insertEntity;
+                response.Items = entity;
                 return response;
             }
             catch (Exception ex)

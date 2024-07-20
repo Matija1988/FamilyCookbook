@@ -16,7 +16,7 @@ namespace FamilyCookbook.Controllers
 
         private readonly IService<Category> _categoryService;
 
-        public RecipeController(IRecipeService service, IService<Category> categoryService)
+        public RecipeController(IRecipeService service, IMemberService memberService, IService<Category> categoryService)
         {
             _service = service;
             _categoryService = categoryService;
@@ -78,6 +78,16 @@ namespace FamilyCookbook.Controllers
                 return BadRequest(response.Message);
             }
 
+            foreach (var item in newRecipe.MemberIds) 
+            {
+                var memberRecipe = new MemberRecipe();
+
+                memberRecipe.RecipeId = response.Items.Id;
+                memberRecipe.MemberId = item;
+
+                var addMemberToRecipe = await _service.AddMemberToRecipe(memberRecipe);
+            }
+
             var category = await _categoryService.GetByIdAsync(recipe.CategoryId);
 
             var returnRecipe = new RecipeRead();
@@ -87,7 +97,7 @@ namespace FamilyCookbook.Controllers
             returnRecipe.Title = response.Items.Title;
             returnRecipe.Subtitle = response.Items.Subtitle;
             returnRecipe.Text = response.Items.Text;
-
+            
             
             return Ok(returnRecipe);
 
