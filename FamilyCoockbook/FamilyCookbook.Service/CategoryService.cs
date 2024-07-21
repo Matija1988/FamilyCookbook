@@ -30,7 +30,7 @@ namespace FamilyCookbook.Service
             return await _repository.DeleteAsync(id);
         }
 
-        public async Task<RepositoryResponse<List<Category>>> GetAllAsync(Paging paging)
+        public async Task<RepositoryResponse<List<Category>>> GetAllAsync()
         {
            return await _repository.GetAllAsync();
         }

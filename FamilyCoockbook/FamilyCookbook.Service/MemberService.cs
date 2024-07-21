@@ -40,7 +40,7 @@ namespace FamilyCookbook.Service
             return response;
         }
 
-        public async Task<RepositoryResponse<List<Member>>> GetAllAsync(Paging paging)
+        public async Task<RepositoryResponse<List<Member>>> GetAllAsync()
         {
             var response = await _repository.GetAllAsync();
 
@@ -74,6 +74,15 @@ namespace FamilyCookbook.Service
         public async Task<RepositoryResponse<Member>> GetByGuidAsync(Guid uniqueId)
         {
             var response = await _repository.GetByGuidAsync(uniqueId);  
+
+            return response;
+        }
+
+        public async Task<RepositoryResponse<List<Member>>> PaginateAsync(Paging paging)
+        {
+            var response = await _repository.PaginateAsync(paging);
+
+            response.PageCount = (int)Math.Ceiling(response.TotalCount / (double)paging.PageSize);
 
             return response;
         }

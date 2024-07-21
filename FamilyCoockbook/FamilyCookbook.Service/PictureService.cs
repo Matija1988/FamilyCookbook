@@ -33,7 +33,7 @@ namespace FamilyCookbook.Service
             return response;
         }
 
-        public async Task<RepositoryResponse<List<Picture>>> GetAllAsync(Paging paging)
+        public async Task<RepositoryResponse<List<Picture>>> GetAllAsync()
         {
             var response = await _repository.GetAllAsync();
 

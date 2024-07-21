@@ -10,7 +10,7 @@ namespace FamilyCookbook.Service.Common
 {
     public interface IService<T> where T : class
     {
-        Task<RepositoryResponse<List<T>>> GetAllAsync(Paging paging);
+        Task<RepositoryResponse<List<T>>> GetAllAsync();
 
         Task<RepositoryResponse<T>> GetByIdAsync(int id);
 

@@ -1,4 +1,5 @@
-﻿using FamilyCookbook.Service.Common;
+﻿using FamilyCookbook.Common;
+using FamilyCookbook.Service.Common;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FamilyCookbook.Controllers
@@ -19,6 +20,7 @@ namespace FamilyCookbook.Controllers
         
         public async Task<IActionResult> GetAll()
         {
+            
             var response = await _roleService.GetAllAsync();
 
             if(response.Success == false)

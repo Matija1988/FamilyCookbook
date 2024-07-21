@@ -311,6 +311,75 @@ namespace FamilyCookbook.Repository
             }
         }
 
+        public async Task<RepositoryResponse<List<Member>>> PaginateAsync(Paging paging)
+        {
+            var response = new RepositoryResponse<List<Member>>();
+
+            try
+            {
+
+                var query = @"SELECT  a.*, " +
+                    "b.Id AS RoleRoleId, " +
+                    "b.* " +
+                    "FROM Member a " +
+                    "LEFT JOIN Role b on a.RoleId = b.Id " +
+                    "WHERE a.IsActive = 1 " +
+                    "ORDER BY a.Id " +
+                    "OFFSET @Offset ROWS " +
+                    "FETCH NEXT @PageSize ROWS ONLY;" +
+                    "" +
+                    "SELECT COUNT(*) FROM Member WHERE IsActive = 1;";
+
+                var entityDictionary = new Dictionary<int, Member>();
+
+                using var connection = _context.CreateConnection();
+
+                using var multipleQuery = await connection.QueryMultipleAsync(query, new
+                {
+                    Offset = (paging.PageNumber - 1) * paging.PageSize,
+                    PageSize = paging.PageSize,
+                });
+
+                var members = multipleQuery.Read<Member, Role, Member>(
+                    (entity, role) =>
+                    {
+                        if (!entityDictionary.TryGetValue(entity.Id, out var existingEntity))
+                        {
+                            existingEntity = entity;
+                            existingEntity.Recipes = new List<Recipe>();
+                            entityDictionary.Add(existingEntity.Id, existingEntity);
+                        }
+                        if (role != null)
+                        {
+
+                            existingEntity.Role = role;
+                        }
+
+                        return existingEntity;
+                    },
+                splitOn: "RoleRoleId");
+
+                response.TotalCount = multipleQuery.ReadSingle<int>();
+
+                response.Success = true;
+                response.Items = entityDictionary.Values.ToList();
+
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = _errorMessages.ErrorAccessingDb("Member").ToString() + ex.Message;
+                return response;
+            }
+            finally
+            {
+                _context.CreateConnection().Close();
+            }
+
+        }
+
         public async Task<RepositoryResponse<Member>> PermaDeleteAsync(int id)
         {
             var response = new RepositoryResponse<Member>();

@@ -1,4 +1,5 @@
-﻿using FamilyCookbook.Model;
+﻿using FamilyCookbook.Common;
+using FamilyCookbook.Model;
 using FamilyCookbook.Respository.Common;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,8 @@ namespace FamilyCookbook.Repository.Common
         Task<RepositoryResponse<List<Recipe>>> GetRecipesWithoutAuthor();
 
         Task<RepositoryResponse<Recipe>> AddMemberToRecipeAsync(MemberRecipe entity);
+
+        Task<RepositoryResponse<List<Recipe>>> PaginateAsync(Paging paging);
 
     }
 }

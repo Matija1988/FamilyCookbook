@@ -13,6 +13,6 @@ namespace FamilyCookbook.Common
         public int PageSize { get; set; }
 
         [Range(1, int.MaxValue, ErrorMessage = "Please enter valid integer value: 1 or above")]
-        public int PageCount { get; set; }
+        public int PageNumber { get; set; }
     }
 }

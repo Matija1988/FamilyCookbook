@@ -26,7 +26,7 @@ namespace FamilyCookbook.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllAsync(Paging paging)
         {
-            var response = await _service.GetAllAsync(paging);
+            var response = await _service.GetAllAsync();
 
             if (response.Success == false)
             {

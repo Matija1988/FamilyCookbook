@@ -44,7 +44,7 @@ namespace FamilyCookbook.Service
             return response;
         }
 
-        public async Task<RepositoryResponse<List<Recipe>>> GetAllAsync(Paging paging)
+        public async Task<RepositoryResponse<List<Recipe>>> GetAllAsync()
         {
             var response = await _repository.GetAllAsync();
 
@@ -56,6 +56,11 @@ namespace FamilyCookbook.Service
             var response = await _repository.GetByIdAsync(id);
 
             return response;
+        }
+
+        public Task<RepositoryResponse<List<Recipe>>> PaginateAsync(Paging paging)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<RepositoryResponse<Recipe>> UpdateAsync(int id, Recipe entity)

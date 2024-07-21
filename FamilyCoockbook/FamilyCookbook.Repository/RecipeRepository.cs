@@ -317,6 +317,11 @@ namespace FamilyCookbook.Repository
         {
             throw new NotImplementedException();
         }
+
+        public Task<RepositoryResponse<List<Recipe>>> PaginateAsync(Paging paging)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
 
 

@@ -19,10 +19,9 @@ namespace FamilyCookbook.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync(
-            [FromQuery] Paging paging) 
+        public async Task<IActionResult> GetAllAsync() 
         { 
-            var response = await _service.GetAllAsync(paging);
+            var response = await _service.GetAllAsync();
 
             if (response.Success == false)
             {
@@ -33,12 +32,11 @@ namespace FamilyCookbook.Controllers
 
             var members = mapper.MemberToMemberReadList(response.Items);
 
-            var finalResponse = new RepositoryResponse<List<MemberRead>>();
+            var finalResponse = new PaginatedList<List<MemberRead>>();
 
             finalResponse.Items = members;
             finalResponse.TotalCount = response.TotalCount;
-            finalResponse.Message = response.Message;
-            finalResponse.Success = response.Success;
+            finalResponse.PageCount = response.PageCount;
 
             return Ok(finalResponse);
         }
@@ -81,6 +79,32 @@ namespace FamilyCookbook.Controllers
             return Ok(member);
 
         }
+
+        [HttpGet]
+        [Route("members")]
+
+        public async Task<IActionResult> PaginateAsync([FromQuery] Paging paging )
+        {
+            var response = await _service.PaginateAsync(paging);
+
+            if (response.Success == false) 
+            {
+                return NotFound(response.Message);
+            }
+
+            var mapper = new MemberMapper();
+
+            var members = mapper.MemberToMemberReadList(response.Items);
+
+            var finalResponse = new PaginatedList<List<MemberRead>>();
+
+            finalResponse.Items = members;
+            finalResponse.TotalCount = response.TotalCount;
+            finalResponse.PageCount = response.PageCount;
+
+            return Ok(finalResponse);
+        }
+
         [HttpPost]
         [Route("create")] 
         public async Task<IActionResult> CreateAsync(MemberCreate memberCreate)

@@ -1,4 +1,5 @@
-﻿using FamilyCookbook.Model;
+﻿using FamilyCookbook.Common;
+using FamilyCookbook.Model;
 using FamilyCookbook.Respository.Common;
 using System;
 using System.Collections.Generic;
@@ -13,5 +14,7 @@ namespace FamilyCookbook.Repository.Common
         Task<RepositoryResponse<Member>> PermaDeleteAsync(int id);
 
         Task<RepositoryResponse<Member>> GetByGuidAsync(Guid uniqueId);
+
+        Task<RepositoryResponse<List<Member>>> PaginateAsync(Paging paging);
     }
 }
