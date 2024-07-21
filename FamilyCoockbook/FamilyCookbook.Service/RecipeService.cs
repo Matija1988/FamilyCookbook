@@ -58,9 +58,13 @@ namespace FamilyCookbook.Service
             return response;
         }
 
-        public Task<RepositoryResponse<List<Recipe>>> PaginateAsync(Paging paging)
+        public async Task<RepositoryResponse<List<Recipe>>> PaginateAsync(Paging paging)
         {
-            throw new NotImplementedException();
+          var response = await _repository.PaginateAsync(paging);
+
+            response.PageCount = (int)Math.Ceiling(response.TotalCount / (double)paging.PageSize);
+
+            return response;
         }
 
         public async Task<RepositoryResponse<Recipe>> UpdateAsync(int id, Recipe entity)

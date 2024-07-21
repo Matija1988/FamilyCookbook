@@ -318,9 +318,88 @@ namespace FamilyCookbook.Repository
             throw new NotImplementedException();
         }
 
-        public Task<RepositoryResponse<List<Recipe>>> PaginateAsync(Paging paging)
+        public async Task<RepositoryResponse<List<Recipe>>> PaginateAsync(Paging paging)
         {
-            throw new NotImplementedException();
+            var response = new RepositoryResponse<List<Recipe>>();
+
+            try
+            {
+                string query = 
+                    @"SELECT " +
+                    "a.Id, " +
+                    "a.Title, " +
+                    "a.Subtitle, " +
+                    "a.Text, " +
+                    "c.Id AS MemberId, " +
+                    "c.FirstName, " +
+                    "c.LastName, " +
+                    "d.Id AS CategoryId, " +
+                    "d.Name " +
+                    "FROM Recipe a " +
+                    "JOIN MemberRecipe b on a.Id = b.RecipeId " +
+                    "JOIN Member c on b.MemberId = c.Id " +
+                    "LEFT JOIN Category d on d.Id = a.CategoryId " +
+                    "WHERE a.IsActive = 1 " +
+                    "ORDER BY a.Title " +
+                    "OFFSET @Offset ROWS " +
+                    "FETCH NEXT @PageSize ROWS ONLY; " +
+                    " " +
+                    "SELECT COUNT(*) FROM Member WHERE IsActive = 1;";
+
+                var entityDictionary = new Dictionary<int, Recipe>();
+
+                using var connection = _context.CreateConnection();
+
+                using var multipleQuery = await connection.QueryMultipleAsync(query, new
+                {
+                    Offset = (paging.PageNumber - 1) * paging.PageSize,
+                    PageSize = paging.PageSize,
+                });
+
+                var entities =  multipleQuery.Read<Recipe, Member, Category, Recipe>
+                    ((recipe, member, category) =>
+                    {
+                        if (!entityDictionary.TryGetValue(recipe.Id, out var existingEntity))
+                        {
+                            existingEntity = recipe;
+                            existingEntity.Members = new List<Member>();
+                            entityDictionary.Add(existingEntity.Id, existingEntity);
+                        }
+
+                        if (member != null)
+                        {
+                            existingEntity.Members.Add(member);
+                        }
+
+                        if (category != null)
+                        {
+                            existingEntity.Category = category;
+                        }
+
+                        return existingEntity;
+                    },
+                    splitOn: "MemberId, CategoryId");
+
+                 
+
+                response.Success = true;
+                response.Items = entityDictionary.Values.ToList();
+                response.TotalCount = response.Items.Count;
+
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = _errorMessages.ErrorAccessingDb("Recipe").ToString() + ex.Message;
+                return response;
+            }
+            finally
+            {
+                _context.CreateConnection().Close();
+            }
+
         }
         #endregion
 

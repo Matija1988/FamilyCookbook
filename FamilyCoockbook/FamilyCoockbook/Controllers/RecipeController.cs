@@ -24,7 +24,7 @@ namespace FamilyCookbook.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync(Paging paging)
+        public async Task<IActionResult> GetAllAsync()
         {
             var response = await _service.GetAllAsync();
 
@@ -56,6 +56,31 @@ namespace FamilyCookbook.Controllers
             var recipe = mapper.RecipeToRecipeRead(response.Items);
 
             return Ok(recipe);
+
+        }
+
+        [HttpGet]
+        [Route("recipes")]
+
+        public async Task<IActionResult> PaginateAsync([FromQuery]Paging paging)
+        {
+            var response = await _service.PaginateAsync(paging);
+
+            if(response.Success == false)
+            {
+                return NotFound(response.Message);
+            }
+            var mapper = new RecipeMapper();
+
+            var recipes = mapper.RecipeToRecipeReadList(response.Items);
+
+            var finalResponse = new PaginatedList<List<RecipeRead>>();
+
+            finalResponse.Items = recipes;
+            finalResponse.TotalCount = response.TotalCount;
+            finalResponse.PageCount = response.PageCount;
+
+            return Ok(finalResponse);
 
         }
 
