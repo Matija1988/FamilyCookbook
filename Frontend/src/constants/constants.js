@@ -1,6 +1,7 @@
 export const RouteNames = {
   HOME: "/",
   MEMBERS: "/members",
+  MEMBER_CREATE: "/createmember"
 };
 
 export const App = {

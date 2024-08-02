@@ -28,7 +28,7 @@ namespace FamilyCookbook.Controllers
                 return NotFound(response.Message);
             }
 
-            return Ok(response);
+            return Ok(response.Items);
         }
 
         [HttpGet]

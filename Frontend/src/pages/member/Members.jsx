@@ -3,9 +3,15 @@ import { httpService } from "../../services/HttpService";
 import MembersService from "../../services/MembersService";
 import { useEffect, useState } from "react";
 import CustomButton from "../../components/CustomButton";
+import { useNavigate } from "react-router-dom";
+import { RouteNames } from "../../constants/constants";
+
+import "../style.css";
 
 export default function Members() {
   const [members, setMembers] = useState();
+
+  const navigate = useNavigate();
 
   async function fetchMembers() {
     const response = await MembersService.readAll("member");
@@ -25,10 +31,19 @@ export default function Members() {
 
   function updateMember(id) {}
 
+  function createMember() {
+    navigate(RouteNames.MEMBER_CREATE);
+  }
+
   return (
     <>
-      <Container>
+      <Container className="primaryContainer">
         <h1>MEMBERS PAGE</h1>
+        <CustomButton
+          label="Create new"
+          variant="primary"
+          onClick={() => createMember()}
+        ></CustomButton>
         <Table striped bordered hover responsive>
           <thead>
             <tr>
@@ -43,20 +58,21 @@ export default function Members() {
             {members &&
               members.map((member, index) => (
                 <tr key={index}>
-                  <td>{index}</td>
+                  <td>{index + 1}</td>
                   <td>{member.firstName}</td>
                   <td>{member.lastName}</td>
                   <td>{member.dateOfBirth}</td>
                   <td>
                     <CustomButton
-                      label="Delete"
-                      className="btn-delete"
-                      onClick={() => deleteMember(member.id)}
-                    ></CustomButton>
-                    <CustomButton
                       label="Update"
-                      className="btn-update"
+                      variant="primary"
                       onClick={() => updateMember(member.id)}
+                    ></CustomButton>
+
+                    <CustomButton
+                      label="Delete"
+                      variant="danger"
+                      onClick={() => deleteMember(member.id)}
                     ></CustomButton>
                   </td>
                 </tr>
