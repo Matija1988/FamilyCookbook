@@ -5,6 +5,7 @@ import SelectionDropdown from "../../components/SelectionDropdown";
 import RoleService from "../../services/RoleService";
 import { useEffect, useState } from "react";
 import { Input } from "react-select/animated";
+import CustomButton from "../../components/CustomButton";
 
 export default function CreateMember() {
   const [roles, setRoles] = useState();
@@ -66,7 +67,25 @@ export default function CreateMember() {
               <InputText atribute="Password" value=""></InputText>
             </Col>
           </Row>
-          <Row></Row>
+          <Row>
+            <Form.Label>Biography</Form.Label>
+            <Form.Control as="textarea" rows={3} />
+          </Row>
+          <Row>
+            <Col>
+              <CustomButton
+                label="SUBMIT"
+                onClick={handleSubmit}
+                variant="primary"
+              ></CustomButton>
+              <CustomButton
+                label="CANCEL"
+                onClick={handleSubmit}
+                variant="secondary"
+              ></CustomButton>
+            </Col>
+            <Col></Col>
+          </Row>
         </Form>
       </Container>
     </>
