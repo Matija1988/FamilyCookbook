@@ -1,5 +1,5 @@
 import { Container, Form, Row, Col } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import InputText from "../../components/InputText";
 import DateAndTime from "../../components/DateAndTime";
 import SelectionDropdown from "../../components/SelectionDropdown";
@@ -8,13 +8,17 @@ import CustomButton from "../../components/CustomButton";
 import RoleService from "../../services/RoleService";
 import MembersService from "../../services/MembersService";
 import moment from "moment";
+import { RouteNames } from "../../constants/constants";
+import { update } from "../../services/HttpService";
 
 export default function UpdateMember() {
   const [roles, setRoles] = useState();
-  const [roleId, setRoleId] = useState();
+  const [selectRoleId, setRoleId] = useState();
   const [member, setMember] = useState({});
 
   const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
 
   const routeParams = useParams();
 
@@ -43,14 +47,51 @@ export default function UpdateMember() {
     }
   }
 
+  async function updateMember(entity) {
+    try {
+      const response = await MembersService.update(
+        "member/update",
+        routeParams.id,
+        entity
+      );
+      if (response.ok) {
+        navigate(RouteNames.MEMBERS);
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+
   useEffect(() => {
     fetchRoles();
     fetchMember();
   }, []);
 
-  function handleSubmit() {}
+  function handleSubmit(e) {
+    e.preventDefault();
 
-  function handleCancel() {}
+    const information = new FormData(e.target);
+
+    let birthDate = "";
+
+    if (information.get("dateOfBirth") != "") {
+      birthDate = information.get("dateOfBirth") + "T00:00:00.000Z";
+    }
+
+    updateMember({
+      firstName: information.get("First name"),
+      lastName: information.get("Last name"),
+      bio: information.get("Biography"),
+      roleId: parseInt(selectRoleId),
+      username: information.get("Username"),
+      password: information.get("Password"),
+      dateOfBirth: birthDate,
+    });
+  }
+
+  function handleCancel() {
+    navigate(RouteNames.MEMBERS);
+  }
 
   return (
     <>
