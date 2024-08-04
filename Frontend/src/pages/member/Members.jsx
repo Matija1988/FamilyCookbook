@@ -29,8 +29,6 @@ export default function Members() {
 
   function deleteMember(id) {}
 
-  function updateMember(id) {}
-
   function createMember() {
     navigate(RouteNames.MEMBER_CREATE);
   }
@@ -66,7 +64,7 @@ export default function Members() {
                     <CustomButton
                       label="Update"
                       variant="primary"
-                      onClick={() => updateMember(member.id)}
+                      onClick={() => navigate(`/updatemember/${member.id}`)}
                     ></CustomButton>
 
                     <CustomButton

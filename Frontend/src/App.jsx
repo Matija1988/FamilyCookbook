@@ -10,7 +10,7 @@ import Home from "../src/pages/Home";
 import NavBar from "./components/NavBar";
 import Members from "./pages/member/Members";
 import CreateMember from "./pages/member/CreateMember";
-
+import UpdateMember from "./pages/member/UpdateMember";
 function App() {
   const [count, setCount] = useState(0);
 
@@ -23,6 +23,10 @@ function App() {
         <Route
           path={RouteNames.MEMBER_CREATE}
           element={<CreateMember />}
+        ></Route>
+        <Route
+          path={RouteNames.MEMBER_UPDATE}
+          element={<UpdateMember />}
         ></Route>
       </Routes>
     </>

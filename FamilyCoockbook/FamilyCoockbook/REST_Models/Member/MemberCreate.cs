@@ -32,3 +32,4 @@ namespace FamilyCookbook.REST_Models.Member
         public int RoleId { get; set; }
     }
 }
+        

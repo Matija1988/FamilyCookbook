@@ -2,7 +2,12 @@ import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import { Form } from "react-bootstrap";
 
-export default function SelectionDropdown({ atribute, entities, onSelect }) {
+export default function SelectionDropdown({
+  atribute,
+  entities,
+  onSelect,
+  initValue,
+}) {
   return (
     <>
       <Form.Label>{atribute}</Form.Label>
@@ -10,8 +15,9 @@ export default function SelectionDropdown({ atribute, entities, onSelect }) {
         aria-label="Default select example"
         onChange={onSelect}
         className="select-header"
+        value={initValue}
       >
-        <option value="">{atribute}</option>
+        <option>{atribute}</option>
         {entities.map((item) => (
           <option key={item.id} value={item.id}>
             {item.name}

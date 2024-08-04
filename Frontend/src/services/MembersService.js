@@ -9,5 +9,6 @@ import {
 
 export default {
   readAll,
+  getById,
   create,
 };

@@ -55,7 +55,7 @@ namespace FamilyCookbook.Controllers
 
             var mapper = new MemberMapper();
 
-            var member = mapper.MemberToMemberRead(response.Items);
+            var member = mapper.MemberGetById(response.Items);
 
             return Ok(member);  
         }
@@ -74,7 +74,7 @@ namespace FamilyCookbook.Controllers
 
             var mapper = new MemberMapper();
 
-            var member = mapper.MemberToMemberRead(response.Items);
+            var member = mapper.MemberGetById(response.Items);
 
             return Ok(member);
 

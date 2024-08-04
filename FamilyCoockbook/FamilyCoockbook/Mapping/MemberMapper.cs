@@ -14,5 +14,7 @@ namespace FamilyCookbook.Mapping
         public  partial MemberRead MemberToMemberRead(Member member);
 
         public partial Member MemberCreateToMember(MemberCreate memberCreate);
+
+        public partial MemberReadForUpdate MemberGetById(Member member);
     }
 }
