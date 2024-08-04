@@ -5,6 +5,7 @@ import {
   getById,
   create,
   update,
+  setNotActive,
 } from "./HttpService";
 
 export default {
@@ -12,4 +13,5 @@ export default {
   getById,
   create,
   update,
+  setNotActive,
 };

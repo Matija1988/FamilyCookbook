@@ -30,6 +30,12 @@ export async function update(name, id, entity) {
   });
 }
 
+export async function setNotActive(name, id) {
+  return await httpService.put("/" + name + "/", id).then((res) => {
+    return handleSuccess(res);
+  });
+}
+
 export function handleSuccess(res) {
   if (App.DEV) {
     console.table(res.data);

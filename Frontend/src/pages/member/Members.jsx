@@ -27,7 +27,12 @@ export default function Members() {
     fetchMembers();
   }, []);
 
-  function deleteMember(id) {}
+  async function deleteMember(id) {
+    const response = await MembersService.setNotActive("member/delete/" + id);
+    if (response.ok) {
+      fetchMembers();
+    }
+  }
 
   function createMember() {
     navigate(RouteNames.MEMBER_CREATE);
