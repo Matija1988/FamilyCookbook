@@ -3,6 +3,7 @@ export const RouteNames = {
   MEMBERS: "/members",
   MEMBER_CREATE: "/createmember",
   MEMBER_UPDATE: "/updatemember/:id",
+  CATEGORIES: "/categories",
 };
 
 export const App = {

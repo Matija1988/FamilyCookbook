@@ -11,9 +11,8 @@ import NavBar from "./components/NavBar";
 import Members from "./pages/member/Members";
 import CreateMember from "./pages/member/CreateMember";
 import UpdateMember from "./pages/member/UpdateMember";
+import Categories from "./pages/category/Categories";
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <>
       <NavBar />
@@ -28,6 +27,7 @@ function App() {
           path={RouteNames.MEMBER_UPDATE}
           element={<UpdateMember />}
         ></Route>
+        <Route path={RouteNames.CATEGORIES} element={<Categories />}></Route>
       </Routes>
     </>
   );
