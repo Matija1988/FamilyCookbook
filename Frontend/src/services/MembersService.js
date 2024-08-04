@@ -1,5 +1,13 @@
-import { handleSuccess, httpService, readAll } from "./HttpService";
+import {
+  handleSuccess,
+  httpService,
+  readAll,
+  getById,
+  create,
+  update,
+} from "./HttpService";
 
 export default {
   readAll,
+  create,
 };

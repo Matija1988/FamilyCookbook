@@ -12,6 +12,24 @@ export async function readAll(name) {
   });
 }
 
+export async function getById(name, id) {
+  return await httpService.get("/" + name + "/" + id).then((res) => {
+    return handleSuccess(res);
+  });
+}
+
+export async function create(name, entity) {
+  return await httpService.post("/" + name, entity).then((res) => {
+    return handleSuccess(res);
+  });
+}
+
+export async function update(name, id, entity) {
+  return await httpService.put("/" + name + "/" + id, entity).then((res) => {
+    return handleSuccess(res);
+  });
+}
+
 export function handleSuccess(res) {
   if (App.DEV) {
     console.table(res.data);

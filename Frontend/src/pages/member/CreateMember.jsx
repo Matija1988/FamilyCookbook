@@ -6,11 +6,17 @@ import RoleService from "../../services/RoleService";
 import { useEffect, useState } from "react";
 import { Input } from "react-select/animated";
 import CustomButton from "../../components/CustomButton";
+import MembersService from "../../services/MembersService";
+import { useNavigate } from "react-router-dom";
+import { RouteNames } from "../../constants/constants";
 
 export default function CreateMember() {
   const [roles, setRoles] = useState();
+  const [roleId, setRoleId] = useState();
 
   const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
 
   async function fetchRoles() {
     try {
@@ -24,13 +30,54 @@ export default function CreateMember() {
     }
   }
 
+  async function addActivity(e) {
+    const response = await MembersService.create("member/create", e);
+    try {
+      if (response.ok) {
+        navigate(RouteNames.MEMBERS);
+        return;
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+
   useEffect(() => {
     fetchRoles();
   }, []);
 
-  function handleSubmit() {}
+  function handleSubmit(e) {
+    e.preventDefault();
 
-  function onSelect() {}
+    const form = e.target;
+    const information = new FormData(form);
+
+    let birthDate = "";
+
+    if (information.get("dateOfBirth") != "") {
+      birthDate = information.get("dateOfBirth") + "T00:00:00.000Z";
+    }
+
+    let name = information.get("First name");
+    let surname = information.get("Last name");
+    let biography = information.get("Biography");
+    let user = information.get("Username");
+    let pass = information.get("Password");
+
+    addActivity({
+      firstName: name,
+      lastName: surname,
+      bio: biography,
+      dateOfBirth: birthDate,
+      username: user,
+      password: pass,
+      roleId: parseInt(roleId),
+    });
+  }
+
+  function handleCancel() {
+    navigate(RouteNames.MEMBERS);
+  }
 
   return (
     <>
@@ -47,7 +94,7 @@ export default function CreateMember() {
           <Row>
             <Col>
               <DateAndTime
-                atribute="DateOfBirth"
+                atribute="Date of birth"
                 propertyName="dateOfBirth"
               ></DateAndTime>
             </Col>
@@ -55,7 +102,7 @@ export default function CreateMember() {
               <SelectionDropdown
                 atribute="Select role"
                 entities={roles || []}
-                onSelect={onSelect()}
+                onSelect={(r) => setRoleId(r.target.value)}
               ></SelectionDropdown>
             </Col>
           </Row>
@@ -69,22 +116,21 @@ export default function CreateMember() {
           </Row>
           <Row>
             <Form.Label>Biography</Form.Label>
-            <Form.Control as="textarea" rows={3} />
+            <Form.Control as="textarea" rows={3} name="Biography" />
           </Row>
           <Row>
             <Col>
               <CustomButton
                 label="SUBMIT"
-                onClick={handleSubmit}
-                variant="primary"
+                type="submit"
+                variant="primary  m-3"
               ></CustomButton>
               <CustomButton
                 label="CANCEL"
-                onClick={handleSubmit}
-                variant="secondary"
+                onClick={handleCancel}
+                variant="secondary  m-3"
               ></CustomButton>
             </Col>
-            <Col></Col>
           </Row>
         </Form>
       </Container>
