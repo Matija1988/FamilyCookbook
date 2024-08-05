@@ -12,6 +12,7 @@ import Members from "./pages/member/Members";
 import CreateMember from "./pages/member/CreateMember";
 import UpdateMember from "./pages/member/UpdateMember";
 import Categories from "./pages/category/Categories";
+import CategoryCreate from "./pages/category/CategoryCreate";
 function App() {
   return (
     <>
@@ -28,6 +29,10 @@ function App() {
           element={<UpdateMember />}
         ></Route>
         <Route path={RouteNames.CATEGORIES} element={<Categories />}></Route>
+        <Route
+          path={RouteNames.CATEGORIES_CREATE}
+          element={<CategoryCreate />}
+        ></Route>
       </Routes>
     </>
   );

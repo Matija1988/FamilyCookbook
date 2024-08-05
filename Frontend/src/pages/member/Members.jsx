@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { RouteNames } from "../../constants/constants";
 
 import "../style.css";
+import GenericTable from "../../components/GenericTable";
 
 export default function Members() {
   const [members, setMembers] = useState();
@@ -20,6 +21,7 @@ export default function Members() {
       alert("Error!");
       return;
     }
+
     setMembers(response.data.items);
   }
 
@@ -27,8 +29,10 @@ export default function Members() {
     fetchMembers();
   }, []);
 
-  async function deleteMember(id) {
-    const response = await MembersService.setNotActive("member/delete/" + id);
+  async function deleteMember(member) {
+    const response = await MembersService.setNotActive(
+      "member/delete/" + member.id
+    );
     if (response.ok) {
       fetchMembers();
     }
@@ -36,6 +40,10 @@ export default function Members() {
 
   function createMember() {
     navigate(RouteNames.MEMBER_CREATE);
+  }
+
+  function handleUpdate(member) {
+    navigate(RouteNames.MEMBER_UPDATE.replace(":id", member.id));
   }
 
   return (
@@ -47,41 +55,13 @@ export default function Members() {
           variant="primary"
           onClick={() => createMember()}
         ></CustomButton>
-        <Table striped bordered hover responsive>
-          <thead>
-            <tr>
-              <th>No</th>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Date of birth</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {members &&
-              members.map((member, index) => (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td>{member.firstName}</td>
-                  <td>{member.lastName}</td>
-                  <td>{member.dateOfBirth}</td>
-                  <td>
-                    <CustomButton
-                      label="Update"
-                      variant="primary"
-                      onClick={() => navigate(`/updatemember/${member.id}`)}
-                    ></CustomButton>
 
-                    <CustomButton
-                      label="Delete"
-                      variant="danger"
-                      onClick={() => deleteMember(member.id)}
-                    ></CustomButton>
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </Table>
+        <GenericTable
+          dataArray={members}
+          onDelete={deleteMember}
+          onUpdate={handleUpdate}
+          cutRange={2}
+        ></GenericTable>
       </Container>
     </>
   );
