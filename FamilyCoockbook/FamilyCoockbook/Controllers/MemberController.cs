@@ -105,6 +105,28 @@ namespace FamilyCookbook.Controllers
             return Ok(finalResponse);
         }
 
+        [HttpGet]
+        [Route("search/{condition}")]
+        public async Task<IActionResult> SearchMembersAsync(string condition)
+        {
+            var response = await _service.SearchMemberByCondition(condition);
+
+            var mapper = new MemberMapper();
+
+            var members = mapper.MemberToMemberReadList(response.Items);
+            
+            RepositoryResponse<List<MemberRead>> finalResponse = new RepositoryResponse<List<MemberRead>>();
+
+            finalResponse.Items = members;
+
+
+            if (response.Success == false)
+            {
+                return NotFound(response.Message);
+            }
+            return Ok(finalResponse);
+        }
+
         [HttpPost]
         [Route("create")] 
         public async Task<IActionResult> CreateAsync(MemberCreate memberCreate)

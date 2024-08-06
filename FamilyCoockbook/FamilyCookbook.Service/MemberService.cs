@@ -5,6 +5,7 @@ using FamilyCookbook.Respository.Common;
 using FamilyCookbook.Service.Common;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -83,6 +84,25 @@ namespace FamilyCookbook.Service
             var response = await _repository.PaginateAsync(paging);
 
             response.PageCount = (int)Math.Ceiling(response.TotalCount / (double)paging.PageSize);
+
+            return response;
+        }
+
+        public async Task<RepositoryResponse<List<Member>>> SearchMemberByCondition(string condition)
+        {
+            var response = await _repository.GetAllAsync();
+
+            var members = response.Items.Where(member => (member.FirstName.ToLower().Contains(condition.ToLower()) ||
+                member.LastName.ToLower().Contains(condition.ToLower()))).ToList();
+
+            response.Items = members;
+
+            if(response.Items.Count < 1)
+            {
+                response.Success = false;
+                response.Message = "No member with condition " + condition + " found";
+                return response;
+            }
 
             return response;
         }

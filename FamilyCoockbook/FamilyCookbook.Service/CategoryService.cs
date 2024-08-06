@@ -37,7 +37,7 @@ namespace FamilyCookbook.Service
         }
 
         public async Task<RepositoryResponse<Category>> GetByIdAsync(int id)
-        {
+        {           
             return await _repository.GetByIdAsync(id);
         }
 
