@@ -152,7 +152,6 @@ export default function CreateRecipe() {
                     </span>
                   </>
                 )}
-                //onChange={() => assignMemberToRecipe()}
                 ref={typeaheadRef}
               ></AsyncTypeahead>
             </Col>
@@ -175,7 +174,7 @@ export default function CreateRecipe() {
                   }
                   return null;
                 })}
-              </ListGroup>{" "}
+              </ListGroup>
             </Col>
           </Row>
           <Row>

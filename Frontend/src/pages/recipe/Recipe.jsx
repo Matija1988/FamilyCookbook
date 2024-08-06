@@ -18,6 +18,7 @@ export default function Recipe() {
 
   const [recipes, setRecipes] = useState([recipeState]);
 
+  const [entityId, setEntityId] = useState();
   const navigate = useNavigate();
   async function fetchRecipes() {
     try {
@@ -38,11 +39,22 @@ export default function Recipe() {
     navigate(RouteNames.RECIPES_CREATE);
   }
 
-  function handleDelete() {}
+  async function handleDelete(id) {
+    try {
+      const response = await RecipeService.setNotActive("recipe/disable/" + id);
+      if (response.ok) {
+        fetchRecipes();
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  }
 
   function handleUpdate() {}
 
   function goToDetails() {}
+
+  console.log(entityId);
 
   return (
     <>
@@ -74,8 +86,8 @@ export default function Recipe() {
                   <td>
                     <ul>
                       {entity.members && entity.members.length > 0 ? (
-                        entity.members.map((author) => (
-                          <li key={author.id}>
+                        entity.members.map((author, index) => (
+                          <li key={index}>
                             {author.firstName} {author.lastName}
                           </li>
                         ))
@@ -97,7 +109,9 @@ export default function Recipe() {
                     ></CustomButton>
                     <CustomButton
                       variant="danger"
-                      onClick={handleDelete}
+                      onClick={() => (
+                        setEntityId(entity.id), handleDelete(entity.id)
+                      )}
                       label="DELETE"
                     ></CustomButton>
                   </td>

@@ -82,6 +82,7 @@ export default function CreateMember() {
   return (
     <>
       <Container className="primaryContainer">
+        <h1>CREATE MEMBER</h1>
         <Form onSubmit={handleSubmit} className="createForm">
           <Row>
             <Col>
