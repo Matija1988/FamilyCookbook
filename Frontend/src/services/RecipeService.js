@@ -10,4 +10,8 @@ import {
 
 export default {
   readAll,
+  getById,
+  create,
+  update,
+  setNotActive,
 };
