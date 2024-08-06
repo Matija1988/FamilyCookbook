@@ -5,6 +5,9 @@ export const RouteNames = {
   MEMBER_UPDATE: "/updatemember/:id",
   CATEGORIES: "/categories",
   CATEGORIES_CREATE: "/createcategory",
+  CATEGORIES_UPDATE: "/updatecategory/:id",
+  RECIPES: "/recipes",
+  RECIPES_CREATE: "/createrecipe",
 };
 
 export const App = {

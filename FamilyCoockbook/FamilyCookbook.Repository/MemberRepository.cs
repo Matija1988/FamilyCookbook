@@ -80,7 +80,7 @@ namespace FamilyCookbook.Repository
 
         }
 
-        public async Task<RepositoryResponse<Member>> DeleteAsync(int id)
+        public async Task<RepositoryResponse<Member>> SoftDeleteAsync(int id)
         {
             var response = new RepositoryResponse<Member>();
 
@@ -380,7 +380,7 @@ namespace FamilyCookbook.Repository
 
         }
 
-        public async Task<RepositoryResponse<Member>> PermaDeleteAsync(int id)
+        public async Task<RepositoryResponse<Member>> DeleteAsync(int id)
         {
             var response = new RepositoryResponse<Member>();
 

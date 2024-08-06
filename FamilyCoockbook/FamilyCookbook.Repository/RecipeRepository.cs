@@ -105,7 +105,7 @@ namespace FamilyCookbook.Repository
 
         }
 
-        public async Task<RepositoryResponse<Recipe>> DeleteAsync(int id)
+        public async Task<RepositoryResponse<Recipe>> SoftDeleteAsync(int id)
         {
             var response = new RepositoryResponse<Recipe>();
 
@@ -405,7 +405,7 @@ namespace FamilyCookbook.Repository
 
 
 
-        public Task<RepositoryResponse<Recipe>> PermaDeleteAsync(int id)
+        public Task<RepositoryResponse<Recipe>> DeleteAsync(int id)
         {
             throw new NotImplementedException();
         }

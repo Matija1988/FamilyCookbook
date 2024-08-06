@@ -13,5 +13,7 @@ namespace FamilyCookbook.Service.Common
         Task<RepositoryResponse<Recipe>> AddMemberToRecipe(MemberRecipe entity);
 
         Task<RepositoryResponse<List<Recipe>>> PaginateAsync(Paging paging);
+
+        Task<RepositoryResponse<Recipe>> SoftDeleteAsync(int id);
     }
 }

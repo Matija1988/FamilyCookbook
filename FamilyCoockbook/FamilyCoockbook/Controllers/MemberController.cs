@@ -142,9 +142,9 @@ namespace FamilyCookbook.Controllers
 
         [HttpPut]
         [Route("delete/{id:int}")]
-        public async Task<IActionResult> DeleteAsync(int id)
+        public async Task<IActionResult> SoftDeleteAsync(int id)
         {
-            var response = await _service.DeleteAsync(id);
+            var response = await _service.SoftDeleteAsync(id);
 
             if(response.Success == false)
             {
@@ -156,9 +156,9 @@ namespace FamilyCookbook.Controllers
         [HttpDelete]
         [Route("permaDelete/{id:int}")]
 
-        public async Task<IActionResult> PermaDeleteAsync(int id)
+        public async Task<IActionResult> DeleteAsync(int id)
         {
-            var response = await _service.PermaDeleteAsync(id);
+            var response = await _service.DeleteAsync(id);
 
             if(response.Success == false)
             {

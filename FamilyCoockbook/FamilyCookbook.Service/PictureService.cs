@@ -47,6 +47,11 @@ namespace FamilyCookbook.Service
             return response;
         }
 
+        public async Task<RepositoryResponse<Picture>> SoftDeleteAsync(int id)
+        {
+            return await _repository.SoftDeleteAsync(id);
+        }
+
         public async Task<RepositoryResponse<Picture>> UpdateAsync(int id, Picture entity)
         {
             var response = await _repository.UpdateAsync(id, entity);

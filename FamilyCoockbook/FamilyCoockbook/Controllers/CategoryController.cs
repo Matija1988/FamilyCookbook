@@ -33,7 +33,7 @@ namespace FamilyCookbook.Controllers
         }
 
         [HttpGet]
-        [Route("/{id:int}")]
+        [Route("{id:int}")]
         public async Task<IActionResult> GetByIdAsync(int id) 
         { 
             var response = await _service.GetByIdAsync(id);
@@ -42,7 +42,7 @@ namespace FamilyCookbook.Controllers
             {
                 return NotFound(response.Message);            
             }
-            return Ok(response);
+            return Ok(response.Items);
         }
 
         [HttpPost]
@@ -108,6 +108,23 @@ namespace FamilyCookbook.Controllers
             return Ok(response.Message);
 
         }
+
+        [HttpPut]
+        [Route("softDelete/{id:int}")]
+
+        public async Task<IActionResult> SoftDeleteAsync(int id)
+        {
+            var response = await _service.SoftDeleteAsync(id);
+
+            if(response.Success == false)
+            {
+                return BadRequest(response.Message);
+            }
+            return Ok(response.Message);
+
+        }
+
+
 
     }
 

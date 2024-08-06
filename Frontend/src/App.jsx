@@ -13,6 +13,9 @@ import CreateMember from "./pages/member/CreateMember";
 import UpdateMember from "./pages/member/UpdateMember";
 import Categories from "./pages/category/Categories";
 import CategoryCreate from "./pages/category/CategoryCreate";
+import CategoryUpdate from "./pages/category/CategoryUpdate";
+import Recipe from "./pages/recipe/Recipe";
+import CreateRecipe from "./pages/recipe/CreateRecipe";
 function App() {
   return (
     <>
@@ -32,6 +35,15 @@ function App() {
         <Route
           path={RouteNames.CATEGORIES_CREATE}
           element={<CategoryCreate />}
+        ></Route>
+        <Route
+          path={RouteNames.CATEGORIES_UPDATE}
+          element={<CategoryUpdate />}
+        ></Route>
+        <Route path={RouteNames.RECIPES} element={<Recipe />}></Route>
+        <Route
+          path={RouteNames.RECIPES_CREATE}
+          element={<CreateRecipe />}
         ></Route>
       </Routes>
     </>

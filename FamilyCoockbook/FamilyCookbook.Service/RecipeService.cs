@@ -67,6 +67,11 @@ namespace FamilyCookbook.Service
             return response;
         }
 
+        public Task<RepositoryResponse<Recipe>> SoftDeleteAsync(int id)
+        {
+            return _repository.SoftDeleteAsync(id);
+        }
+
         public async Task<RepositoryResponse<Recipe>> UpdateAsync(int id, Recipe entity)
         {
             entity.DateUpdated = DateTime.Now;

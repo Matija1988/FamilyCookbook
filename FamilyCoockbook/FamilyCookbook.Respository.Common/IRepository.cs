@@ -15,5 +15,7 @@ namespace FamilyCookbook.Respository.Common
 
 
         Task<RepositoryResponse<T>> DeleteAsync(int id);
+
+        Task<RepositoryResponse<T>> SoftDeleteAsync(int id);
     }
 }

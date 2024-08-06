@@ -155,9 +155,9 @@ namespace FamilyCookbook.Controllers
         [HttpPut]
         [Route("disable/{id:int}")]
 
-        public async Task<IActionResult> DisableAsync(int id)
+        public async Task<IActionResult> SoftDeleteAsync(int id)
         {
-            var response = await _service.DeleteAsync(id);
+            var response = await _service.SoftDeleteAsync(id);
 
             if(response.Success == false)
             {

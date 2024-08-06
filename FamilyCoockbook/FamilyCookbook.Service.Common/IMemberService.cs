@@ -6,8 +6,7 @@ namespace FamilyCookbook.Service.Common
 {
     public interface IMemberService : IService<Member>
     {
-        Task<RepositoryResponse<Member>> PermaDeleteAsync(int id);
-
+        
         Task<RepositoryResponse<Member>> GetByGuidAsync(Guid uniqueId);
 
         Task<RepositoryResponse<List<Member>>> PaginateAsync(Paging paging);

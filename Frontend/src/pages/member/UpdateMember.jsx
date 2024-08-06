@@ -123,7 +123,6 @@ export default function UpdateMember() {
               <SelectionDropdown
                 atribute="Select role"
                 entities={roles || []}
-                initValue={member.roleId}
                 onSelect={(r) => setRoleId(r.target.value)}
               ></SelectionDropdown>
             </Col>

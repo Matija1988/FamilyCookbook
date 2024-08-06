@@ -29,9 +29,11 @@ function NavBar() {
                 Members
               </NavDropdown.Item>
               <NavDropdown.Item onClick={() => navigate(RouteNames.CATEGORIES)}>
-                Categoeries
+                Categories
               </NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
+              <NavDropdown.Item onClick={() => navigate(RouteNames.RECIPES)}>
+                Recipes
+              </NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item href="#action/3.4">
                 Separated link

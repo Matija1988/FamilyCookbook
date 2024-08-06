@@ -7,6 +7,8 @@ export default function GenericTable({
   onUpdate,
   onDelete,
   cutRange,
+  cutRangeForIsActiveStart,
+  cutRangeForIsActiveEnd,
 }) {
   if (!dataArray || dataArray.lenght === 0) {
     return <p>No data to load</p>;
@@ -15,6 +17,7 @@ export default function GenericTable({
   const columns = Object.keys(dataArray[0]);
 
   columns.splice(0, cutRange);
+  columns.splice(cutRangeForIsActiveStart, cutRangeForIsActiveEnd);
 
   return (
     <>

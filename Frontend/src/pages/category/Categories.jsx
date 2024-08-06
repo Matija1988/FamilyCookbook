@@ -26,9 +26,18 @@ export default function Categories() {
     fetchCategories();
   }, []);
 
-  function deleteCategory() {}
+  async function deleteCategory(category) {
+    const response = await CategoriesService.setNotActive(
+      "category/softDelete/" + category.id
+    );
+    if (response.ok) {
+      fetchCategories();
+    }
+  }
 
-  function updateCategory() {}
+  function updateCategory(category) {
+    navigate(RouteNames.CATEGORIES_UPDATE.replace(":id", category.id));
+  }
 
   function createCategory() {
     navigate(RouteNames.CATEGORIES_CREATE);
@@ -49,6 +58,8 @@ export default function Categories() {
           onDelete={deleteCategory}
           onUpdate={updateCategory}
           cutRange={1}
+          cutRangeForIsActiveStart={2}
+          cutRangeForIsActiveEnd={3}
         ></GenericTable>
       </Container>
     </>

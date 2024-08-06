@@ -13,7 +13,8 @@ use "FamilyCookbook";
 
 create table Role (
 Id int not null primary key identity(1,1),
-Name varchar (30) not null
+Name varchar (30) not null,
+IsActive bit
 );
 
 create table Member(
@@ -36,13 +37,15 @@ PictureId int
 create table Category (
 Id int primary key identity(1,1),
 Name varchar(50) not null,
-Description varchar(500) 
+Description varchar(500),
+IsActive bit
 );
 
 create table Picture(
 Id int primary key identity (1,1),
 Name varchar (100) not null,
-Location varchar(255) not null
+Location varchar(255) not null,
+IsActive bit
 );
 
 create table Recipe(
@@ -69,7 +72,8 @@ Id int primary key identity(1,1),
 MemberId int,
 RecipeId int,
 Text varchar(1200),
-Rating int
+Rating int,
+IsActive bit
 );
 
 ----------------------------------- ALTERS --------------------------
@@ -85,12 +89,12 @@ alter table Comment add foreign key(RecipeId) references Recipe(Id);
 
 ------------------------------ INSERTS ----------------------------------
 
-insert into Role (Name) values ('Member'), ('Contributor'), ('Moderator'), ('Admin');
+insert into Role (Name, IsActive) values ('Member', 1), ('Contributor', 1), ('Moderator', 1), ('Admin', 1);
 
-insert into Category(Name, Description) values
-('Comfort food', 'Food that provides a nostalgic or sentimental value to someone and may be characterized by its high caloric nature associated with childhood or home cooking.'),
-('Soups', 'A liquid dish, typically savoury and made by boiling meat, fish, or vegetables etc. in stock or water.'),
-('BBQ', 'A meal or gathering at which meat, fish, or other food is cooked out of doors on a rack over an open fire or on a special appliance.');
+insert into Category(Name, Description, IsActive) values
+('Comfort food', 'Food that provides a nostalgic or sentimental value to someone and may be characterized by its high caloric nature associated with childhood or home cooking.',1),
+('Soups', 'A liquid dish, typically savoury and made by boiling meat, fish, or vegetables etc. in stock or water.', 1),
+('BBQ', 'A meal or gathering at which meat, fish, or other food is cooked out of doors on a rack over an open fire or on a special appliance.', 1);
 
 insert into Member(
 					UniqueId, 
@@ -118,10 +122,11 @@ values('d7b19efe-39aa-4d25-b802-21ac8fa0b0f4',
 ('a86823ad-f120-4a8c-94ff-d3d37330653a',
 'Test',
 'Tester',
+'10-07-2001',
 'Temp bio',
 '1',
-'20-07-2024',
-'20-07-2024',
+'12-07-2024',
+'12-07-2024',
 'apple',
 'iPhone14',
 '1');

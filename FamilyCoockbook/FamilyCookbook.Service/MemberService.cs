@@ -33,9 +33,9 @@ namespace FamilyCookbook.Service
             return response;
         }
 
-        public async Task<RepositoryResponse<Member>> DeleteAsync(int id)
+        public async Task<RepositoryResponse<Member>> SoftDeleteAsync(int id)
         {
-            var response = await _repository.DeleteAsync(id);
+            var response = await _repository.SoftDeleteAsync(id);
             
             return response;
         }
@@ -64,9 +64,9 @@ namespace FamilyCookbook.Service
 
         }
 
-        public async Task<RepositoryResponse<Member>> PermaDeleteAsync(int id)
+        public async Task<RepositoryResponse<Member>> DeleteAsync(int id)
         {
-            var response = await _repository.PermaDeleteAsync(id);
+            var response = await _repository.DeleteAsync(id);
 
             return response;
         }

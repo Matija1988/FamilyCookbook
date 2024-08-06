@@ -10,5 +10,6 @@ namespace FamilyCookbook.Repository.Common
 {
     public interface ICategoryRepository : IRepository<Category>
     {
+
     }
 }

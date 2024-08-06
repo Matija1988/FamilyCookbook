@@ -11,7 +11,6 @@ namespace FamilyCookbook.Repository.Common
 {
     public interface IRecipeRepository : IRepository<Recipe>
     {
-        Task<RepositoryResponse<Recipe>> PermaDeleteAsync(int id);
 
         Task<RepositoryResponse<List<Recipe>>> GetNotActiveAsync();
 

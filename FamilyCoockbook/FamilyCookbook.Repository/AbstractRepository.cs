@@ -35,7 +35,7 @@ namespace FamilyCookbook.Repository
             try
             {
                 string tableName = GetTableName();
-                string query = $"SELECT * FROM {tableName};";
+                string query = $"SELECT * FROM {tableName} WHERE IsActive = 1;";
 
                 using var connection = _context.CreateConnection();
 
@@ -218,6 +218,39 @@ namespace FamilyCookbook.Repository
                 return response;
 
             } 
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = _errorMessages.NotFound(id).ToString();
+                return response;
+            }
+            finally
+            {
+                _context.CreateConnection().Close();
+            }
+
+        }
+
+        public async Task<RepositoryResponse<T>> SoftDeleteAsync(int id)
+        {
+            var response = new RepositoryResponse<T>();
+
+            int rowsAffected = 0;
+
+            try
+            {
+                string tableName = GetTableName();
+                string query = $"UPDATE {tableName} SET IsActive = 0 WHERE Id = {id};";
+
+                using var connection = _context.CreateConnection();
+
+                rowsAffected = await connection.ExecuteAsync(query, new { id });
+
+                response.Success = rowsAffected > 0;
+                response.Message = _successResponses.EntityDeleted(tableName).ToString();
+                return response;
+
+            }
             catch (Exception ex)
             {
                 response.Success = false;

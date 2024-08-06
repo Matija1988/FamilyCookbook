@@ -22,6 +22,7 @@ namespace FamilyCookbook.Service
 
         public async Task<RepositoryResponse<Category>> CreateAsync(Category entity)
         {
+            entity.IsActive = true;
             return await _repository.CreateAsync(entity);
         }
 
@@ -42,6 +43,7 @@ namespace FamilyCookbook.Service
 
         public async Task<RepositoryResponse<Category>> UpdateAsync(int id, Category entity)
         {
+            entity.IsActive = true;
             var response = await _repository.UpdateAsync(id, entity);
 
             if(response.Success == false)
@@ -50,6 +52,11 @@ namespace FamilyCookbook.Service
             }
 
             return response;
+        }
+
+        public async Task<RepositoryResponse<Category>> SoftDeleteAsync(int id)
+        {
+            return await _repository.SoftDeleteAsync(id);   
         }
     }
 }
