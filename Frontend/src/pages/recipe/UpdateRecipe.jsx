@@ -10,6 +10,7 @@ import CustomButton from "../../components/CustomButton";
 import { RouteNames } from "../../constants/constants";
 import MembersService from "../../services/MembersService";
 import { AsyncTypeahead } from "react-bootstrap-typeahead";
+import { TbWashDryP } from "react-icons/tb";
 
 export default function UpdateRecipe() {
   const recipeUpdateState = {
@@ -91,7 +92,16 @@ export default function UpdateRecipe() {
     navigate(RouteNames.RECIPES);
   }
 
-  function removeMemberFromRecipe() {}
+  async function removeMemberFromRecipe(memberId) {
+    try {
+      const response = await RecipeService.removeMemberFromRecipe(
+        memberId,
+        routeParams.id
+      );
+    } catch (error) {
+      alert(error.message);
+    }
+  }
 
   return (
     <>
@@ -154,7 +164,7 @@ export default function UpdateRecipe() {
                           <td>
                             <CustomButton
                               label="REMOVE"
-                              onClick={removeMemberFromRecipe}
+                              onClick={() => removeMemberFromRecipe(member.id)}
                             ></CustomButton>
                           </td>
                         </tr>

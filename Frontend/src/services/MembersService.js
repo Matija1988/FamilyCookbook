@@ -14,6 +14,8 @@ async function searchMemberByCondition(input) {
   });
 }
 
+
+
 export default {
   readAll,
   getById,
@@ -21,4 +23,5 @@ export default {
   update,
   setNotActive,
   searchMemberByCondition,
+ 
 };
