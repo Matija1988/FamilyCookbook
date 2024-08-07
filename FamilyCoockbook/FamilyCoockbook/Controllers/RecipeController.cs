@@ -60,7 +60,7 @@ namespace FamilyCookbook.Controllers
         }
 
         [HttpGet]
-        [Route("recipes")]
+        [Route("paginate")]
 
         public async Task<IActionResult> PaginateAsync([FromQuery]Paging paging)
         {
@@ -181,6 +181,18 @@ namespace FamilyCookbook.Controllers
             return Ok(response);
         }
 
+        [HttpDelete]
+        [Route("RemoveMemberFromRecipe/{memberId:int}/{recipeId:int}")]
+        public async Task<IActionResult> RemoveMemberFromRecipeAsync(int memberId, int recipeId)
+        {
+            var response = await _service.RemoveMemberFromRecipeAsync(memberId, recipeId);
+
+            if(response.Success == false)
+            {
+                return BadRequest(response.Message);
+            }
+            return Ok(response.Message);
+        }
 
     }
 }

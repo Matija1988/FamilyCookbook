@@ -12,6 +12,8 @@ namespace FamilyCookbook.Service.Common
     {
         Task<RepositoryResponse<Recipe>> AddMemberToRecipe(MemberRecipe entity);
 
+        Task<RepositoryResponse<Recipe>> RemoveMemberFromRecipeAsync(int memberId, int recipeId);
+
         Task<RepositoryResponse<List<Recipe>>> PaginateAsync(Paging paging);
 
         Task<RepositoryResponse<Recipe>> SoftDeleteAsync(int id);

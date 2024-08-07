@@ -50,8 +50,6 @@ export default function Recipe() {
     }
   }
 
-  function handleUpdate() {}
-
   function goToDetails() {}
 
   console.log(entityId);
@@ -99,7 +97,11 @@ export default function Recipe() {
                   <td>
                     <CustomButton
                       variant="primary"
-                      onClick={handleUpdate}
+                      onClick={() => {
+                        navigate(
+                          RouteNames.RECIPES_UPDATE.replace(":id", entity.id)
+                        );
+                      }}
                       label="UPDATE"
                     ></CustomButton>
                     <CustomButton

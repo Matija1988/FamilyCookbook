@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Dapper.SqlMapper;
 
 namespace FamilyCookbook.Repository
 {
@@ -21,6 +22,38 @@ namespace FamilyCookbook.Repository
             _context = context;
             _errorMessages = errorMessages;
             _successResponses = successResponses;
+        }
+
+        public async Task<RepositoryResponse<Recipe>> RemoveMemberFromRecipeAsync(int memberId, int recipeId)
+        {
+            var response = new RepositoryResponse<Recipe>();
+
+            int rowsAffected = 0;
+
+            try
+            {
+                string query = "DELETE FROM MemberRecipe where MemberId = @memberId AND RecipeId = @recipeId" ;
+
+                using var connection =_context.CreateConnection();
+
+                rowsAffected = await connection.ExecuteAsync(query, new {MemberId = memberId, RecipeId = recipeId});
+
+                response.Success = rowsAffected > 0;
+                response.Message = _successResponses.EntityDeleted(" member from recipe").ToString();
+
+                return response;
+            }
+            catch (Exception ex) 
+            { 
+                response.Success = false;
+                response.Message = _errorMessages.ErrorAccessingDb("MemberRecipe").ToString() + ex.Message;
+                return response;
+            }
+            finally
+            {
+               _context.CreateConnection().Close();   
+            }
+
         }
 
         public async Task<RepositoryResponse<Recipe>> AddMemberToRecipeAsync(MemberRecipe entity)
@@ -223,7 +256,7 @@ namespace FamilyCookbook.Repository
                     "a.Title, " +
                     "a.Subtitle, " +
                     "a.Text, " +
-                    "c.Id AS MemberId, " +
+                    "c.Id, " +
                     "c.FirstName, " +
                     "c.LastName, " +
                     "d.Id AS CategoryId, " +
@@ -263,7 +296,7 @@ namespace FamilyCookbook.Repository
                         return existingEntity;
                     },
                     new {Id = id},
-                    splitOn: "MemberId, CategoryId");
+                    splitOn: "Id, CategoryId");
 
                 var result = entityDictionary.Values.FirstOrDefault();
 
@@ -457,5 +490,7 @@ namespace FamilyCookbook.Repository
             }
 
         }
+
+        
     }
 }

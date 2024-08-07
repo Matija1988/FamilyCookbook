@@ -12,6 +12,8 @@ namespace FamilyCookbook.REST_Models.Recipe
 
         public string Text { get; set; }
 
+        public int CategoryId { get; set; }
+
         public string CategoryName { get; set; }
 
         public List<MemberListRecipe> Members { get; set; }

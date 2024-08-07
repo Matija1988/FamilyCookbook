@@ -12,6 +12,7 @@ namespace FamilyCookbook.Repository.Common
     public interface IRecipeRepository : IRepository<Recipe>
     {
 
+        Task<RepositoryResponse<Recipe>> RemoveMemberFromRecipeAsync(int memberId, int recipeId);  
         Task<RepositoryResponse<List<Recipe>>> GetNotActiveAsync();
 
         Task<RepositoryResponse<List<Recipe>>> GetRecipesWithoutAuthor();

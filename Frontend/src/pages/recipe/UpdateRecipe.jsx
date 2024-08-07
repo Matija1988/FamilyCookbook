@@ -1,59 +1,58 @@
-import {
-  Col,
-  Container,
-  Form,
-  ListGroup,
-  ListGroupItem,
-  Row,
-} from "react-bootstrap";
+import { Col, Container, Form, ListGroup, Row, Table } from "react-bootstrap";
 import InputText from "../../components/InputText";
-import InputTextArea from "../../components/InputTextArea";
 import { useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import RecipeService from "../../services/RecipeService";
+import InputTextArea from "../../components/InputTextArea";
 import CategoriesService from "../../services/CategoriesService";
 import SelectionDropdown from "../../components/SelectionDropdown";
-import { AsyncTypeahead, TypeaheadRef } from "react-bootstrap-typeahead";
-import MembersService from "../../services/MembersService";
-import RecipeService from "../../services/RecipeService";
-import { useNavigate } from "react-router-dom";
-import { RouteNames } from "../../constants/constants";
 import CustomButton from "../../components/CustomButton";
+import { RouteNames } from "../../constants/constants";
+import MembersService from "../../services/MembersService";
+import { AsyncTypeahead } from "react-bootstrap-typeahead";
 
-export default function CreateRecipe() {
-  const [recipe, setRecipe] = useState({
+export default function UpdateRecipe() {
+  const recipeUpdateState = {
     title: "",
     subtitle: "",
     text: "",
     categoryId: null,
     memberIds: [],
+  };
+
+  const [recipe, setRecipe] = useState({
+    title: "",
+    subtitle: "",
+    text: "",
+    categoryId: null,
+    members: [],
   });
-
   const [categories, setCategories] = useState([]);
-  const [selectedCategoryId, setCategoryId] = useState();
-
+  const [selectedCategory, setSelectedCategory] = useState();
   const [members, setMembers] = useState([]);
   const [foundMembers, setFoundMembers] = useState([]);
 
-  const [searchCondition, setSearchCondition] = useState("");
   const typeaheadRef = useRef(null);
 
+  const routeParams = useParams();
   const navigate = useNavigate();
 
-  async function fetchCategories() {
+  async function fetchRecipe() {
     try {
-      const response = await CategoriesService.readAll("category");
+      const response = await RecipeService.getById("recipe", routeParams.id);
       if (response.ok) {
-        setCategories(response.data.items);
+        setRecipe(response.data);
       }
     } catch (error) {
       alert(error.message);
     }
   }
 
-  async function SearchByCondition(input) {
+  async function fetchCategories() {
     try {
-      const response = await MembersService.searchMemberByCondition(input);
+      const response = await CategoriesService.readAll("category");
       if (response.ok) {
-        setFoundMembers(response.data.items);
+        setCategories(response.data.items);
       }
     } catch (error) {
       alert(error.message);
@@ -69,11 +68,11 @@ export default function CreateRecipe() {
     setMembers(response.data.items);
   }
 
-  async function postRecipe(entity) {
+  async function SearchByCondition(input) {
     try {
-      const response = await RecipeService.create("recipe/create", entity);
+      const response = await MembersService.searchMemberByCondition(input);
       if (response.ok) {
-        navigate(RouteNames.RECIPES);
+        setFoundMembers(response.data.items);
       }
     } catch (error) {
       alert(error.message);
@@ -81,52 +80,30 @@ export default function CreateRecipe() {
   }
 
   useEffect(() => {
+    fetchRecipe();
     fetchCategories();
     fetchMembers();
   }, []);
 
-  function handleSelect(selectedCategory) {
-    setCategoryId(selectedCategory.id);
-    console.log(selectedCategory);
-  }
-
-  function handleSubmit(e) {
-    e.preventDefault();
-
-    const information = new FormData(e.target);
-
-    const authorIds = recipe.memberIds.map((id) => id);
-
-    postRecipe({
-      title: information.get("Title"),
-      subtitle: information.get("Subtitle"),
-      text: information.get("Text"),
-      categoryId: parseInt(selectedCategoryId),
-      memberIds: authorIds,
-    });
-  }
-
-  function assignMemberToRecipe(member) {
-    const updatedMembers = [...recipe.memberIds, member.id];
-    setRecipe({ ...recipe, memberIds: updatedMembers });
-    setFoundMembers([]);
-  }
+  function handleSelect() {}
 
   function handleCancel() {
     navigate(RouteNames.RECIPES);
   }
 
+  function removeMemberFromRecipe() {}
+
   return (
     <>
       <Container className="primaryContainer">
-        <h1>Create recipe</h1>
-        <Form onSubmit={handleSubmit} className="createForm">
+        <h1>UPDATE RECIPE</h1>
+        <Form>
           <Row>
             <Col>
               <SelectionDropdown
                 atribute="Select category"
                 entities={categories}
-                onSelect={(r) => setCategoryId(r.target.value)}
+                onSelect={handleSelect}
               ></SelectionDropdown>
             </Col>
             <Col>
@@ -156,32 +133,55 @@ export default function CreateRecipe() {
           </Row>
           <Row>
             <Col>
-              <InputText atribute="Title" value=""></InputText>
+              <InputText atribute="Title" value={recipe.title}></InputText>
             </Col>
             <Col>
-              <h5 className="mt-3">Selected Members:</h5>
-              <ListGroup>
-                {recipe.memberIds.map((id) => {
-                  const member = members.find((m) => m.id === id);
-                  if (member) {
-                    return (
-                      <ListGroup.Item key={member.id}>
-                        {member.firstName} {member.lastName}
-                      </ListGroup.Item>
-                    );
-                  }
-                  return null;
-                })}
-              </ListGroup>
+              <Table>
+                <thead>
+                  <tr>
+                    <th>First name</th>
+                    <th>Last name</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {recipe.members.map((member) => {
+                    if (member) {
+                      return (
+                        <tr key={member.id}>
+                          <td>{member.firstName}</td>
+                          <td>{member.lastName}</td>
+                          <td>
+                            <CustomButton
+                              label="REMOVE"
+                              onClick={removeMemberFromRecipe}
+                            ></CustomButton>
+                          </td>
+                        </tr>
+                      );
+                    }
+                    return null;
+                  })}
+                </tbody>
+              </Table>
             </Col>
           </Row>
           <Row>
             <Col>
-              <InputText atribute="Subtitle" value=""></InputText>
+              <InputText
+                atribute="Subtitle"
+                value={recipe.subtitle}
+              ></InputText>
             </Col>
             <Col></Col>
           </Row>
-          <InputTextArea atribute="Text" rows={12} value=""></InputTextArea>
+          <Row>
+            <InputTextArea
+              atribute="Text"
+              rows={12}
+              value={recipe.text}
+            ></InputTextArea>
+          </Row>
           <Row>
             <Col>
               <CustomButton
@@ -195,6 +195,7 @@ export default function CreateRecipe() {
                 variant="secondary  m-3"
               ></CustomButton>
             </Col>
+            <Col></Col>
           </Row>
         </Form>
       </Container>

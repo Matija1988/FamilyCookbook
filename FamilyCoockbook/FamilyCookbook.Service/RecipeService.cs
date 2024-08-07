@@ -26,6 +26,7 @@ namespace FamilyCookbook.Service
             return response;
         }
 
+
         public async Task<RepositoryResponse<Recipe>> CreateAsync(Recipe entity)
         {
             entity.DateCreated = DateTime.Now;
@@ -63,6 +64,13 @@ namespace FamilyCookbook.Service
           var response = await _repository.PaginateAsync(paging);
 
             response.PageCount = (int)Math.Ceiling(response.TotalCount / (double)paging.PageSize);
+
+            return response;
+        }
+
+        public Task<RepositoryResponse<Recipe>> RemoveMemberFromRecipeAsync(int memberId, int recipeId)
+        {
+            var response = _repository.RemoveMemberFromRecipeAsync(memberId, recipeId);
 
             return response;
         }
