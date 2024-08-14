@@ -13,23 +13,21 @@ import { AsyncTypeahead } from "react-bootstrap-typeahead";
 import { TbWashDryP } from "react-icons/tb";
 
 export default function UpdateRecipe() {
-  const recipeUpdateState = {
-    title: "",
-    subtitle: "",
-    text: "",
-    categoryId: null,
-    memberIds: [],
-  };
-
   const [recipe, setRecipe] = useState({
     title: "",
     subtitle: "",
     text: "",
     categoryId: null,
-    members: [],
+    members: [
+      {
+        id: "",
+        firstName: "",
+        lastName: "",
+      },
+    ],
   });
   const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState();
+  const [selectedCategoryId, setSelectedCategoryId] = useState();
   const [members, setMembers] = useState([]);
   const [foundMembers, setFoundMembers] = useState([]);
 
@@ -43,6 +41,7 @@ export default function UpdateRecipe() {
       const response = await RecipeService.getById("recipe", routeParams.id);
       if (response.ok) {
         setRecipe(response.data);
+        setMembers(response.data.members);
       }
     } catch (error) {
       alert(error.message);
@@ -60,14 +59,14 @@ export default function UpdateRecipe() {
     }
   }
 
-  async function fetchMembers() {
-    const response = await MembersService.readAll("member");
-    if (!response.ok) {
-      alert("Error!");
-      return;
-    }
-    setMembers(response.data.items);
-  }
+  // async function fetchMembers() {
+  //   const response = await MembersService.readAll("member");
+  //   if (!response.ok) {
+  //     alert("Error!");
+  //     return;
+  //   }
+  //   setMembers(response.data.items);
+  // }
 
   async function SearchByCondition(input) {
     try {
@@ -83,19 +82,17 @@ export default function UpdateRecipe() {
   useEffect(() => {
     fetchRecipe();
     fetchCategories();
-    fetchMembers();
+    //    fetchMembers();
   }, []);
-
-  function handleSelect() {}
 
   function handleCancel() {
     navigate(RouteNames.RECIPES);
   }
 
-  async function removeMemberFromRecipe(memberId) {
+  async function removeMemberFromRecipe(member) {
     try {
       const response = await RecipeService.removeMemberFromRecipe(
-        memberId,
+        member.id,
         routeParams.id
       );
     } catch (error) {
@@ -103,17 +100,60 @@ export default function UpdateRecipe() {
     }
   }
 
+  async function UpdateRecipe(entity) {
+    try {
+      const response = await RecipeService.update(
+        "recipe/update",
+        routeParams.id,
+        entity
+      );
+      if (response.ok) {
+        navigate(RouteNames.RECIPES);
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    const information = new FormData(e.target);
+
+    const authorIds = recipe.members.map((member) => member.id);
+
+    console.log("AuthorIds " + authorIds);
+
+    UpdateRecipe({
+      title: information.get("Title"),
+      subtitle: information.get("Subtitle"),
+      text: information.get("Text"),
+      categoryId: parseInt(selectedCategoryId),
+      memberIds: authorIds,
+    });
+  }
+
+  function assignMemberToRecipe(member) {
+    const updatedMembers = Array.isArray(recipe.members)
+      ? [...recipe.members, member]
+      : [member];
+
+    setRecipe({ ...recipe, members: updatedMembers });
+    setFoundMembers([]);
+  }
+
   return (
     <>
       <Container className="primaryContainer">
         <h1>UPDATE RECIPE</h1>
-        <Form>
+        <Form onSubmit={handleSubmit}>
           <Row>
             <Col>
               <SelectionDropdown
                 atribute="Select category"
+               initValue={recipe.categoryId}
                 entities={categories}
-                onSelect={handleSelect}
+                onSelect={(r) => setSelectedCategoryId(r.target.value)}
               ></SelectionDropdown>
             </Col>
             <Col>
@@ -155,23 +195,31 @@ export default function UpdateRecipe() {
                   </tr>
                 </thead>
                 <tbody>
-                  {recipe.members.map((member) => {
-                    if (member) {
-                      return (
-                        <tr key={member.id}>
-                          <td>{member.firstName}</td>
-                          <td>{member.lastName}</td>
-                          <td>
-                            <CustomButton
-                              label="REMOVE"
-                              onClick={() => removeMemberFromRecipe(member.id)}
-                            ></CustomButton>
-                          </td>
-                        </tr>
-                      );
-                    }
-                    return null;
-                  })}
+                  {recipe.members &&
+                  recipe.members.length > 0 &&
+                  members.length > 0 ? (
+                    recipe.members.map((member) => {
+                      if (member) {
+                        return (
+                          <tr key={member.id}>
+                            <td>{member.firstName}</td>
+                            <td>{member.lastName}</td>
+                            <td>
+                              <CustomButton
+                                label="REMOVE"
+                                onClick={() => removeMemberFromRecipe(member)}
+                              ></CustomButton>
+                            </td>
+                          </tr>
+                        );
+                      }
+                      return null;
+                    })
+                  ) : (
+                    <tr>
+                      <td colSpan="3">No members assigned to this recipe.</td>
+                    </tr>
+                  )}
                 </tbody>
               </Table>
             </Col>

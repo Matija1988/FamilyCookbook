@@ -15,7 +15,7 @@ export default function SelectionDropdown({
         aria-label="Default select example"
         onChange={onSelect}
         className="select-header"
-        value={initValue}
+        defaultValue={initValue}
       >
         <option>{atribute}</option>
         {entities.map((item) => (

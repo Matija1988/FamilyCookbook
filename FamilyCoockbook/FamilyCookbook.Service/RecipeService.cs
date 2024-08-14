@@ -4,6 +4,7 @@ using FamilyCookbook.Repository.Common;
 using FamilyCookbook.Service.Common;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,9 +22,55 @@ namespace FamilyCookbook.Service
 
         public async Task<RepositoryResponse<Recipe>> AddMemberToRecipe(MemberRecipe entity)
         {
-            var response = await _repository.AddMemberToRecipeAsync(entity);
+            var chk = await _repository.GetByIdAsync(entity.RecipeId);
 
-            return response;
+            if (chk.Success == false)
+            {
+                    var create = await _repository.AddMemberToRecipeAsync(entity);
+                    if (create.Success == false)
+                    {
+                        create.Success = false;
+                        create.Message = "Error adding members to recipe";
+                        return create;
+                    }
+                    return create;
+             
+            }
+
+            var oldMembers = chk.Items.Members;
+
+            var oldMembersIds = new List<int>();
+
+            foreach (var member in oldMembers) 
+            { 
+                oldMembersIds.Add(member.Id);
+            }
+
+            var tempList = new List<int>();
+
+            oldMembersIds.ForEach(x => {
+                if(!oldMembersIds.Contains(entity.MemberId))
+                {
+                    tempList.Add(entity.MemberId);
+                }
+            });
+
+            var tempList2 = tempList.Distinct().ToImmutableList();
+
+            if (tempList2.Count == 0 || tempList2 is null) 
+            {
+                chk.Success = false;
+                chk.Message = "Author is already added to the recipe!";
+                return chk;
+            }
+            
+            foreach (var item in tempList2) 
+            {
+                MemberRecipe memberRecipe = new MemberRecipe { MemberId = item, RecipeId = entity.RecipeId};
+                var response = await _repository.AddMemberToRecipeAsync(memberRecipe);
+            }
+
+            return chk;
         }
 
 
@@ -83,10 +130,11 @@ namespace FamilyCookbook.Service
         public async Task<RepositoryResponse<Recipe>> UpdateAsync(int id, Recipe entity)
         {
             entity.DateUpdated = DateTime.Now;
+            entity.IsActive = true;
 
             var response = await _repository.UpdateAsync(id, entity);
 
             return response;
-        }
+        }   
     }
 }

@@ -148,6 +148,17 @@ namespace FamilyCookbook.Controllers
             {
                 return BadRequest(response.Message);
             }
+
+            foreach (var item in updatedRecipe.MemberIds)
+            {
+                var memberRecipe = new MemberRecipe();
+
+                memberRecipe.RecipeId = id;
+                memberRecipe.MemberId = item;
+
+                var addMemberToRecipe = await _service.AddMemberToRecipe(memberRecipe);
+            }
+
             return Ok(recipe);
 
         }
