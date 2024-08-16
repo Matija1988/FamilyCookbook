@@ -95,6 +95,9 @@ export default function UpdateRecipe() {
         member.id,
         routeParams.id
       );
+      if (response.ok) {
+        location.reload();
+      }
     } catch (error) {
       alert(error.message);
     }
@@ -151,7 +154,7 @@ export default function UpdateRecipe() {
             <Col>
               <SelectionDropdown
                 atribute="Select category"
-               initValue={recipe.categoryId}
+                initValue={recipe.categoryId}
                 entities={categories}
                 onSelect={(r) => setSelectedCategoryId(r.target.value)}
               ></SelectionDropdown>
