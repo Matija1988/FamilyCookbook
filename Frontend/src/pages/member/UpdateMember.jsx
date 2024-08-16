@@ -13,7 +13,7 @@ import { update } from "../../services/HttpService";
 
 export default function UpdateMember() {
   const [roles, setRoles] = useState();
-  const [selectRoleId, setRoleId] = useState();
+  const [selectRoleId, setRoleId] = useState("");
   const [member, setMember] = useState({});
 
   const [error, setError] = useState(null);
@@ -41,6 +41,7 @@ export default function UpdateMember() {
         let member = response.data;
         member.birthDate = moment.utc(member.dateOfBirth).format("yyyy-MM-DD");
         setMember(response.data);
+        setRoleId(response.data.roleId);
       }
     } catch (error) {
       alert(error.message);
@@ -123,7 +124,10 @@ export default function UpdateMember() {
               <SelectionDropdown
                 atribute="Select role"
                 entities={roles || []}
-                onSelect={(r) => setRoleId(r.target.value)}
+                onChanged={(e) => {
+                  setRoleId(e.target.value);
+                }}
+                initValue={selectRoleId}
               ></SelectionDropdown>
             </Col>
           </Row>

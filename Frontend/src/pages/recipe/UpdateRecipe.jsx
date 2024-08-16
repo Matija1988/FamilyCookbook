@@ -27,7 +27,7 @@ export default function UpdateRecipe() {
     ],
   });
   const [categories, setCategories] = useState([]);
-  const [selectedCategoryId, setSelectedCategoryId] = useState();
+  const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const [members, setMembers] = useState([]);
   const [foundMembers, setFoundMembers] = useState([]);
 
@@ -42,6 +42,7 @@ export default function UpdateRecipe() {
       if (response.ok) {
         setRecipe(response.data);
         setMembers(response.data.members);
+        setSelectedCategoryId(response.data.categoryId);
       }
     } catch (error) {
       alert(error.message);
@@ -59,15 +60,6 @@ export default function UpdateRecipe() {
     }
   }
 
-  // async function fetchMembers() {
-  //   const response = await MembersService.readAll("member");
-  //   if (!response.ok) {
-  //     alert("Error!");
-  //     return;
-  //   }
-  //   setMembers(response.data.items);
-  // }
-
   async function SearchByCondition(input) {
     try {
       const response = await MembersService.searchMemberByCondition(input);
@@ -82,7 +74,6 @@ export default function UpdateRecipe() {
   useEffect(() => {
     fetchRecipe();
     fetchCategories();
-    //    fetchMembers();
   }, []);
 
   function handleCancel() {
@@ -145,6 +136,11 @@ export default function UpdateRecipe() {
     setFoundMembers([]);
   }
 
+  // function handleCategorySelect(e) {
+  //   setSelectedCategoryId(e.target.value);
+
+  // }
+  console.log(selectedCategoryId);
   return (
     <>
       <Container className="primaryContainer">
@@ -154,9 +150,11 @@ export default function UpdateRecipe() {
             <Col>
               <SelectionDropdown
                 atribute="Select category"
-                initValue={recipe.categoryId}
+                initValue={selectedCategoryId}
                 entities={categories}
-                onSelect={(r) => setSelectedCategoryId(r.target.value)}
+                onChanged={(e) => {
+                  setSelectedCategoryId(e.target.value);
+                }}
               ></SelectionDropdown>
             </Col>
             <Col>

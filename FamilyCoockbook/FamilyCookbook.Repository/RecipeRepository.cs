@@ -184,11 +184,12 @@ namespace FamilyCookbook.Repository
                     "a.Id, " +
                     "a.Title, " +
                     "a.Subtitle, " +
-                    "a.Text, " +
-                    "c.Id AS MemberId, " +
+                    "a.Text," +
+                    "a.CategoryId, " +
+                    "c.Id, " +
                     "c.FirstName, " +
                     "c.LastName, " +
-                    "d.Id AS CategoryId, " +
+                    "d.Id, " +
                     "d.Name " +
                     "FROM Recipe a " +
                     "JOIN MemberRecipe b on a.Id = b.RecipeId " +
@@ -224,7 +225,7 @@ namespace FamilyCookbook.Repository
 
                         return existingEntity;
                     },
-                    splitOn: "MemberId, CategoryId");
+                    splitOn: "Id");
 
                 response.Success = true;
                 response.Items = entityDictionary.Values.ToList();
