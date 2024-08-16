@@ -2,6 +2,7 @@
 using FamilyCookbook.Common;
 using FamilyCookbook.Model;
 using FamilyCookbook.Repository.Common;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -349,38 +350,15 @@ namespace FamilyCookbook.Repository
             throw new NotImplementedException();
         }
 
-        public Task<RepositoryResponse<List<Recipe>>> GetRecipesWithoutAuthor()
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<RepositoryResponse<List<Recipe>>> PaginateAsync(Paging paging)
+       
+        public async Task<RepositoryResponse<List<Recipe>>> PaginateAsync(Paging paging, RecipeFilter filter)
         {
             var response = new RepositoryResponse<List<Recipe>>();
 
             try
             {
-                string query = 
-                    @"SELECT " +
-                    "a.Id, " +
-                    "a.Title, " +
-                    "a.Subtitle, " +
-                    "a.Text, " +
-                    "c.Id AS MemberId, " +
-                    "c.FirstName, " +
-                    "c.LastName, " +
-                    "d.Id AS CategoryId, " +
-                    "d.Name " +
-                    "FROM Recipe a " +
-                    "JOIN MemberRecipe b on a.Id = b.RecipeId " +
-                    "JOIN Member c on b.MemberId = c.Id " +
-                    "LEFT JOIN Category d on d.Id = a.CategoryId " +
-                    "WHERE a.IsActive = 1 " +
-                    "ORDER BY a.Title " +
-                    "OFFSET @Offset ROWS " +
-                    "FETCH NEXT @PageSize ROWS ONLY; " +
-                    " " +
-                    "SELECT COUNT(*) FROM Member WHERE IsActive = 1;";
+                
+                string query = QueryBuilder(paging, filter);
 
                 var entityDictionary = new Dictionary<int, Recipe>();
 
@@ -414,7 +392,7 @@ namespace FamilyCookbook.Repository
 
                         return existingEntity;
                     },
-                    splitOn: "MemberId, CategoryId");
+                    splitOn: "Id");
 
                  
 
@@ -435,6 +413,68 @@ namespace FamilyCookbook.Repository
             {
                 _context.CreateConnection().Close();
             }
+
+        }
+
+        private string QueryBuilder(Paging paging, RecipeFilter filter)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append("SELECT " +
+                "a.Id, " +
+                "a.Title, " +
+                "a.Subtitle, " +
+                "a.Text," +
+                "a.CategoryId, " +
+                "c.Id, " +
+                "c.FirstName, " +
+                "c.LastName, " +
+                "d.Id, " +
+                "d.Name " +
+                "FROM Recipe a " +
+                "JOIN MemberRecipe b on a.Id = b.RecipeId " +
+                "JOIN Member c on b.MemberId = c.Id " +
+                "LEFT JOIN Category d on d.Id = a.CategoryId " +
+                "WHERE a.IsActive = 1 ");
+
+            if (!string.IsNullOrWhiteSpace(filter.SearchByTitle)) 
+            {
+                sb.Append($"AND a.Title = %{filter.SearchByTitle}% ");
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.SearchBySubtitle)) 
+            {
+                sb.Append($"AND a.Subtitle = %{filter.SearchBySubtitle}% ");
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.SearchByAuthor)) 
+            {
+                sb.Append($"AND c.FirstName = %{filter.SearchByAuthor}% ");
+                sb.Append($"AND c.LastName = %{filter.SearchByAuthor}% ");
+            }
+
+            if(filter.SearchByCategory > 0)
+            {
+                sb.Append($"AND a.CategoryId = {filter.SearchByCategory} ");
+            }
+
+            if(!filter.SearchByActivityStatus.Equals(null))
+            {
+                sb.Append($"AND a.IsActive = {filter.SearchByActivityStatus} ");
+            }
+
+            if(filter.SearchByDateCreated.HasValue)
+            {
+                sb.Append($"AND a.DateCreated = ${filter.SearchByDateCreated} ");
+            }
+
+            sb.Append("ORDER BY a.Title ");
+            sb.Append($"OFFSET @Offset ROWS ");
+            sb.Append($"FETCH NEXT @PageSize ROWS ONLY;");
+           
+            sb.Append($" SELECT COUNT(*) FROM Recipe WHERE IsActive = {filter.SearchByActivityStatus};");
+
+            return sb.ToString();
 
         }
         #endregion

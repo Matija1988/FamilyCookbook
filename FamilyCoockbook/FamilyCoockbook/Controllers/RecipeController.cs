@@ -62,9 +62,9 @@ namespace FamilyCookbook.Controllers
         [HttpGet]
         [Route("paginate")]
 
-        public async Task<IActionResult> PaginateAsync([FromQuery]Paging paging)
+        public async Task<IActionResult> PaginateAsync([FromQuery]Paging paging, [FromQuery] RecipeFilter filter)
         {
-            var response = await _service.PaginateAsync(paging);
+            var response = await _service.PaginateAsync(paging, filter);
 
             if(response.Success == false)
             {

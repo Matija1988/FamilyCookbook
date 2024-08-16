@@ -15,11 +15,9 @@ namespace FamilyCookbook.Repository.Common
         Task<RepositoryResponse<Recipe>> RemoveMemberFromRecipeAsync(int memberId, int recipeId);  
         Task<RepositoryResponse<List<Recipe>>> GetNotActiveAsync();
 
-        Task<RepositoryResponse<List<Recipe>>> GetRecipesWithoutAuthor();
-
         Task<RepositoryResponse<Recipe>> AddMemberToRecipeAsync(MemberRecipe entity);
 
-        Task<RepositoryResponse<List<Recipe>>> PaginateAsync(Paging paging);
+        Task<RepositoryResponse<List<Recipe>>> PaginateAsync(Paging paging, RecipeFilter filter);
 
     }
 }

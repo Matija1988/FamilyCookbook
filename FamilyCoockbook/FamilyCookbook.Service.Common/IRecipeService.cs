@@ -14,8 +14,9 @@ namespace FamilyCookbook.Service.Common
 
         Task<RepositoryResponse<Recipe>> RemoveMemberFromRecipeAsync(int memberId, int recipeId);
 
-        Task<RepositoryResponse<List<Recipe>>> PaginateAsync(Paging paging);
+        Task<RepositoryResponse<List<Recipe>>> PaginateAsync(Paging paging, RecipeFilter filter);
 
         Task<RepositoryResponse<Recipe>> SoftDeleteAsync(int id);
+
     }
 }
