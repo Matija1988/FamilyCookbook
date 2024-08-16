@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,6 +19,8 @@ namespace FamilyCookbook.Common
 
         public int? SearchByCategory { get; set; }
 
-        public string? SearchByAuthor {  get; set; }
+        public string? SearchByAuthorName {  get; set; }
+
+        public string? SearchByAuthorSurname { get; set; }
     }
 }

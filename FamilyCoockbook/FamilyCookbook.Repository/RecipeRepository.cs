@@ -439,18 +439,23 @@ namespace FamilyCookbook.Repository
 
             if (!string.IsNullOrWhiteSpace(filter.SearchByTitle)) 
             {
-                sb.Append($"AND a.Title = %{filter.SearchByTitle}% ");
+                sb.Append($"AND a.Title LIKE '%{filter.SearchByTitle}%' ");
             }
 
             if (!string.IsNullOrWhiteSpace(filter.SearchBySubtitle)) 
             {
-                sb.Append($"AND a.Subtitle = %{filter.SearchBySubtitle}% ");
+                sb.Append($"AND a.Subtitle LIKE '%{filter.SearchBySubtitle}%' ");
             }
 
-            if (!string.IsNullOrWhiteSpace(filter.SearchByAuthor)) 
+            if (!string.IsNullOrWhiteSpace(filter.SearchByAuthorName)) 
             {
-                sb.Append($"AND c.FirstName = %{filter.SearchByAuthor}% ");
-                sb.Append($"AND c.LastName = %{filter.SearchByAuthor}% ");
+                sb.Append($"AND c.FirstName LIKE '%{filter.SearchByAuthorName}%' ");
+                
+            }
+
+            if(!string.IsNullOrWhiteSpace(filter.SearchByAuthorSurname))
+            {
+                sb.Append($"AND c.LastName LIKE '%{filter.SearchByAuthorSurname}%'");
             }
 
             if(filter.SearchByCategory > 0)
