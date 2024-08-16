@@ -330,26 +330,7 @@ namespace FamilyCookbook.Repository
 
         }
 
-        public Task<RepositoryResponse<List<Recipe>>> GetNotActiveAsync()
-        {
-            var response = new RepositoryResponse<List<Recipe>>();
-
-            try
-            {
-
-            }
-            catch (Exception ex) 
-            { 
-            
-            }
-            finally 
-            { 
-                _context.CreateConnection().Close(); 
-            }
-
-            throw new NotImplementedException();
-        }
-
+       
        
         public async Task<RepositoryResponse<List<Recipe>>> PaginateAsync(Paging paging, RecipeFilter filter)
         {
