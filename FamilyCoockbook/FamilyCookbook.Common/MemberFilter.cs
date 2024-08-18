@@ -12,12 +12,12 @@ namespace FamilyCookbook.Common
 
         public string? SearchByLastName { get; set; }
 
-        public int RoleId { get; set; }
+        public int? SearchByRoleId { get; set; }
 
-        public int SearchByActivtyStatus { get; set; }
+        public int? SearchByActivtyStatus { get; set; }
 
-        public DateTime SearchByDateOfBirth { get; set; }
+        public DateTime? SearchByDateOfBirth { get; set; }
 
-        public string SearchByBio { get; set; }
+        public string? SearchByBio { get; set; }
     }
 }

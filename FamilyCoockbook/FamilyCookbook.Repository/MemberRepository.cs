@@ -311,24 +311,26 @@ namespace FamilyCookbook.Repository
             }
         }
 
-        public async Task<RepositoryResponse<List<Member>>> PaginateAsync(Paging paging)
+        public async Task<RepositoryResponse<List<Member>>> PaginateAsync(Paging paging, MemberFilter filter)
         {
             var response = new RepositoryResponse<List<Member>>();
 
             try
             {
 
-                var query = @"SELECT  a.*, " +
-                    "b.Id AS RoleRoleId, " +
-                    "b.* " +
-                    "FROM Member a " +
-                    "LEFT JOIN Role b on a.RoleId = b.Id " +
-                    "WHERE a.IsActive = 1 " +
-                    "ORDER BY a.Id " +
-                    "OFFSET @Offset ROWS " +
-                    "FETCH NEXT @PageSize ROWS ONLY;" +
-                    "" +
-                    "SELECT COUNT(*) FROM Member WHERE IsActive = 1;";
+                //var query = @"SELECT  a.*, " +
+                //    "b.Id AS RoleRoleId, " +
+                //    "b.* " +
+                //    "FROM Member a " +
+                //    "LEFT JOIN Role b on a.RoleId = b.Id " +
+                //    "WHERE a.IsActive = 1 " +
+                //    "ORDER BY a.Id " +
+                //    "OFFSET @Offset ROWS " +
+                //    "FETCH NEXT @PageSize ROWS ONLY;" +
+                //    "" +
+                //    "SELECT COUNT(*) FROM Member WHERE IsActive = 1;";
+
+                string query = QueryBuilder(paging, filter);
 
                 var entityDictionary = new Dictionary<int, Member>();
 
@@ -378,6 +380,65 @@ namespace FamilyCookbook.Repository
                 _context.CreateConnection().Close();
             }
 
+        }
+
+        private string QueryBuilder(Paging paging, MemberFilter filter)
+        {
+            StringBuilder query = new StringBuilder();
+
+            query.Append("SELECT  a.*, " +
+                "b.Id AS RoleRoleId, " +
+                "b.* " +
+                "FROM Member a " +
+                "LEFT JOIN Role b on a.RoleId = b.Id " +
+                "WHERE a.IsActive = 1 ");
+
+            if (!string.IsNullOrWhiteSpace(filter.SearchByFirstName))
+            {
+                query.Append($"AND a.FirstName LIKE '%{filter.SearchByFirstName}%' ");
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.SearchByLastName)) 
+            { 
+                query.Append($"AND a.LastName LIKE '%{filter.SearchByLastName}%' ");
+            }
+
+            if(!string.IsNullOrWhiteSpace(filter.SearchByBio))
+            {
+                query.Append($"AND a.Bio LIKE '%{filter.SearchByBio}%' "); 
+            }
+            
+
+            if (filter.SearchByDateOfBirth.HasValue) 
+            {
+                query.Append($"AND a.DateOfBirth = {filter.SearchByDateOfBirth}");
+            }
+
+            if(!filter.SearchByRoleId.Equals(null))
+            {
+                query.Append($"AND a.RoleId = {filter.SearchByRoleId}");
+            }
+
+            if (!filter.SearchByActivtyStatus.Equals(null))
+            {
+                query.Append($"AND a.IsActive = {filter.SearchByActivtyStatus} ");
+            }
+
+            query.Append("ORDER BY a.LastName ");
+            query.Append($"OFFSET @Offset ROWS ");
+            query.Append($"FETCH NEXT @PageSize ROWS ONLY;");
+
+            query.Append($" SELECT COUNT(*) FROM Member WHERE IsActive = {filter.SearchByActivtyStatus};");
+
+
+            //var query = @" +
+            //    "ORDER BY a.Id " +
+            //    "OFFSET @Offset ROWS " +
+            //    "FETCH NEXT @PageSize ROWS ONLY;" +
+            //    "" +
+            //    "SELECT COUNT(*) FROM Member WHERE IsActive = 1;";
+
+            return query.ToString();
         }
 
         public async Task<RepositoryResponse<Member>> DeleteAsync(int id)

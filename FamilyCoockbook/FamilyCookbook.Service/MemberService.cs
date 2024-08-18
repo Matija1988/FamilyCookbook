@@ -79,9 +79,9 @@ namespace FamilyCookbook.Service
             return response;
         }
 
-        public async Task<RepositoryResponse<List<Member>>> PaginateAsync(Paging paging)
+        public async Task<RepositoryResponse<List<Member>>> PaginateAsync(Paging paging, MemberFilter filter)
         {
-            var response = await _repository.PaginateAsync(paging);
+            var response = await _repository.PaginateAsync(paging, filter);
 
             response.PageCount = (int)Math.Ceiling(response.TotalCount / (double)paging.PageSize);
 
