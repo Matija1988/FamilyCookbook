@@ -374,6 +374,7 @@ namespace FamilyCookbook.Repository
         {
             StringBuilder query = new StringBuilder();
 
+
             query.Append("SELECT  a.*, " +
                 "b.Id AS RoleRoleId, " +
                 "b.* " +
@@ -407,16 +408,16 @@ namespace FamilyCookbook.Repository
                 query.Append($"AND a.RoleId = {filter.SearchByRoleId}");
             }
 
-            if (!filter.SearchByActivtyStatus.Equals(null))
+            if (!filter.SearchByActivityStatus.Equals(null))
             {
-                query.Append($"AND a.IsActive = {filter.SearchByActivtyStatus} ");
+                query.Append($"AND a.IsActive = {filter.SearchByActivityStatus} ");
             }
 
             query.Append("ORDER BY a.LastName ");
             query.Append($"OFFSET @Offset ROWS ");
             query.Append($"FETCH NEXT @PageSize ROWS ONLY;");
 
-            query.Append($" SELECT COUNT(*) FROM Member WHERE IsActive = {filter.SearchByActivtyStatus};");
+            query.Append($" SELECT COUNT(*) FROM Member WHERE IsActive = {filter.SearchByActivityStatus};");
 
             return query.ToString();
         }

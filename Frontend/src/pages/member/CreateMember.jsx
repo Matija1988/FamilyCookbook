@@ -103,7 +103,7 @@ export default function CreateMember() {
               <SelectionDropdown
                 atribute="Select role"
                 entities={roles || []}
-                onSelect={(r) => setRoleId(r.target.value)}
+                onChanged={(r) => setRoleId(r.target.value)}
               ></SelectionDropdown>
             </Col>
           </Row>

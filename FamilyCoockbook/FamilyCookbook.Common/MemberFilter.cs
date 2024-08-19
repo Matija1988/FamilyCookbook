@@ -14,7 +14,7 @@ namespace FamilyCookbook.Common
 
         public int? SearchByRoleId { get; set; }
 
-        public int? SearchByActivtyStatus { get; set; }
+        public int? SearchByActivityStatus { get; set; }
 
         public DateTime? SearchByDateOfBirth { get; set; }
 

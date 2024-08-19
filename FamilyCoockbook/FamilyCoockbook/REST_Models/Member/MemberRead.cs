@@ -1,9 +1,11 @@
 ﻿using FamilyCookbook.Model;
+using System.ComponentModel;
 
 namespace FamilyCookbook.REST_Models.Member
 {
     public class MemberRead
     {
+        
         public int Id { get; set; }
 
         public Guid UniqueId { get; set; }

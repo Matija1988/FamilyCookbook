@@ -14,7 +14,11 @@ async function searchMemberByCondition(input) {
   });
 }
 
-
+async function paginate(params) {
+  return await httpService.get("/member/members", { params }).then((res) => {
+    return handleSuccess(res);
+  });
+}
 
 export default {
   readAll,
@@ -23,5 +27,5 @@ export default {
   update,
   setNotActive,
   searchMemberByCondition,
- 
+  paginate,
 };
