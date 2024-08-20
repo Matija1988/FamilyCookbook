@@ -1,4 +1,4 @@
-import { Col, Container, Form, Row, Table } from "react-bootstrap";
+import { Col, Container, Form, Pagination, Row, Table } from "react-bootstrap";
 import { httpService } from "../../services/HttpService";
 import MembersService from "../../services/MembersService";
 import { useEffect, useState } from "react";
@@ -12,13 +12,15 @@ import CustomPagination from "../../components/CustomPagination";
 import PageSizeDropdown from "../../components/PageSizeDropdown";
 import SelectionDropdown from "../../components/SelectionDropdown";
 import ActivityStatusSelection from "../../components/ActivityStatusSelection";
-import Pagination from "materialui-pagination-component";
+
+import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function Members() {
   const [members, setMembers] = useState();
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [countPage, setCount] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
 
   const statusOptions = [
     { id: 1, name: "Active" },
@@ -47,16 +49,19 @@ export default function Members() {
   async function paginateMembers() {
     const params = getRequestParams(pageSize, pageNumber, activityStatus);
 
-    const response = await MembersService.paginate(params)
-      .then((response) => {
-        const { items, pageCount } = response.data;
-        setMembers(items);
-        setCount(pageCount);
-      })
-      .catch((e) => {
-        setError("Error fetching users" + e.message);
-      });
+    const response = await MembersService.paginate(params);
+    try {
+      const { items, pageCount } = response.data;
+      setMembers(items);
+      setTotalPages(pageCount);
+    } catch (e) {
+      setError("Error fetching users" + e.message);
+    }
   }
+
+  console.log("Page Number:", pageNumber);
+  console.log("Page Size:", pageSize);
+  console.log("Total Pages:", countPage);
 
   async function fetchMembers() {
     const response = await MembersService.readAll("member");
@@ -70,7 +75,6 @@ export default function Members() {
   }
 
   useEffect(() => {
-    //    fetchMembers();
     paginateMembers();
   }, [pageNumber, pageSize]);
 
@@ -97,7 +101,7 @@ export default function Members() {
     console.log("PageSize" + pageSize);
   };
 
-  const handlePageChange = (event, value) => {
+  const handlePageChange = (value) => {
     setPageNumber(value);
   };
 
@@ -142,16 +146,12 @@ export default function Members() {
           onUpdate={handleUpdate}
           cutRange={2}
         ></GenericTable>
-        <Pagination
-          className="my-3"
-          count={countPage}
-          page={pageNumber}
-          siblingCount={1}
-          boundaryCount={1}
-          variant="outlined"
-          shape="rounded"
-          onChange={handlePageChange}
-        />
+
+        <CustomPagination
+          pageNumber={pageNumber}
+          totalPages={totalPages}
+          handlePageChange={handlePageChange}
+        ></CustomPagination>
       </Container>
     </>
   );
