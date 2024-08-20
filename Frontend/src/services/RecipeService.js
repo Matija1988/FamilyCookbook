@@ -16,6 +16,12 @@ async function removeMemberFromRecipe(memberId, recipeId) {
     });
 }
 
+async function paginate(params) {
+  return await httpService.get("/recipe/paginate", { params }).then((res) => {
+    return handleSuccess(res);
+  });
+}
+
 export default {
   readAll,
   getById,
@@ -23,4 +29,5 @@ export default {
   update,
   setNotActive,
   removeMemberFromRecipe,
+  paginate,
 };
