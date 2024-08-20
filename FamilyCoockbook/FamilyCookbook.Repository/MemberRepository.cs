@@ -3,6 +3,7 @@ using FamilyCookbook.Common;
 using FamilyCookbook.Model;
 using FamilyCookbook.Repository.Common;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -373,6 +374,9 @@ namespace FamilyCookbook.Repository
         private string QueryBuilder(Paging paging, MemberFilter filter)
         {
             StringBuilder query = new StringBuilder();
+            StringBuilder countQuery = 
+                new StringBuilder($" SELECT COUNT(*) FROM Member WHERE " +
+                $"IsActive = {filter.SearchByActivityStatus}; ");
 
 
             query.Append("SELECT  a.*, " +
@@ -387,25 +391,24 @@ namespace FamilyCookbook.Repository
                 query.Append($"AND a.FirstName LIKE '%{filter.SearchByFirstName}%' ");
             }
 
-            if (!string.IsNullOrWhiteSpace(filter.SearchByLastName)) 
-            { 
+            if (!string.IsNullOrWhiteSpace(filter.SearchByLastName))
+            {
                 query.Append($"AND a.LastName LIKE '%{filter.SearchByLastName}%' ");
             }
 
-            if(!string.IsNullOrWhiteSpace(filter.SearchByBio))
+            if (!string.IsNullOrWhiteSpace(filter.SearchByBio))
             {
-                query.Append($"AND a.Bio LIKE '%{filter.SearchByBio}%' "); 
-            }
-            
-
-            if (filter.SearchByDateOfBirth.HasValue) 
-            {
-                query.Append($"AND a.DateOfBirth = {filter.SearchByDateOfBirth}");
+                query.Append($"AND a.Bio LIKE '%{filter.SearchByBio}%' ");
             }
 
-            if(!filter.SearchByRoleId.Equals(null))
+            if (filter.SearchByDateOfBirth.HasValue)
             {
-                query.Append($"AND a.RoleId = {filter.SearchByRoleId}");
+                query.Append($"AND a.DateOfBirth = {filter.SearchByDateOfBirth} ");
+            }
+
+            if (!filter.SearchByRoleId.Equals(null))
+            {
+                query.Append($"AND a.RoleId = {filter.SearchByRoleId} ");
             }
 
             if (!filter.SearchByActivityStatus.Equals(null))
@@ -417,10 +420,12 @@ namespace FamilyCookbook.Repository
             query.Append($"OFFSET @Offset ROWS ");
             query.Append($"FETCH NEXT @PageSize ROWS ONLY;");
 
-            query.Append($" SELECT COUNT(*) FROM Member WHERE IsActive = {filter.SearchByActivityStatus};");
-
+            query.Append(countQuery);
+            
             return query.ToString();
         }
+
+        
 
         public async Task<RepositoryResponse<Member>> DeleteAsync(int id)
         {

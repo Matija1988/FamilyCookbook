@@ -21,6 +21,7 @@ export default function GenericTable({
 
   return (
     <>
+    
       <Table striped bordered hover responsive>
         <thead>
           <tr>

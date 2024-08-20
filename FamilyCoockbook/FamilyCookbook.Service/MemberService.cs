@@ -85,6 +85,8 @@ namespace FamilyCookbook.Service
 
             response.PageCount = (int)Math.Ceiling(response.TotalCount / (double)paging.PageSize);
 
+            response.TotalCount = response.Items.Count;
+
             return response;
         }
 

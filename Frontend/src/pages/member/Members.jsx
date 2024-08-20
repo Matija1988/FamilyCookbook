@@ -14,14 +14,21 @@ import SelectionDropdown from "../../components/SelectionDropdown";
 import ActivityStatusSelection from "../../components/ActivityStatusSelection";
 
 import "bootstrap/dist/css/bootstrap.min.css";
+import InputText from "../../components/InputText";
+import GenericInputs from "../../components/GenericInputs";
+import RoleService from "../../services/RoleService";
 
 export default function Members() {
   const [members, setMembers] = useState();
+  const [roles, setRoles] = useState([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [countPage, setCount] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-
+  const [searchByFirstName, setSearchByFirstName] = useState("");
+  const [searchByLastName, setSearchByLastName] = useState("");
+  const [searchByRoleId, setSearchByRoleId] = useState();
+  const [searchByBio, setSearchByBio] = useState("");
   const statusOptions = [
     { id: 1, name: "Active" },
     { id: 0, name: "Not active" },
@@ -43,6 +50,18 @@ export default function Members() {
     if (activityStatus) {
       params["SearchByActivityStatus"] = activityStatus;
     }
+    if (searchByFirstName) {
+      params["SearchByFirstName"] = searchByFirstName;
+    }
+    if (searchByLastName) {
+      params["SearchByLastName"] = searchByLastName;
+    }
+    if (searchByRoleId) {
+      params["SearchByRoleId"] = searchByRoleId;
+    }
+    if (searchByBio) {
+      params["SearchByBio"] = searchByBio;
+    }
     return params;
   };
 
@@ -59,23 +78,20 @@ export default function Members() {
     }
   }
 
-  console.log("Page Number:", pageNumber);
-  console.log("Page Size:", pageSize);
-  console.log("Total Pages:", countPage);
-
-  async function fetchMembers() {
-    const response = await MembersService.readAll("member");
-
+  async function fetchRoles() {
+    const response = await RoleService.readAll("role");
     if (!response.ok) {
       alert("Error!");
       return;
     }
-
-    setMembers(response.data.items);
+    const tempRoles = response.data;
+    tempRoles.splice(3);
+    setRoles(tempRoles);
   }
 
   useEffect(() => {
     paginateMembers();
+    fetchRoles();
   }, [pageNumber, pageSize]);
 
   async function deleteMember(member) {
@@ -83,7 +99,9 @@ export default function Members() {
       "member/delete/" + member.id
     );
     if (response.ok) {
-      fetchMembers();
+      paginateMembers();
+    } else {
+      alert("Error");
     }
   }
 
@@ -105,7 +123,20 @@ export default function Members() {
     setPageNumber(value);
   };
 
-  console.log("Activity status " + activityStatus);
+  const onChangeSearchFirstName = (e) => {
+    const searchFirstName = e.target.value;
+    setSearchByFirstName(searchFirstName);
+  };
+
+  const onChangeSearchLastName = (e) => {
+    const searchLastName = e.target.value;
+    setSearchByLastName(searchLastName);
+  };
+
+  const onChangeSearchBio = (e) => {
+    const bio = e.target.value;
+    setSearchByBio(bio);
+  };
 
   return (
     <>
@@ -135,10 +166,45 @@ export default function Members() {
               atribute="Search by activity status"
             ></ActivityStatusSelection>
           </Col>
+          <Col>
+            <GenericInputs
+              type="text"
+              atribute="Search by first name"
+              value=""
+              onChange={onChangeSearchFirstName}
+            ></GenericInputs>
+          </Col>
         </Row>
         <Row>
-          <Col></Col>
-          <Col></Col>
+          <Col>
+            <GenericInputs
+              type="text"
+              atribute="Search by last name"
+              value=""
+              onChange={onChangeSearchLastName}
+            ></GenericInputs>
+          </Col>
+          <Col>
+            <SelectionDropdown
+              atribute="Search by role"
+              entities={roles || []}
+              onChanged={(e) => setSearchByRoleId(e.target.value)}
+            ></SelectionDropdown>
+          </Col>
+          <Col>
+            <GenericInputs
+              type="text"
+              atribute="Search by bio"
+              value=""
+              onChange={onChangeSearchBio}
+            ></GenericInputs>
+          </Col>
+          <Col>
+            <CustomButton
+              label="Search"
+              onClick={paginateMembers}
+            ></CustomButton>
+          </Col>
         </Row>
         <GenericTable
           dataArray={members}
