@@ -14,6 +14,10 @@ export default function GenericTable({
     return <p>No data to load</p>;
   }
 
+  if (typeof dataArray[0] !== "object" || dataArray[0] === null) {
+    return <p>No data to load</p>;
+  }
+
   const columns = Object.keys(dataArray[0]);
 
   columns.splice(0, cutRange);
@@ -21,7 +25,6 @@ export default function GenericTable({
 
   return (
     <>
-    
       <Table striped bordered hover responsive>
         <thead>
           <tr>
