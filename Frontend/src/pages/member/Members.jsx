@@ -71,7 +71,13 @@ export default function Members() {
     const response = await MembersService.paginate(params);
     try {
       const { items, pageCount } = response.data;
-      setMembers(items);
+
+      const formattedItems = items.map((member) => ({
+        ...member,
+        dateOfBirth: formatDate(member.dateOfBirth),
+      }));
+
+      setMembers(formattedItems);
       setTotalPages(pageCount);
     } catch (e) {
       setError("Error fetching users" + e.message);
@@ -136,6 +142,14 @@ export default function Members() {
   const onChangeSearchBio = (e) => {
     const bio = e.target.value;
     setSearchByBio(bio);
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}.${month}.${year}`;
   };
 
   return (
