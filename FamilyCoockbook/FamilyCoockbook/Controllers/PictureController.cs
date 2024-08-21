@@ -8,15 +8,19 @@ using Microsoft.AspNetCore.Mvc;
 namespace FamilyCookbook.Controllers
 {
     [ApiController]
-    [Route("api/v0/picture")]
+    [Route("api/v0/[controller]")]
     public class PictureController : ControllerBase
     {
-        private readonly IService<Picture> _service;
         private readonly IWebHostEnvironment _environment;
-        public PictureController(IWebHostEnvironment environment, IService<Picture> service)
+        private readonly IPictureService _service;
+        private readonly IRecipeService _recipeService;
+        public PictureController(IWebHostEnvironment environment,
+            IPictureService service, 
+            IRecipeService recipeService)
         {
             _service = service;
             _environment = environment; 
+            _recipeService = recipeService;
         }
 
         [HttpGet]
@@ -57,7 +61,12 @@ namespace FamilyCookbook.Controllers
             }
 
             string uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads");
-            Directory.CreateDirectory(uploadsFolder);
+        
+            if(Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
 
             string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
             string filePath = Path.Combine(uploadsFolder, uniqueFileName);

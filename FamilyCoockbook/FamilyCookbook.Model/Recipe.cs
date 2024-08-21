@@ -30,7 +30,7 @@ namespace FamilyCookbook.Model
         public Category Category { get; set; }
 
         [ForeignKey("PictureId")]
-        public Picture PictureId { get; set; }
+        public Picture? Picture { get; set; }
 
         public IList<Member> Members { get; set; }
     }

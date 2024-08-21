@@ -20,5 +20,7 @@ namespace FamilyCookbook.Service.Common
 
         Task<RepositoryResponse<List<Recipe>>> GetRecipesWithoutAuthors();
 
+        Task<RepositoryResponse<Recipe>> AddPictureToRecipeAsync(int pictureId, int recipeId);
+
     }
 }

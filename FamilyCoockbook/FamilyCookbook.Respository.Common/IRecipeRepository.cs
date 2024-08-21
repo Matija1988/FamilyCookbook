@@ -17,5 +17,7 @@ namespace FamilyCookbook.Repository.Common
 
         Task<RepositoryResponse<List<Recipe>>> PaginateAsync(Paging paging, RecipeFilter filter);
 
+        Task<RepositoryResponse<Recipe>> AddPictureToRecipeAsync(int pictureId, int recipeId);
+
     }
 }

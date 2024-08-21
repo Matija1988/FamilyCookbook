@@ -145,5 +145,12 @@ namespace FamilyCookbook.Service
 
             return response;
         }   
+
+        public async Task<RepositoryResponse<Recipe>> AddPictureToRecipeAsync(int pictureId, int recipeId)
+        {
+            var response = await _repository.AddPictureToRecipeAsync(pictureId, recipeId);
+
+            return response;
+        }
     }
 }

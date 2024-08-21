@@ -145,6 +145,20 @@ namespace FamilyCookbook.Controllers
         }
 
         [HttpPut]
+        [Route("addPictureToRecipe/{recipeId:int}/{pictureId:int}")]
+
+        public async Task<IActionResult> AddPictureToRecipe(int recipeId, int pictureId)
+        {
+            var response = await _service.AddPictureToRecipeAsync(pictureId, recipeId);
+
+            if(response.Success)
+            {
+                return Ok(response);
+            }
+            return BadRequest(response.Message);    
+        }
+
+        [HttpPut]
         [Route("update/{id:int}")]
         public async Task<IActionResult> UpdateAsync(int id, RecipeCreate updatedRecipe)
         {

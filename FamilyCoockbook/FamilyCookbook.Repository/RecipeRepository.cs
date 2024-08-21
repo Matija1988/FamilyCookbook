@@ -92,6 +92,35 @@ namespace FamilyCookbook.Repository
 
         }
 
+        public async Task<RepositoryResponse<Recipe>> AddPictureToRecipeAsync(int pictureId, int recipeId)
+        {
+            var response = new RepositoryResponse<Recipe>();
+
+            try
+            {
+                using var connection = _context.CreateConnection();
+
+                var query = $"UPDATE Recipe SET PictureId = {pictureId} WHERE Id = {recipeId}";
+
+                var updatedEntity = await connection.ExecuteScalarAsync(query);
+
+                response.Success = true;
+                response.Message = _successResponses.EntityUpdated().ToString();
+                return response;
+
+            }
+            catch (Exception ex) 
+            { 
+                response.Success= false;
+                response.Message = _errorMessages.ErrorAccessingDb("Recipe").ToString() + ex.Message;
+                return response;
+
+            } finally
+            {
+                _context.CreateConnection().Close();
+            }
+        }
+
         public async Task<RepositoryResponse<Recipe>> CreateAsync(Recipe entity)
         {
             var response = new RepositoryResponse<Recipe>();
@@ -192,11 +221,13 @@ namespace FamilyCookbook.Repository
                     "c.FirstName, " +
                     "c.LastName, " +
                     "d.Id, " +
-                    "d.Name " +
+                    "d.Name, " +
+                    "e.* " +
                     "FROM Recipe a " +
                     "JOIN MemberRecipe b on a.Id = b.RecipeId " +
                     "JOIN Member c on b.MemberId = c.Id " +
                     "LEFT JOIN Category d on d.Id = a.CategoryId " +
+                    "JOIN Picture e on e.Id = a.PictureId " +
                     "WHERE a.IsActive = 1 " +
                     "order by a.Title;";
 
@@ -204,9 +235,9 @@ namespace FamilyCookbook.Repository
 
                 using var connection =  _context.CreateConnection();
 
-                IEnumerable<Recipe> entities = await connection.QueryAsync<Recipe, Member, Category, Recipe>
+                IEnumerable<Recipe> entities = await connection.QueryAsync<Recipe, Member, Category, Picture, Recipe>
                     (query,
-                    (recipe, member, category) =>
+                    (recipe, member, category, picture) =>
                     {
                         if (!entityDictionary.TryGetValue(recipe.Id, out var existingEntity))
                         {
@@ -224,7 +255,11 @@ namespace FamilyCookbook.Repository
                         {
                             existingEntity.Category = category;
                         }
-
+                        if(picture != null)
+                        {
+                            existingEntity.Picture = picture; 
+                        }
+                    
                         return existingEntity;
                     },
                     splitOn: "Id");
@@ -263,12 +298,14 @@ namespace FamilyCookbook.Repository
                     "c.Id, " +
                     "c.FirstName, " +
                     "c.LastName, " +
-                    "d.Id, " +
-                    "d.Name " +
+                    "d.Id," +
+                    "d.Name, " +
+                    "e.* " +
                     "FROM Recipe a " +
                     "JOIN MemberRecipe b on a.Id = b.RecipeId " +
                     "JOIN Member c on b.MemberId = c.Id " +
                     "LEFT JOIN Category d on d.Id = a.CategoryId " +
+                    "JOIN Picture e on e.Id = a.Id " +
                     "WHERE a.Id = @Id " +
                     "order by a.Title;";
 
@@ -276,9 +313,9 @@ namespace FamilyCookbook.Repository
 
                 using var connection = _context.CreateConnection();
 
-                var entities = await connection.QueryAsync<Recipe, Member, Category, Recipe>
+                var entities = await connection.QueryAsync<Recipe, Member, Category, Picture, Recipe>
                     (query,
-                    (recipe, member, category) =>
+                    (recipe, member, category, picture) =>
                     {
                         if (!entityDictionary.TryGetValue(recipe.Id, out var existingEntity))
                         {
@@ -295,6 +332,11 @@ namespace FamilyCookbook.Repository
                         if (category != null)
                         {
                             existingEntity.Category = category;
+                        }
+
+                        if(picture != null)
+                        {
+                            existingEntity.Picture = picture;
                         }
 
                         return existingEntity;
