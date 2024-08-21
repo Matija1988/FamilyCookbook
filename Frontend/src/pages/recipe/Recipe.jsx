@@ -8,6 +8,10 @@ import { RouteNames } from "../../constants/constants";
 import GenericInputs from "../../components/GenericInputs";
 import PageSizeDropdown from "../../components/PageSizeDropdown";
 import CustomPagination from "../../components/CustomPagination";
+import ActivityStatusSelection from "../../components/ActivityStatusSelection";
+import SelectionDropdown from "../../components/SelectionDropdown";
+import CategoriesService from "../../services/CategoriesService";
+import RecipeTable from "./components/RecipeTable";
 
 export default function Recipe() {
   const recipeState = {
@@ -20,12 +24,16 @@ export default function Recipe() {
   };
 
   const [recipes, setRecipes] = useState([recipeState]);
+  const [categories, setCategories] = useState([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [countPage, setCount] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [searchByTitle, setSearchByTitle] = useState("");
-
+  const [searchBySubtitle, setSearchBySubtitle] = useState("");
+  const [searchByCategoryId, setSearchByCategoryId] = useState();
+  const [searchByFirstName, setSearchByFirstName] = useState("");
+  const [searchByLastName, setSearchByLastName] = useState("");
   const [entityId, setEntityId] = useState();
   const [activityStatus, setActivityStatus] = useState(1);
 
@@ -48,6 +56,21 @@ export default function Recipe() {
     if (activityStatus) {
       params["SearchByActivityStatus"] = activityStatus;
     }
+    if (searchByTitle) {
+      params["SearchByTitle"] = searchByTitle;
+    }
+    if (searchBySubtitle) {
+      params["SearchBySubtitle"] = searchBySubtitle;
+    }
+    if (searchByCategoryId) {
+      params["SearchByCategory"] = searchByCategoryId;
+    }
+    if (searchByFirstName) {
+      params["SearchByAuthorName"] = searchByFirstName;
+    }
+    if (searchByLastName) {
+      params["SearchByAutorSurname"] = searchByLastName;
+    }
     return params;
   };
 
@@ -65,20 +88,18 @@ export default function Recipe() {
     }
   }
 
-  // async function fetchRecipes() {
-  //   try {
-  //     const response = await RecipeService.readAll("recipe");
-  //     if (response.ok) {
-  //       setRecipes(response.data || []);
-  //     }
-  //   } catch (error) {
-  //     alert(error.message);
-  //   }
-  // }
+  async function fetchCategories() {
+    try {
+      const response = await CategoriesService.readAll("category");
+      setCategories(response.data.items);
+    } catch (e) {
+      Alert("Error fetchig categories " + e.message);
+    }
+  }
 
   useEffect(() => {
     paginateRecipes();
-    // fetchRecipes();
+    fetchCategories();
   }, [pageNumber, pageSize]);
 
   function createRecipe() {
@@ -103,6 +124,11 @@ export default function Recipe() {
     setSearchByTitle(titleSearch);
   };
 
+  const onSearchBySubtitleChange = (e) => {
+    const subtitleSearch = e.target.value;
+    setSearchBySubtitle(subtitleSearch);
+  };
+
   const handlePageSizeChange = (e) => {
     setPageSize(e.target.value);
     setPageNumber(1);
@@ -112,16 +138,26 @@ export default function Recipe() {
     setPageNumber(value);
   };
 
+  const onAuthorNameChange = (e) => {
+    setSearchByFirstName(e.target.value);
+  };
+
+  const onAuthorSurnameChange = (e) => {
+    setSearchByLastName(e.target.value);
+  };
+
   return (
     <>
       <Container className="primaryContainer">
         <h1>RECIPES PAGE</h1>
-        <CustomButton
-          label="Create new"
-          variant="primary"
-          onClick={() => createRecipe()}
-        ></CustomButton>
         <Row>
+          <Col>
+            <CustomButton
+              label="Create new"
+              variant="primary"
+              onClick={() => createRecipe()}
+            ></CustomButton>
+          </Col>
           <Col>
             <PageSizeDropdown
               onChanged={handlePageSizeChange}
@@ -136,69 +172,62 @@ export default function Recipe() {
               onChange={onSearchByTitleChange}
             ></GenericInputs>
           </Col>
+          <Col>
+            <GenericInputs
+              atribute="Search by subtitle"
+              type="text"
+              value=""
+              onChange={onSearchBySubtitleChange}
+            ></GenericInputs>
+          </Col>
         </Row>
-        <Table striped bordered hover responsive>
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Subtitle</th>
-              <th>Category</th>
-              <th>Author</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {recipes.length > 0 ? (
-              recipes.map((entity) => (
-                <tr key={entity.id}>
-                  <td>{entity.title}</td>
-                  <td>{entity.subtitle}</td>
-                  <td>{entity.categoryName}</td>
-                  <td>
-                    <ul>
-                      {entity.members && entity.members.length > 0 ? (
-                        entity.members.map((author, index) => (
-                          <li key={index}>
-                            {author.firstName} {author.lastName}
-                          </li>
-                        ))
-                      ) : (
-                        <li>No authors available</li>
-                      )}
-                    </ul>
-                  </td>
-                  <td>
-                    <CustomButton
-                      variant="primary"
-                      onClick={() => {
-                        navigate(
-                          RouteNames.RECIPES_UPDATE.replace(":id", entity.id)
-                        );
-                      }}
-                      label="UPDATE"
-                    ></CustomButton>
-                    <CustomButton
-                      variant="secondary"
-                      onClick={goToDetails}
-                      label="DETAILS"
-                    ></CustomButton>
-                    <CustomButton
-                      variant="danger"
-                      onClick={() => (
-                        setEntityId(entity.id), handleDelete(entity.id)
-                      )}
-                      label="DELETE"
-                    ></CustomButton>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="4">Loading recipes...</td>
-              </tr>
-            )}
-          </tbody>
-        </Table>
+        <Row>
+          <Col>
+            <ActivityStatusSelection
+              entities={statusOptions || []}
+              value={statusOptions.indexOf(1)}
+              onChanged={(e) => setActivityStatus(e.target.value)}
+              atribute="Search by activity status"
+            ></ActivityStatusSelection>
+          </Col>
+          <Col>
+            <SelectionDropdown
+              atribute="Search by category"
+              entities={categories || []}
+              onChanged={(e) => setSearchByCategoryId(e.target.value)}
+            ></SelectionDropdown>
+          </Col>
+          <Col>
+            <GenericInputs
+              atribute="Search by author name"
+              type="text"
+              value=""
+              onChange={onAuthorNameChange}
+            ></GenericInputs>
+          </Col>
+          <Col>
+            <GenericInputs
+              atribute="Search by author last name"
+              type="text"
+              value=""
+              onChange={onAuthorSurnameChange}
+            ></GenericInputs>
+          </Col>
+        </Row>
+        <Row>
+          <Col></Col>
+          <Col>
+            <CustomButton
+              label="Search"
+              onClick={paginateRecipes}
+            ></CustomButton>
+          </Col>
+        </Row>
+        <RecipeTable
+          recipes={recipes}
+          goToDetails={goToDetails}
+          handleDelete={handleDelete}
+        ></RecipeTable>
         <CustomPagination
           pageNumber={pageNumber}
           totalPages={totalPages}
