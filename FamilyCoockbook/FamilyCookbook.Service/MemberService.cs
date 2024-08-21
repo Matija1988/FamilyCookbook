@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace FamilyCookbook.Service
 {
-    public class MemberService : IMemberService
+    public sealed class MemberService : IMemberService
     {
         private readonly IMemberRepository _repository;
 

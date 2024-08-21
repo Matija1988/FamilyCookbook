@@ -12,10 +12,11 @@ namespace FamilyCookbook.Controllers
     public class PictureController : ControllerBase
     {
         private readonly IService<Picture> _service;
-
-        public PictureController(IService<Picture> service)
+        private readonly IWebHostEnvironment _environment;
+        public PictureController(IWebHostEnvironment environment, IService<Picture> service)
         {
             _service = service;
+            _environment = environment; 
         }
 
         [HttpGet]
@@ -48,17 +49,31 @@ namespace FamilyCookbook.Controllers
 
         [HttpPost]
         [Route("create")]
-        public async Task<IActionResult> PostAsync(PictureCreate entity)
+        public async Task<IActionResult> PostAsync( IFormFile file,  string name)
         {
-            if(!ModelState.IsValid)
+            if(!ModelState.IsValid || file ==  null)
             {
                 return BadRequest(ModelState);
             }
 
+            string uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads");
+            Directory.CreateDirectory(uploadsFolder);
+
+            string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+            string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(fileStream);
+            }
 
             var mapper = new PictureMapping();
 
-            var picture = mapper.PictureCreateToPicture(entity);
+            PictureCreate pictureDTO = new PictureCreate { Name = name };
+
+            var picture = mapper.PictureCreateToPicture(pictureDTO);
+
+            picture.Location = Path.Combine("uploads", uniqueFileName);
 
             var response = await _service.CreateAsync(picture);
 

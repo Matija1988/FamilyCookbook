@@ -13,7 +13,7 @@ using static Dapper.SqlMapper;
 
 namespace FamilyCookbook.Repository
 {
-    public class RecipeRepository : IRecipeRepository
+    public sealed class RecipeRepository : IRecipeRepository
     {
         private readonly DapperDBContext _context;
         private readonly IErrorMessages _errorMessages;

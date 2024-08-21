@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace FamilyCookbook.Service
 {
-    public class RoleService : IRoleService
+    public sealed class RoleService : IRoleService
     {
         private readonly IRoleRepository _repository;
         public RoleService(IRoleRepository repository)

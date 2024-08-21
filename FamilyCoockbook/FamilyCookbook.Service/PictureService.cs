@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace FamilyCookbook.Service
 {
-    public class PictureService : IService<Picture>
+    public sealed class PictureService : IPictureService
     {
         private readonly IPictureRespository _repository;
 
@@ -21,6 +21,8 @@ namespace FamilyCookbook.Service
 
         public async Task<RepositoryResponse<Picture>> CreateAsync(Picture entity)
         {
+            entity.IsActive = true;
+
             var response = await _repository.CreateAsync(entity);
 
             return response;

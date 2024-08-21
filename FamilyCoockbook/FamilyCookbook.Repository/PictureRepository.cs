@@ -4,7 +4,7 @@ using FamilyCookbook.Repository.Common;
 
 namespace FamilyCookbook.Repository
 {
-    public class PictureRepository : AbstractRepository<Picture>, IPictureRespository
+    public sealed class PictureRepository : AbstractRepository<Picture>, IPictureRespository
     {
         
         public PictureRepository(DapperDBContext context, IErrorMessages errorMessages, ISuccessResponses successResponses) 
