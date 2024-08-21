@@ -81,6 +81,7 @@ namespace FamilyCookbook.Repository
 
         }
 
+        #region DELETE METHODS
         public async Task<RepositoryResponse<Member>> SoftDeleteAsync(int id)
         {
             var response = new RepositoryResponse<Member>();
@@ -116,6 +117,40 @@ namespace FamilyCookbook.Repository
             }
         }
 
+
+        public async Task<RepositoryResponse<Member>> DeleteAsync(int id)
+        {
+            var response = new RepositoryResponse<Member>();
+
+            int rowAffected = 0;
+
+            try
+            {
+                string query = "DELETE FROM Member WHERE Id = @Id;";
+
+                using var connection = _context.CreateConnection();
+
+                rowAffected = await connection.ExecuteAsync(query, new { Id = id });
+
+                response.Success = rowAffected > 0;
+                response.Message = _successResponses.EntityDeleted("Member").ToString();
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = _errorMessages.NotFound(id).ToString() + ex.Message;
+                return response;
+            }
+            finally
+            {
+                _context.CreateConnection().Close();
+            }
+        }
+        #endregion
+
+        #region GET METHODS
         public async Task<RepositoryResponse<List<Member>>> GetAllAsync()
         {
             var response = new RepositoryResponse<List<Member>>();
@@ -138,7 +173,7 @@ namespace FamilyCookbook.Repository
 
                 using var multipleQuery = await connection.QueryMultipleAsync(query);
 
-                var members = multipleQuery.Read<Member, Role, Member>(
+                IEnumerable<Member> members = multipleQuery.Read<Member, Role, Member>(
                     (entity, role ) =>
                 {
                     if (!entityDictionary.TryGetValue(entity.Id, out var existingEntity))
@@ -331,7 +366,7 @@ namespace FamilyCookbook.Repository
                     PageSize = paging.PageSize,
                 });
 
-                var members = multipleQuery.Read<Member, Role, Member>(
+                IEnumerable<Member> members = multipleQuery.Read<Member, Role, Member>(
                     (entity, role) =>
                     {
                         if (!entityDictionary.TryGetValue(entity.Id, out var existingEntity))
@@ -433,38 +468,8 @@ namespace FamilyCookbook.Repository
             return query.ToString();
         }
 
-        
+        #endregion
 
-        public async Task<RepositoryResponse<Member>> DeleteAsync(int id)
-        {
-            var response = new RepositoryResponse<Member>();
-
-            int rowAffected = 0;
-
-            try
-            {
-                string query = "DELETE FROM Member WHERE Id = @Id;";
-
-                using var connection = _context.CreateConnection();
-
-                rowAffected = await connection.ExecuteAsync(query, new { Id = id });
-
-                response.Success = rowAffected > 0;
-                response.Message = _successResponses.EntityDeleted("Member").ToString();
-                return response;
-        
-            }
-            catch (Exception ex)
-            {
-                response.Success = false;
-                response.Message = _errorMessages.NotFound(id).ToString() + ex.Message;
-                return response;
-            }
-            finally
-            {
-                _context.CreateConnection().Close();
-            }
-        }
 
         public async Task<RepositoryResponse<Member>> UpdateAsync(int id, Member entity)
         {

@@ -204,7 +204,7 @@ namespace FamilyCookbook.Repository
 
                 using var connection =  _context.CreateConnection();
 
-                var entities = await connection.QueryAsync<Recipe, Member, Category, Recipe>
+                IEnumerable<Recipe> entities = await connection.QueryAsync<Recipe, Member, Category, Recipe>
                     (query,
                     (recipe, member, category) =>
                     {
@@ -343,14 +343,12 @@ namespace FamilyCookbook.Repository
                     "LEFT JOIN Member c on b.MemberId = c.Id " +
                     "WHERE b.MemberId IS NULL";
 
-                
                 using var connection = _context.CreateConnection();
 
-                var recipes = (await connection.QueryAsync<Recipe>(query)).ToList();
-
+                IEnumerable<Recipe> recipes = (await connection.QueryAsync<Recipe>(query)).ToList();
 
                 response.Success = true;
-                response.Items = recipes;
+                response.Items = recipes.ToList();
 
                 return response;
             }
@@ -385,7 +383,7 @@ namespace FamilyCookbook.Repository
                     PageSize = paging.PageSize,
                 });
 
-                var entities =  multipleQuery.Read<Recipe, Member, Category, Recipe>
+                IEnumerable<Recipe> entities =  multipleQuery.Read<Recipe, Member, Category, Recipe>
                     ((recipe, member, category) =>
                     {
                         if (!entityDictionary.TryGetValue(recipe.Id, out var existingEntity))
