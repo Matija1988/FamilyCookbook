@@ -375,8 +375,10 @@ namespace FamilyCookbook.Repository
         {
             StringBuilder query = new StringBuilder();
             StringBuilder countQuery = 
-                new StringBuilder($" SELECT COUNT(*) FROM Member WHERE " +
-                $"IsActive = {filter.SearchByActivityStatus}; ");
+                new StringBuilder($" SELECT COUNT(*) FROM Member a " +
+                $"LEFT JOIN Role b on a.RoleId = b.Id " +
+                $"WHERE " +
+                $"a.IsActive = {filter.SearchByActivityStatus} ");
 
 
             query.Append("SELECT  a.*, " +
@@ -389,31 +391,37 @@ namespace FamilyCookbook.Repository
             if (!string.IsNullOrWhiteSpace(filter.SearchByFirstName))
             {
                 query.Append($"AND a.FirstName LIKE '%{filter.SearchByFirstName}%' ");
+                countQuery.Append($" AND a.FirstName LIKE '%{filter.SearchByFirstName}%' ");
             }
 
             if (!string.IsNullOrWhiteSpace(filter.SearchByLastName))
             {
                 query.Append($"AND a.LastName LIKE '%{filter.SearchByLastName}%' ");
+                countQuery.Append($" AND a.LastName LIKE '%{filter.SearchByLastName}%' ");
             }
 
             if (!string.IsNullOrWhiteSpace(filter.SearchByBio))
             {
                 query.Append($"AND a.Bio LIKE '%{filter.SearchByBio}%' ");
+                countQuery.Append($" AND a.Bio LIKE '%{filter.SearchByBio}%' ");
             }
 
             if (filter.SearchByDateOfBirth.HasValue)
             {
                 query.Append($"AND a.DateOfBirth = {filter.SearchByDateOfBirth} ");
+                countQuery.Append($" AND a.DateOfBirth = {filter.SearchByDateOfBirth} ");
             }
 
             if (!filter.SearchByRoleId.Equals(null))
             {
                 query.Append($"AND a.RoleId = {filter.SearchByRoleId} ");
+                countQuery.Append($" AND a.RoleId = {filter.SearchByRoleId} ");
             }
 
             if (!filter.SearchByActivityStatus.Equals(null))
             {
                 query.Append($"AND a.IsActive = {filter.SearchByActivityStatus} ");
+                countQuery.Append($" AND a.IsActive = {filter.SearchByActivityStatus} ");
             }
 
             query.Append("ORDER BY a.LastName ");
