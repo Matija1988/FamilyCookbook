@@ -18,5 +18,7 @@ namespace FamilyCookbook.Service.Common
 
         Task<RepositoryResponse<Recipe>> SoftDeleteAsync(int id);
 
+        Task<RepositoryResponse<List<Recipe>>> GetRecipesWithoutAuthors();
+
     }
 }

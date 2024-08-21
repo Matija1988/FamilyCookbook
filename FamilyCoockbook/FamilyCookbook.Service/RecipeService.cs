@@ -106,7 +106,14 @@ namespace FamilyCookbook.Service
             return response;
         }
 
-        
+        public async Task<RepositoryResponse<List<Recipe>>> GetRecipesWithoutAuthors()
+        {
+            var resposne = await _repository.GetRecipesWithoutAuthors();
+
+            return resposne;
+        }
+
+
         public async Task<RepositoryResponse<List<Recipe>>> PaginateAsync(Paging paging, RecipeFilter filter)
         {
           var response = await _repository.PaginateAsync(paging, filter);

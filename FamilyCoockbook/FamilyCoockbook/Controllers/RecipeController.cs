@@ -84,6 +84,21 @@ namespace FamilyCookbook.Controllers
 
         }
 
+        [HttpGet]
+        [Route("getRecipesWithoutAuthors")]
+
+        public async Task<IActionResult> GetRecipesWithoutAuthors()
+        {
+            var response = await _service.GetRecipesWithoutAuthors();
+
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+
+            return BadRequest();
+        }
+
         [HttpPost]
         [Route("create")]
         public async Task<IActionResult> CreateAsync(RecipeCreate newRecipe)

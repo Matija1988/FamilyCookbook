@@ -1,11 +1,8 @@
 ﻿using FamilyCookbook.Common;
 using FamilyCookbook.Model;
 using FamilyCookbook.Respository.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+using System.Collections.Immutable;
 
 namespace FamilyCookbook.Repository.Common
 {
@@ -15,6 +12,8 @@ namespace FamilyCookbook.Repository.Common
         Task<RepositoryResponse<Recipe>> RemoveMemberFromRecipeAsync(int memberId, int recipeId);  
 
         Task<RepositoryResponse<Recipe>> AddMemberToRecipeAsync(MemberRecipe entity);
+
+        Task<RepositoryResponse<List<Recipe>>> GetRecipesWithoutAuthors();
 
         Task<RepositoryResponse<List<Recipe>>> PaginateAsync(Paging paging, RecipeFilter filter);
 

@@ -5,6 +5,7 @@ using FamilyCookbook.Repository.Common;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -330,7 +331,40 @@ namespace FamilyCookbook.Repository
 
         }
 
-       
+       public async Task<RepositoryResponse<List<Recipe>>> GetRecipesWithoutAuthors()
+        {
+            var response = new RepositoryResponse<List<Recipe>>();
+
+            try
+            {
+                string query = "Select a.*, b.RecipeId, b.MemberId " +
+                    "FROM Recipe a " +
+                    "LEFT JOIN MemberRecipe b on a.Id = b.RecipeId " +
+                    "LEFT JOIN Member c on b.MemberId = c.Id " +
+                    "WHERE b.MemberId IS NULL";
+
+                
+                using var connection = _context.CreateConnection();
+
+                var recipes = (await connection.QueryAsync<Recipe>(query)).ToList();
+
+
+                response.Success = true;
+                response.Items = recipes;
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = _errorMessages.ErrorAccessingDb("Recipe").ToString() + ex.Message; 
+                return response;
+            }
+            finally
+            {
+                _context.CreateConnection().Close();    
+            }
+        }
        
         public async Task<RepositoryResponse<List<Recipe>>> PaginateAsync(Paging paging, RecipeFilter filter)
         {
