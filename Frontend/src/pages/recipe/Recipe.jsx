@@ -110,14 +110,12 @@ export default function Recipe() {
     try {
       const response = await RecipeService.setNotActive("recipe/disable/" + id);
       if (response.ok) {
-        fetchRecipes();
+        paginateRecipes();
       }
     } catch (error) {
       alert(error.message);
     }
   }
-
-  function goToDetails() {}
 
   const onSearchByTitleChange = (e) => {
     const titleSearch = e.target.value;
@@ -225,7 +223,6 @@ export default function Recipe() {
         </Row>
         <RecipeTable
           recipes={recipes}
-          goToDetails={goToDetails}
           handleDelete={handleDelete}
         ></RecipeTable>
         <CustomPagination

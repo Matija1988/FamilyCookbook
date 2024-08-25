@@ -9,6 +9,7 @@ export const RouteNames = {
   RECIPES: "/recipes",
   RECIPES_CREATE: "/createrecipe",
   RECIPES_UPDATE: "/updaterecipe/:id",
+  RECIPE_DETAILS: "/recipe/:id",
 };
 
 export const App = {

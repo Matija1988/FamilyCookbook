@@ -55,7 +55,11 @@ export default function RecipeTable({
                   ></CustomButton>
                   <CustomButton
                     variant="secondary"
-                    onClick={goToDetails}
+                    onClick={() => {
+                      navigate(
+                        RouteNames.RECIPE_DETAILS.replace(":id", entity.id)
+                      );
+                    }}
                     label="DETAILS"
                   ></CustomButton>
                   <CustomButton

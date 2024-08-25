@@ -17,6 +17,7 @@ import CategoryUpdate from "./pages/category/CategoryUpdate";
 import Recipe from "./pages/recipe/Recipe";
 import CreateRecipe from "./pages/recipe/CreateRecipe";
 import UpdateRecipe from "./pages/recipe/UpdateRecipe";
+import RecipeDetails from "./pages/recipe/RecipeDetails";
 function App() {
   return (
     <>
@@ -49,6 +50,10 @@ function App() {
         <Route
           path={RouteNames.RECIPES_UPDATE}
           element={<UpdateRecipe />}
+        ></Route>
+        <Route
+          path={RouteNames.RECIPE_DETAILS}
+          element={<RecipeDetails />}
         ></Route>
       </Routes>
     </>
