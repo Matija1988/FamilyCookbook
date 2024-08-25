@@ -9,7 +9,7 @@ namespace FamilyCookbook.Service.Common
         
         Task<RepositoryResponse<Member>> GetByGuidAsync(Guid uniqueId);
 
-        Task<RepositoryResponse<List<Member>>> PaginateAsync(Paging paging, MemberFilter filter);
+        Task<RepositoryResponse<Lazy<List<Member>>>> PaginateAsync(Paging paging, MemberFilter filter);
 
         Task<RepositoryResponse<List<Member>>> SearchMemberByCondition(string condition);
     }

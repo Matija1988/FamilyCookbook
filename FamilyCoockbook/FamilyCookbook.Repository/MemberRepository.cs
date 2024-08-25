@@ -347,9 +347,9 @@ namespace FamilyCookbook.Repository
             }
         }
 
-        public async Task<RepositoryResponse<List<Member>>> PaginateAsync(Paging paging, MemberFilter filter)
+        public async Task<RepositoryResponse<Lazy<List<Member>>>> PaginateAsync(Paging paging, MemberFilter filter)
         {
-            var response = new RepositoryResponse<List<Member>>();
+            var response = new RepositoryResponse<Lazy<List<Member>>>();
 
             try
             {
@@ -388,8 +388,8 @@ namespace FamilyCookbook.Repository
                 response.TotalCount = multipleQuery.ReadSingle<int>();
 
                 response.Success = true;
-                response.Items = entityDictionary.Values.ToList();
-
+                response.Items = new Lazy<List<Member>>(() => entityDictionary.Values.ToList());
+                
                 return response;
 
             }

@@ -94,7 +94,7 @@ namespace FamilyCookbook.Controllers
 
             var mapper = new MemberMapper();
 
-            var members = mapper.MemberToMemberReadList(response.Items);
+            var members = mapper.MemberToMemberReadList(response.Items.Value);
 
             var finalResponse = new PaginatedList<List<MemberRead>>();
 
