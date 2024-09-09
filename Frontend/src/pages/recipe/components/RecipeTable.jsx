@@ -2,6 +2,7 @@ import { Table } from "react-bootstrap";
 import CustomButton from "../../../components/CustomButton";
 import { useNavigate } from "react-router-dom";
 import { RouteNames } from "../../../constants/constants";
+import { useState } from "react";
 
 export default function RecipeTable({
   recipes,
@@ -10,6 +11,8 @@ export default function RecipeTable({
   onUpdate,
 }) {
   const navigate = useNavigate();
+
+  const [entityId, setEntityId] = useState();
 
   return (
     <>
