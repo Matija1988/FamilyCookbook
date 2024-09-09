@@ -17,6 +17,7 @@ import RecipeService from "../../services/RecipeService";
 import { useNavigate } from "react-router-dom";
 import { RouteNames } from "../../constants/constants";
 import CustomButton from "../../components/CustomButton";
+import RichTextEditor from "../../components/RichTextEditor";
 
 export default function CreateRecipe() {
   const [recipe, setRecipe] = useState({
@@ -29,7 +30,7 @@ export default function CreateRecipe() {
 
   const [categories, setCategories] = useState([]);
   const [selectedCategoryId, setCategoryId] = useState();
-
+  const [recipeText, setRecipeText] = useState("");
   const [members, setMembers] = useState([]);
   const [foundMembers, setFoundMembers] = useState([]);
 
@@ -85,11 +86,6 @@ export default function CreateRecipe() {
     fetchMembers();
   }, []);
 
-  function handleSelect(selectedCategory) {
-    setCategoryId(selectedCategory.id);
-    console.log(selectedCategory);
-  }
-
   function handleSubmit(e) {
     e.preventDefault();
 
@@ -100,7 +96,7 @@ export default function CreateRecipe() {
     postRecipe({
       title: information.get("Title"),
       subtitle: information.get("Subtitle"),
-      text: information.get("Text"),
+      text: recipeText,
       categoryId: parseInt(selectedCategoryId),
       memberIds: authorIds,
     });
@@ -112,9 +108,15 @@ export default function CreateRecipe() {
     setFoundMembers([]);
   }
 
+  function handleTextChange(value) {
+    setRecipeText(value);
+  }
+
   function handleCancel() {
     navigate(RouteNames.RECIPES);
   }
+
+  console.log("CATEGORY ID " + parseInt(selectedCategoryId));
 
   return (
     <>
@@ -126,7 +128,7 @@ export default function CreateRecipe() {
               <SelectionDropdown
                 atribute="Select category"
                 entities={categories}
-                onSelect={(r) => setCategoryId(r.target.value)}
+                onChanged={(e) => setCategoryId(e.target.value)}
               ></SelectionDropdown>
             </Col>
             <Col>
@@ -181,7 +183,12 @@ export default function CreateRecipe() {
             </Col>
             <Col></Col>
           </Row>
-          <InputTextArea atribute="Text" rows={12} value=""></InputTextArea>
+          <RichTextEditor
+            atribute="Text"
+            value={recipe.text}
+            setValue={handleTextChange}
+          ></RichTextEditor>
+
           <Row>
             <Col>
               <CustomButton
