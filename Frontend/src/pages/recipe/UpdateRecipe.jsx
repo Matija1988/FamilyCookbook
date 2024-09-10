@@ -11,6 +11,7 @@ import { RouteNames } from "../../constants/constants";
 import MembersService from "../../services/MembersService";
 import { AsyncTypeahead } from "react-bootstrap-typeahead";
 import { TbWashDryP } from "react-icons/tb";
+import RichTextEditor from "../../components/RichTextEditor";
 
 export default function UpdateRecipe() {
   const [recipe, setRecipe] = useState({
@@ -31,6 +32,7 @@ export default function UpdateRecipe() {
   const [members, setMembers] = useState([]);
   const [foundMembers, setFoundMembers] = useState([]);
 
+  const quillRef = useRef(null);
 
   const typeaheadRef = useRef(null);
 
@@ -122,7 +124,7 @@ export default function UpdateRecipe() {
     UpdateRecipe({
       title: information.get("Title"),
       subtitle: information.get("Subtitle"),
-      text: information.get("Text"),
+      text: recipe.text,
       categoryId: parseInt(selectedCategoryId),
       memberIds: authorIds,
     });
@@ -236,11 +238,11 @@ export default function UpdateRecipe() {
             <Col></Col>
           </Row>
           <Row>
-            <InputTextArea
-              atribute="Text"
-              rows={12}
+            <RichTextEditor
               value={recipe.text}
-            ></InputTextArea>
+              setValue={(text) => setRecipe({ ...recipe, text })}
+              ref={quillRef}
+            />
           </Row>
           <Row>
             <Col>

@@ -34,7 +34,6 @@ export default function CreateRecipe() {
   const [members, setMembers] = useState([]);
   const [foundMembers, setFoundMembers] = useState([]);
 
-  const typeaheadQuillRef = useRef(null);
   const quillRef = useRef(null);
 
   const [searchCondition, setSearchCondition] = useState("");
@@ -95,12 +94,6 @@ export default function CreateRecipe() {
     const information = new FormData(e.target);
 
     const authorIds = recipe.memberIds.map((id) => id);
-
-    console.log("Title:", recipe.title);
-    console.log("Subtitle:", recipe.subtitle);
-    console.log("Text:", recipeText);
-    console.log("Category ID:", parseInt(selectedCategoryId));
-    console.log("Member IDs:", recipe.memberIds);
 
     postRecipe({
       title: information.get("Title"),
