@@ -305,9 +305,9 @@ namespace FamilyCookbook.Repository
                     "JOIN MemberRecipe b on a.Id = b.RecipeId " +
                     "JOIN Member c on b.MemberId = c.Id " +
                     "LEFT JOIN Category d on d.Id = a.CategoryId " +
-                    "JOIN Picture e on e.Id = a.Id " +
-                    "WHERE a.Id = @Id " +
-                    "order by a.Title;";
+                    "JOIN Picture e on e.Id = a.PictureId " +
+                    "WHERE a.Id = @Id ";
+                    
 
                 var entityDictionary = new Dictionary<int, Recipe>();
 

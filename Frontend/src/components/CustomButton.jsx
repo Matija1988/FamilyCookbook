@@ -11,7 +11,6 @@ export default function CustomButton({ label, onClick, variant, type }) {
 
 CustomButton.propTypes = {
   label: PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired,
   variant: PropTypes.string,
   type: PropTypes.string,
 };

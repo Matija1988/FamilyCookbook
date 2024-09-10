@@ -34,6 +34,9 @@ export default function CreateRecipe() {
   const [members, setMembers] = useState([]);
   const [foundMembers, setFoundMembers] = useState([]);
 
+  const typeaheadQuillRef = useRef(null);
+  const quillRef = useRef(null);
+
   const [searchCondition, setSearchCondition] = useState("");
   const typeaheadRef = useRef(null);
 
@@ -93,10 +96,16 @@ export default function CreateRecipe() {
 
     const authorIds = recipe.memberIds.map((id) => id);
 
+    console.log("Title:", recipe.title);
+    console.log("Subtitle:", recipe.subtitle);
+    console.log("Text:", recipeText);
+    console.log("Category ID:", parseInt(selectedCategoryId));
+    console.log("Member IDs:", recipe.memberIds);
+
     postRecipe({
       title: information.get("Title"),
       subtitle: information.get("Subtitle"),
-      text: recipeText,
+      text: recipe.text,
       categoryId: parseInt(selectedCategoryId),
       memberIds: authorIds,
     });
@@ -106,10 +115,6 @@ export default function CreateRecipe() {
     const updatedMembers = [...recipe.memberIds, member.id];
     setRecipe({ ...recipe, memberIds: updatedMembers });
     setFoundMembers([]);
-  }
-
-  function handleTextChange(value) {
-    setRecipeText(value);
   }
 
   function handleCancel() {
@@ -184,11 +189,10 @@ export default function CreateRecipe() {
             <Col></Col>
           </Row>
           <RichTextEditor
-            atribute="Text"
             value={recipe.text}
-            setValue={handleTextChange}
-          ></RichTextEditor>
-
+            setValue={(text) => setRecipe({ ...recipe, text })}
+            ref={quillRef}
+          />
           <Row>
             <Col>
               <CustomButton
