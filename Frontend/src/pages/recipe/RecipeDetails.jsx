@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
-import { Container, Form } from "react-bootstrap";
+import {
+  Button,
+  Collapse,
+  Container,
+  Form,
+  ListGroup,
+  ListGroupItem,
+} from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import RecipeService from "../../services/RecipeService";
 
@@ -11,11 +18,13 @@ export default function RecipeDetails() {
     text: "",
     categoryName: "",
     members: [],
+    pictureLocation: "",
   };
   const [recipe, setRecipe] = useState(recipeState);
   const [members, setMembers] = useState([]);
   const [category, setCategory] = useState("");
 
+  const [openMemberId, setOpenMemberId] = useState(null);
   const [error, setError] = useState([]);
   const routeParams = useParams();
   const navigate = useNavigate();
@@ -37,12 +46,47 @@ export default function RecipeDetails() {
     fetchRecipe();
   }, []);
 
+  const toggleBiography = (id) => {
+    setOpenMemberId(openMemberId === id ? null : id);
+  };
+
+  console.log("Picture location: " + recipe.pictureLocation);
+
   return (
     <>
       <Container className="primaryContainer">
         <h2>{recipe.title}</h2>
         <h4>{recipe.subtitle}</h4>
+        <img
+          src={"https://localhost:7170/" + recipe.pictureLocation}
+          style={{ width: "300px" }}
+        />
         <div dangerouslySetInnerHTML={{ __html: recipe.text }}></div>
+        <ListGroup>
+          {members.map((member) => (
+            <ListGroup.Item key={member.id}>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <div>{member.firstName + " " + member.lastName}</div>
+
+                <Button
+                  variant="link"
+                  onClick={() => toggleBiography(member.id)}
+                  aria-controls={`bio-${member.id}`}
+                  aria-expanded={openMemberId === member.id}
+                >
+                  {openMemberId === member.id ? "Hide Bio" : "Show Bio"}
+                </Button>
+              </div>
+
+              <Collapse in={openMemberId === member.id}>
+                <div id={`bio-${member.id}`} style={{ marginTop: "10px" }}>
+                  <strong>Biography:</strong>
+                  <p>{member.bio}</p>
+                </div>
+              </Collapse>
+            </ListGroup.Item>
+          ))}
+        </ListGroup>
       </Container>
     </>
   );

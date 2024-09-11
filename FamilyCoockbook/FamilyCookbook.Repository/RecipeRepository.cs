@@ -298,6 +298,7 @@ namespace FamilyCookbook.Repository
                     "c.Id, " +
                     "c.FirstName, " +
                     "c.LastName, " +
+                    "c.Bio, " +
                     "d.Id," +
                     "d.Name, " +
                     "e.* " +
