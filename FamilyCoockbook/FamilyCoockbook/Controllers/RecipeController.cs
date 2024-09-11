@@ -3,6 +3,7 @@ using FamilyCookbook.Mapping;
 using FamilyCookbook.Model;
 using FamilyCookbook.REST_Models.Recipe;
 using FamilyCookbook.Service.Common;
+using Ganss.Xss;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
 
@@ -108,6 +109,12 @@ namespace FamilyCookbook.Controllers
                 return BadRequest(ModelState);
             }
 
+            var sanitizer = new HtmlSanitizer();
+
+            string sanitizedText = sanitizer.Sanitize(newRecipe.Text);
+
+            newRecipe.Text = sanitizedText;
+
             var mapper = new RecipeMapper();
 
             var recipe = mapper.RecipeCreateToRecipe(newRecipe);
@@ -166,6 +173,12 @@ namespace FamilyCookbook.Controllers
             {
                 return BadRequest(ModelState);
             }
+
+            var sanitizer = new HtmlSanitizer();
+
+            string sanitizedText = sanitizer.Sanitize(updatedRecipe.Text);
+
+            updatedRecipe.Text = sanitizedText;
 
             var mapper = new RecipeMapper();
 
