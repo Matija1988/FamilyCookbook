@@ -1,6 +1,9 @@
 import Carousel from "react-bootstrap/Carousel";
 import RecipeService from "../services/RecipeService";
 import { useEffect, useState } from "react";
+import { Form } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import { RouteNames } from "../constants/constants";
 
 function RotatingCarousel({}) {
   const [recipes, setRecipes] = useState([]);
@@ -9,6 +12,8 @@ function RotatingCarousel({}) {
   const [countPage, setCount] = useState(0);
   const [activityStatus, setActivityStatus] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+
+  const navigate = useNavigate();
 
   const getRequestParams = (PageSize, PageNumber, SearchByActivityStatus) => {
     return {
@@ -29,7 +34,7 @@ function RotatingCarousel({}) {
     }
   }
 
-  useEffect(() => {
+      useEffect(() => {
     fectchRecipes();
   }, [pageNumber, pageSize]);
 
@@ -38,10 +43,24 @@ function RotatingCarousel({}) {
       {recipes.map((recipe) => (
         <Carousel.Item>
           <img
-            className="d-block w-100"
+            onClick={() => {
+              navigate(RouteNames.RECIPE_DETAILS.replace(":id", recipe.id));
+            }}
+            className="d-block w-80"
             src={"https://localhost:7170/" + recipe.pictureLocation}
             alt={recipe.title}
+            style={{
+              height: "500px",
+              objectFit: "cover",
+              width: "70%",
+              justifyContent: "center",
+              marginLeft: "15%",
+            }}
           />
+          <Carousel.Caption>
+            <h3 className="crsl-title">{recipe.title}</h3>
+            <p className="crsl-title">{recipe.subtitle}</p>
+          </Carousel.Caption>
         </Carousel.Item>
       ))}
     </Carousel>

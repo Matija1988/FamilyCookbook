@@ -2,6 +2,8 @@ import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import { Form } from "react-bootstrap";
 
+import "./Carousel.css";
+
 export default function SelectionDropdown({
   atribute,
   entities,
