@@ -220,6 +220,7 @@ namespace FamilyCookbook.Repository
                     "c.Id, " +
                     "c.FirstName, " +
                     "c.LastName, " +
+                    "c.Bio, " +
                     "d.Id, " +
                     "d.Name, " +
                     "e.* " +
@@ -229,7 +230,7 @@ namespace FamilyCookbook.Repository
                     "LEFT JOIN Category d on d.Id = a.CategoryId " +
                     "JOIN Picture e on e.Id = a.PictureId " +
                     "WHERE a.IsActive = 1 " +
-                    "order by a.Title;";
+                    "order by a.DateCreated;";
 
                 var entityDictionary = new Dictionary<int, Recipe>();
 
@@ -426,8 +427,8 @@ namespace FamilyCookbook.Repository
                     PageSize = paging.PageSize,
                 });
 
-                IEnumerable<Recipe> entities =  multipleQuery.Read<Recipe, Member, Category, Recipe>
-                    ((recipe, member, category) =>
+                IEnumerable<Recipe> entities =  multipleQuery.Read<Recipe, Member, Category, Picture, Recipe>
+                    ((recipe, member, category, picture) =>
                     {
                         if (!entityDictionary.TryGetValue(recipe.Id, out var existingEntity))
                         {
@@ -444,6 +445,11 @@ namespace FamilyCookbook.Repository
                         if (category != null)
                         {
                             existingEntity.Category = category;
+                        }
+
+                        if(picture != null)
+                        {
+                            existingEntity.Picture = picture;
                         }
 
                         return existingEntity;
@@ -479,6 +485,7 @@ namespace FamilyCookbook.Repository
                 $" JOIN MemberRecipe b ON a.Id = b.RecipeId " +
                 $" JOIN Member c on b.MemberId = c.Id " +
                 $" LEFT JOIN Category d ON d.Id = a.CategoryId " +
+                $" JOIN Picture e on e.Id = a.PictureId " +
                 $" WHERE a.IsActive = {filter.SearchByActivityStatus} ");
 
             sb.Append("SELECT " +
@@ -490,12 +497,15 @@ namespace FamilyCookbook.Repository
                 "c.Id, " +
                 "c.FirstName, " +
                 "c.LastName, " +
+                "c.Bio, " +
                 "d.Id, " +
-                "d.Name " +
+                "d.Name," +
+                "e.* " +
                 "FROM Recipe a " +
                 "JOIN MemberRecipe b on a.Id = b.RecipeId " +
                 "JOIN Member c on b.MemberId = c.Id " +
                 "LEFT JOIN Category d on d.Id = a.CategoryId " +
+                "JOIN Picture e on e.Id = a.PictureId " +
                 "WHERE a.IsActive = 1 ");
 
             if (!string.IsNullOrWhiteSpace(filter.SearchByTitle)) 
@@ -543,7 +553,7 @@ namespace FamilyCookbook.Repository
             }
 
 
-            sb.Append("ORDER BY a.Title ");
+            sb.Append("ORDER BY a.DateCreated ");
             sb.Append($"OFFSET @Offset ROWS ");
             sb.Append($"FETCH NEXT @PageSize ROWS ONLY;");
            
