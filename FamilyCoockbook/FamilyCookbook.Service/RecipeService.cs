@@ -1,4 +1,5 @@
-﻿using FamilyCookbook.Common;
+﻿using AngleSharp.Dom;
+using FamilyCookbook.Common;
 using FamilyCookbook.Model;
 using FamilyCookbook.Repository.Common;
 using FamilyCookbook.Service.Common;
@@ -74,18 +75,7 @@ namespace FamilyCookbook.Service
         }
 
 
-        public async Task<RepositoryResponse<Recipe>> CreateAsync(Recipe entity)
-        {
-            entity.DateCreated = DateTime.Now;
-            entity.DateUpdated = DateTime.Now;
-            entity.IsActive = true;
-
-            entity.Picture.IsActive = true;
-
-            var response = await _repository.CreateAsync(entity);
-
-            return response;
-        }
+      
 
         public async Task<RepositoryResponse<Recipe>> DeleteAsync(int id)
         {
@@ -148,6 +138,19 @@ namespace FamilyCookbook.Service
         public async Task<RepositoryResponse<Recipe>> AddPictureToRecipeAsync(int pictureId, int recipeId)
         {
             var response = await _repository.AddPictureToRecipeAsync(pictureId, recipeId);
+
+            return response;
+        }
+
+        public async Task<RepositoryResponse<Recipe>> CreateAsync(RecipeCreateDTO entity)
+        {
+            entity.DateCreated = DateTime.Now;
+            entity.DateUpdated = DateTime.Now;
+            entity.IsActive = true;
+
+            entity.Picture.IsActive = true;
+
+            var response = await _repository.CreateAsyncTransaction(entity);
 
             return response;
         }

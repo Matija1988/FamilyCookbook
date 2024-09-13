@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace FamilyCookbook.Service
 {
-    public sealed class CategoryService : IService<Category>
+    public sealed class CategoryService : ICategoryService
     {
         private readonly ICategoryRepository _repository;
         public CategoryService(ICategoryRepository repository)

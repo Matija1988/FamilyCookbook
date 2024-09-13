@@ -140,7 +140,7 @@ namespace FamilyCookbook.Controllers
 
             var mapper = new RecipeMapper();
 
-            var recipe = mapper.RecipeCreateToRecipe(newRecipe);
+            var recipe = mapper.RecipeCreateToRecipeCreateDTO(newRecipe);
 
             recipe.Picture.Location = relativePath;
             recipe.Picture.Name = newRecipe.PictureName;

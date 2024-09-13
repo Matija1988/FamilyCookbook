@@ -123,85 +123,94 @@ namespace FamilyCookbook.Repository
             }
         }
 
-        public async Task<RepositoryResponse<Recipe>> CreateAsync(Recipe entity)
-        {
-            var response = new RepositoryResponse<Recipe>();
+        //public async Task<RepositoryResponse<Recipe>> CreateAsync(Recipe entity)
+        //{
+        //    var response = new RepositoryResponse<Recipe>();
 
             
-                using var connection = _context.CreateConnection();
+        //        using var connection = _context.CreateConnection();
 
-                connection.Open();
+        //        connection.Open();
 
-                using (var transaction = connection.BeginTransaction())
-                {
-                    try
-                    {
+        //        using (var transaction = connection.BeginTransaction())
+        //        {
+        //            try
+        //            {
 
-                        var insertPictureQuery = @"INSERT INTO Picture (Name, Location, IsActive) " +
-                                                  "VALUES (@Name, @Location, @IsActive);" +
-                                                  "SELECT SCOPE_IDENTITY();";
+        //                var insertPictureQuery = @"INSERT INTO Picture (Name, Location, IsActive) " +
+        //                                          "VALUES (@Name, @Location, @IsActive);" +
+        //                                          "SELECT SCOPE_IDENTITY();";
 
-                        var pictureParamaters = new
-                        {
-                            Name = entity.Picture.Name,
-                            Location = entity.Picture.Location,
-                            IsActive = entity.Picture.IsActive,
-                        };
+        //                var pictureParamaters = new
+        //                {
+        //                    Name = entity.Picture.Name,
+        //                    Location = entity.Picture.Location,
+        //                    IsActive = entity.Picture.IsActive,
+        //                };
 
-                        var pictureId =
-                            await connection.QuerySingleAsync<int>(insertPictureQuery, pictureParamaters, transaction);
+        //                var pictureId =
+        //                    await connection.QuerySingleAsync<int>(insertPictureQuery, pictureParamaters, transaction);
 
-                        var insertRecipeQuery = @"INSERT INTO Recipe " +
-                                "(Title, Subtitle, Text, CategoryId, PictureId, IsActive, DateCreated, DateUpdated) " +
-                                "VALUES" +
-                                "(@Title, @Subtitle, @Text, @CategoryId, @PictureId, @IsActive, " +
-                                "@DateCreated, @DateUpdated);" +
-                                "SELECT SCOPE_IDENTITY();";
+        //                var insertRecipeQuery = @"INSERT INTO Recipe " +
+        //                        "(Title, Subtitle, Text, CategoryId, PictureId, IsActive, DateCreated, DateUpdated) " +
+        //                        "VALUES" +
+        //                        "(@Title, @Subtitle, @Text, @CategoryId, @PictureId, @IsActive, " +
+        //                        "@DateCreated, @DateUpdated);" +
+        //                        "SELECT SCOPE_IDENTITY();";
 
-                        var recipeParameters = new
-                        {
-                            Title = entity.Title,
-                            Subtitle = entity.Subtitle,
-                            Text = entity.Text,
-                            IsActive = entity.IsActive,
-                            CategoryId = entity.CategoryId,
-                            PictureId = pictureId,
-                            DateCreated = entity.DateCreated,
-                            DateUpdated = entity.DateUpdated,
-                        };
+        //                var recipeParameters = new
+        //                {
+        //                    Title = entity.Title,
+        //                    Subtitle = entity.Subtitle,
+        //                    Text = entity.Text,
+        //                    IsActive = entity.IsActive,
+        //                    CategoryId = entity.CategoryId,
+        //                    PictureId = pictureId,
+        //                    DateCreated = entity.DateCreated,
+        //                    DateUpdated = entity.DateUpdated,
+        //                };
 
-                        var recipeId =
-                            await connection.QuerySingleAsync<int>(insertRecipeQuery, recipeParameters, transaction);
+        //                var recipeId =
+        //                    await connection.QuerySingleAsync<int>(insertRecipeQuery, recipeParameters, transaction);
 
-                        var insertMemberRecipeQuery = @"INSERT INTO MemberRecipe(RecipeId, MemberId) " +
-                                                       "VALUES(@RecipeId, @MemberId)";
+        //            var insertMemberRecipeQuery = @"INSERT INTO MemberRecipe(RecipeId, MemberId) " +
+        //                                         "VALUES(@RecipeId, @MemberId);" +
+        //                                         "SELECT SCOPE_IDENTITY();";
 
-                        foreach (var memberId in entity.Members)
-                        {
-                            var memberRecipeParametes = new
-                            {
-                                RecipeId = recipeId,
-                                MemberId = memberId.Id
-                            };
+        //            if (entity.Members == null)
+        //            {
+        //                response.Success = false;
+        //                response.Message = "No members with selected ids in database";
+        //                return response;
+        //            }
 
-                            await connection
-                                .ExecuteAsync(insertMemberRecipeQuery, memberRecipeParametes, transaction);
-                        }
-                        transaction.Commit();
-                        response.Success = true;
-                        response.Message = _successResponses.EntityCreated().ToString();
-                        return response;
-                    }
-                    catch (Exception ex)
-                    {
-                        transaction.Rollback();
-                        response.Success = false;
-                        response.Message = _errorMessages.ErrorCreatingEntity(" Recipe ").ToString() + ex.Message;
-                        return response;
-                    }
-                }
+        //            foreach (var member in entity.Members)
+        //            {
+        //                var memberRecipeParametes = new
+        //                {
 
-        }
+        //                    RecipeId = recipeId,
+        //                    MemberId = member.Id
+        //                };
+
+        //                await connection
+        //                    .ExecuteAsync(insertMemberRecipeQuery, memberRecipeParametes, transaction);
+        //            }
+        //            transaction.Commit();
+        //                response.Success = true;
+        //                response.Message = _successResponses.EntityCreated().ToString();
+        //                return response;
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                transaction.Rollback();
+        //                response.Success = false;
+        //                response.Message = _errorMessages.ErrorCreatingEntity(" Recipe ").ToString() + ex.Message;
+        //                return response;
+        //            }
+        //        }
+
+        //}
 
         public async Task<RepositoryResponse<Recipe>> SoftDeleteAsync(int id)
         {
@@ -652,6 +661,93 @@ namespace FamilyCookbook.Repository
 
         }
 
-        
+        public async Task<RepositoryResponse<Recipe>> CreateAsyncTransaction(RecipeCreateDTO entity)
+        {
+            var response = new RepositoryResponse<Recipe>();
+
+
+            using var connection = _context.CreateConnection();
+
+            connection.Open();
+
+            using (var transaction = connection.BeginTransaction())
+            {
+                try
+                {
+
+                    var insertPictureQuery = @"INSERT INTO Picture (Name, Location, IsActive) " +
+                                              "VALUES (@Name, @Location, @IsActive);" +
+                                              "SELECT SCOPE_IDENTITY();";
+
+                    var pictureParamaters = new
+                    {
+                        Name = entity.Picture.Name,
+                        Location = entity.Picture.Location,
+                        IsActive = entity.Picture.IsActive,
+                    };
+
+                    var pictureId =
+                        await connection.QuerySingleAsync<int>(insertPictureQuery, pictureParamaters, transaction);
+
+                    var insertRecipeQuery = @"INSERT INTO Recipe " +
+                            "(Title, Subtitle, Text, CategoryId, PictureId, IsActive, DateCreated, DateUpdated) " +
+                            "VALUES" +
+                            "(@Title, @Subtitle, @Text, @CategoryId, @PictureId, @IsActive, " +
+                            "@DateCreated, @DateUpdated);" +
+                            "SELECT SCOPE_IDENTITY();";
+
+                    var recipeParameters = new
+                    {
+                        Title = entity.Title,
+                        Subtitle = entity.Subtitle,
+                        Text = entity.Text,
+                        IsActive = entity.IsActive,
+                        CategoryId = entity.CategoryId,
+                        PictureId = pictureId,
+                        DateCreated = entity.DateCreated,
+                        DateUpdated = entity.DateUpdated,
+                    };
+
+                    var recipeId =
+                        await connection.QuerySingleAsync<int>(insertRecipeQuery, recipeParameters, transaction);
+
+                    var insertMemberRecipeQuery = @"INSERT INTO MemberRecipe(RecipeId, MemberId) " +
+                                                   "VALUES(@RecipeId, @MemberId);" +
+                                                   "SELECT SCOPE_IDENTITY();";
+
+                    if(entity.MemberIds == null)
+                    {
+                        response.Success = false;
+                        response.Message = "No members with selected ids in database";
+                        return response;
+                    }
+
+                    foreach (var memberId in entity.MemberIds)
+                    {
+                        var memberRecipeParametes = new
+                        {
+                            
+                            RecipeId = recipeId,
+                            MemberId = memberId
+                        };
+
+                        await connection
+                            .ExecuteAsync(insertMemberRecipeQuery, memberRecipeParametes, transaction);
+                    }
+                    transaction.Commit();
+                    response.Success = true;
+                    response.Message = _successResponses.EntityCreated().ToString();
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    response.Success = false;
+                    response.Message = _errorMessages.ErrorCreatingEntity(" Recipe ").ToString() + ex.Message;
+                    return response;
+                }
+            }
+
+        }
     }
 }

@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace FamilyCookbook.Service.Common
 {
-    public interface IPictureService : IService<Picture>
+    public interface ICategoryService : IService<Category>
     {
-        Task<RepositoryResponse<Picture>> CreateAsync(Picture entity);
+        Task<RepositoryResponse<Category>> CreateAsync(Category entity);
     }
 }

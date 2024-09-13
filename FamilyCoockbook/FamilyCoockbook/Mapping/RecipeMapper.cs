@@ -14,6 +14,8 @@ namespace FamilyCookbook.Mapping
 
          public partial Recipe RecipeCreateToRecipe(RecipeCreate newRecipe);
 
+         public partial RecipeCreateDTO RecipeCreateToRecipeCreateDTO(RecipeCreate newRecipeCreate);
+
     }
 
    

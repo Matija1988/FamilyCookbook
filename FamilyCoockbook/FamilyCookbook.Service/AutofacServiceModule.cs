@@ -13,7 +13,7 @@ namespace FamilyCookbook.Service
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<CategoryService>().As<IService<Category>>().InstancePerDependency();
+            builder.RegisterType<CategoryService>().As<ICategoryService>().InstancePerDependency();
 
             builder.RegisterType<RoleService>().As<IRoleService>().InstancePerDependency();
 

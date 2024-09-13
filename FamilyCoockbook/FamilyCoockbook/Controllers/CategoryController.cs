@@ -12,9 +12,9 @@ namespace FamilyCookbook.Controllers
     [Route("api/v0/category")]
     public class CategoryController : ControllerBase
     {
-        private readonly IService<Category> _service;
+        private readonly ICategoryService _service;
 
-        public CategoryController(IService<Category> service)
+        public CategoryController(ICategoryService service)
         {
             _service = service;
         }
