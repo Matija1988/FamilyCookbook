@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import { RouteNames } from "../../constants/constants";
 import CustomButton from "../../components/CustomButton";
 import RichTextEditor from "../../components/RichTextEditor";
+import UplaodPictureModal from "../../components/UploadPictureModal";
 
 export default function CreateRecipe() {
   const [recipe, setRecipe] = useState({
@@ -26,6 +27,7 @@ export default function CreateRecipe() {
     text: "",
     categoryId: null,
     memberIds: [],
+    pictureName: "",
   });
 
   const [categories, setCategories] = useState([]);
@@ -34,9 +36,11 @@ export default function CreateRecipe() {
   const [members, setMembers] = useState([]);
   const [foundMembers, setFoundMembers] = useState([]);
 
+  const [entity, setEntity] = useState({});
+  const [showModal, setShowModal] = useState(false);
+
   const quillRef = useRef(null);
 
-  const [searchCondition, setSearchCondition] = useState("");
   const typeaheadRef = useRef(null);
 
   const navigate = useNavigate();
@@ -104,7 +108,14 @@ export default function CreateRecipe() {
     });
   }
 
-  function assignMemberToRecipe(member) {
+  async function uploadPicture(e) {
+    if (e.currentTarget.files) {
+      const formData = new FormData();
+      formData.append("file", e.currentTarget.files[0]);
+    }
+  }
+
+  async function assignMemberToRecipe(member) {
     const updatedMembers = [...recipe.memberIds, member.id];
     setRecipe({ ...recipe, memberIds: updatedMembers });
     setFoundMembers([]);
@@ -202,6 +213,10 @@ export default function CreateRecipe() {
           </Row>
         </Form>
       </Container>
+      <UplaodPictureModal
+        recipe={recipe}
+        setPicture={uploadPicture}
+      ></UplaodPictureModal>
     </>
   );
 }

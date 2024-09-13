@@ -13,9 +13,14 @@ namespace FamilyCookbook.REST_Models.Recipe
 
         public string Text { get; set; }
 
+        [Required]
         public int CategoryId { get; set; }
 
+        [Required]
         public List<int> MemberIds { get; set; }
         
+        public string pictureName { get; set; }
+ 
+
     }
 }

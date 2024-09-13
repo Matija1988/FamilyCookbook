@@ -1,4 +1,5 @@
 ﻿using FamilyCookbook.Common;
+using FamilyCookbook.Common.Upload;
 using FamilyCookbook.Mapping;
 using FamilyCookbook.Model;
 using FamilyCookbook.REST_Models.Picture;
@@ -60,21 +61,30 @@ namespace FamilyCookbook.Controllers
                 return BadRequest(ModelState);
             }
 
-            string uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads");
-        
-            if(Directory.Exists(uploadsFolder))
+            var sizeValidation = PictureUpload.ValidatePictureSize(file);
+            if(sizeValidation is not OkResult)
+            {
+                return sizeValidation;
+            }
+
+            var extensionValidation = PictureUpload.ValidateFileExtension(file);
+            if (extensionValidation is not OkResult) 
+            { 
+                return extensionValidation;
+            }
+
+            var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads");
+
+            if (!Directory.Exists(uploadsFolder))
             {
                 Directory.CreateDirectory(uploadsFolder);
             }
 
+            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+            var filePath = Path.Combine(uploadsFolder, fileName);
+            var relativePath = Path.Combine("uploads", fileName);
 
-            string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-            string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-            using (var fileStream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(fileStream);
-            }
+            await PictureUpload.SavePictureAsync(file, filePath);
 
             var mapper = new PictureMapping();
 
@@ -82,7 +92,7 @@ namespace FamilyCookbook.Controllers
 
             var picture = mapper.PictureCreateToPicture(pictureDTO);
 
-            picture.Location = Path.Combine("uploads", uniqueFileName);
+            picture.Location = relativePath;
 
             var response = await _service.CreateAsync(picture);
 

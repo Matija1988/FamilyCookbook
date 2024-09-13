@@ -1,4 +1,5 @@
 ﻿using FamilyCookbook.Common;
+using FamilyCookbook.Common.Validations;
 using FamilyCookbook.Mapping;
 using FamilyCookbook.Model;
 using FamilyCookbook.REST_Models.Recipe;
@@ -102,11 +103,18 @@ namespace FamilyCookbook.Controllers
 
         [HttpPost]
         [Route("create")]
-        public async Task<IActionResult> CreateAsync(RecipeCreate newRecipe)
+        public async Task<IActionResult> CreateAsync(IFormFile picture,RecipeCreate newRecipe)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
+            }
+
+            var validatePicture = PictureValidations.ValidatePicture(picture);
+
+            if(validatePicture is not OkResult)
+            {
+                return validatePicture;
             }
 
             var sanitizer = new HtmlSanitizer();
@@ -146,10 +154,11 @@ namespace FamilyCookbook.Controllers
             returnRecipe.Subtitle = response.Items.Subtitle;
             returnRecipe.Text = response.Items.Text;
             
-            
             return Ok(returnRecipe);
 
         }
+
+       
 
         [HttpPut]
         [Route("addPictureToRecipe/{recipeId:int}/{pictureId:int}")]
