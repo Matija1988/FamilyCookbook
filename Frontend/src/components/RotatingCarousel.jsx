@@ -34,14 +34,14 @@ function RotatingCarousel({}) {
     }
   }
 
-      useEffect(() => {
+  useEffect(() => {
     fectchRecipes();
   }, [pageNumber, pageSize]);
 
   return (
     <Carousel>
       {recipes.map((recipe) => (
-        <Carousel.Item>
+        <Carousel.Item key={recipe.id}>
           <img
             onClick={() => {
               navigate(RouteNames.RECIPE_DETAILS.replace(":id", recipe.id));

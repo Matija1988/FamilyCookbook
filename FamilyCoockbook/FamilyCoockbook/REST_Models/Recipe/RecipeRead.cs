@@ -20,5 +20,7 @@ namespace FamilyCookbook.REST_Models.Recipe
 
         public string? PictureName { get; set; }
 
+        public string PictureLocation { get; set; }
+
     }
 }
