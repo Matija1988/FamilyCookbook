@@ -54,7 +54,7 @@ namespace FamilyCookbook.Controllers
 
         [HttpPost]
         [Route("create")]
-        public async Task<IActionResult> PostAsync( IFormFile file,  string name)
+        public async Task<IActionResult> PostAsync(IFormFile file,  string name)
         {
             if(!ModelState.IsValid || file ==  null)
             {
@@ -93,6 +93,7 @@ namespace FamilyCookbook.Controllers
             var picture = mapper.PictureCreateToPicture(pictureDTO);
 
             picture.Location = relativePath;
+            
 
             var response = await _service.CreateAsync(picture);
 

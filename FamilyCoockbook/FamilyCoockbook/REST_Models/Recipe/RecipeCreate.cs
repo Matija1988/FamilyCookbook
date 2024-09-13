@@ -19,7 +19,9 @@ namespace FamilyCookbook.REST_Models.Recipe
         [Required]
         public List<int> MemberIds { get; set; }
         
-        public string pictureName { get; set; }
+        public string PictureName { get; set; }
+
+        public IFormFile Picture { get; set; }
  
 
     }

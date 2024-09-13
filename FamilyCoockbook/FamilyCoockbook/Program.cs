@@ -5,6 +5,7 @@ using FamilyCookbook;
 using FamilyCookbook.Common;
 using FamilyCookbook.Repository;
 using FamilyCookbook.Service;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 

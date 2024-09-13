@@ -80,6 +80,8 @@ namespace FamilyCookbook.Service
             entity.DateUpdated = DateTime.Now;
             entity.IsActive = true;
 
+            entity.Picture.IsActive = true;
+
             var response = await _repository.CreateAsync(entity);
 
             return response;

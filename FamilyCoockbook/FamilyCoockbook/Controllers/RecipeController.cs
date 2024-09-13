@@ -1,4 +1,5 @@
 ﻿using FamilyCookbook.Common;
+using FamilyCookbook.Common.Upload;
 using FamilyCookbook.Common.Validations;
 using FamilyCookbook.Mapping;
 using FamilyCookbook.Model;
@@ -16,13 +17,14 @@ namespace FamilyCookbook.Controllers
     public class RecipeController : ControllerBase
     {
         private readonly IRecipeService _service;
-
+        private readonly IWebHostEnvironment _enviroment; 
         private readonly IService<Category> _categoryService;
 
-        public RecipeController(IRecipeService service, IMemberService memberService, IService<Category> categoryService)
+        public RecipeController(IWebHostEnvironment environment, IRecipeService service, IMemberService memberService, IService<Category> categoryService)
         {
             _service = service;
             _categoryService = categoryService;
+            _enviroment = environment;
         }
 
         [HttpGet]
@@ -103,19 +105,32 @@ namespace FamilyCookbook.Controllers
 
         [HttpPost]
         [Route("create")]
-        public async Task<IActionResult> CreateAsync(IFormFile picture,RecipeCreate newRecipe)
+        public async Task<IActionResult> CreateAsync([FromForm] RecipeCreate newRecipe)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var validatePicture = PictureValidations.ValidatePicture(picture);
+            var validatePicture = PictureValidations.ValidatePicture(newRecipe.Picture);
 
             if(validatePicture is not OkResult)
             {
                 return validatePicture;
             }
+
+            var uploadsFolder = Path.Combine(_enviroment.WebRootPath, "uploads");
+            
+            if(!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(newRecipe.Picture.FileName);
+            var filePath = Path.Combine(uploadsFolder, fileName);
+            var relativePath = Path.Combine("uploads", fileName);
+
+            await PictureUpload.SavePictureAsync(newRecipe.Picture, filePath);
 
             var sanitizer = new HtmlSanitizer();
 
@@ -127,6 +142,9 @@ namespace FamilyCookbook.Controllers
 
             var recipe = mapper.RecipeCreateToRecipe(newRecipe);
 
+            recipe.Picture.Location = relativePath;
+            recipe.Picture.Name = newRecipe.PictureName;
+
             var response = await _service.CreateAsync(recipe);
 
             if (response.Success == false)
@@ -134,27 +152,7 @@ namespace FamilyCookbook.Controllers
                 return BadRequest(response.Message);
             }
 
-            foreach (var item in newRecipe.MemberIds) 
-            {
-                var memberRecipe = new MemberRecipe();
-
-                memberRecipe.RecipeId = response.Items.Id;
-                memberRecipe.MemberId = item;
-
-                var addMemberToRecipe = await _service.AddMemberToRecipe(memberRecipe);
-            }
-
-            var category = await _categoryService.GetByIdAsync(recipe.CategoryId);
-
-            var returnRecipe = new RecipeRead();
-
-            returnRecipe.Id = response.Items.Id;
-            returnRecipe.CategoryName = category.Items.Name;
-            returnRecipe.Title = response.Items.Title;
-            returnRecipe.Subtitle = response.Items.Subtitle;
-            returnRecipe.Text = response.Items.Text;
-            
-            return Ok(returnRecipe);
+            return Ok(response.Message);
 
         }
 

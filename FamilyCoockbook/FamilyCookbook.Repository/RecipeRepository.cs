@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using Azure.Core;
+using Dapper;
 using FamilyCookbook.Common;
 using FamilyCookbook.Model;
 using FamilyCookbook.Repository.Common;
@@ -6,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -126,46 +128,78 @@ namespace FamilyCookbook.Repository
             var response = new RepositoryResponse<Recipe>();
 
             
-            try
-            {
-                string query = "INSERT INTO Recipe " +
-                    "(Title, " +
-                    "Subtitle, " +
-                    "Text, " +
-                    "IsActive, " +
-                    "DateCreated, " +
-                    "DateUpdated, " +
-                    "CategoryId)" +
-                    "OUTPUT INSERTED.Id, INSERTED.Title, INSERTED.Subtitle, INSERTED.Text," +
-                    "INSERTED.IsActive, INSERTED.DateCreated, INSERTED.DateUpdated, INSERTED.CategoryId  " +
-                    "VALUES (@Title, " +
-                    "@Subtitle, " +
-                    "@Text, " +
-                    "@IsActive, " +
-                    "@DateCreated, " +
-                    "@DateUpdated," +
-                    "@CategoryId); ";
-
                 using var connection = _context.CreateConnection();
 
-                var id = await connection.ExecuteScalarAsync<int>(query, entity);
-                entity.Id = id;
+                connection.Open();
 
-                response.Success = true;
-                response.Message = _successResponses.EntityCreated().ToString();
-                response.Items = entity;
-                return response;
-            }
-            catch (Exception ex)
-            {
-                response.Success = false;
-                response.Message = _errorMessages.ErrorCreatingEntity(" Recipe ").ToString();
-                return response;
-            }
-            finally 
-            { 
-             _context.CreateConnection().Close();
-            }
+                using (var transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+
+                        var insertPictureQuery = @"INSERT INTO Picture (Name, Location, IsActive) " +
+                                                  "VALUES (@Name, @Location, @IsActive);" +
+                                                  "SELECT SCOPE_IDENTITY();";
+
+                        var pictureParamaters = new
+                        {
+                            Name = entity.Picture.Name,
+                            Location = entity.Picture.Location,
+                            IsActive = entity.Picture.IsActive,
+                        };
+
+                        var pictureId =
+                            await connection.QuerySingleAsync<int>(insertPictureQuery, pictureParamaters, transaction);
+
+                        var insertRecipeQuery = @"INSERT INTO Recipe " +
+                                "(Title, Subtitle, Text, CategoryId, PictureId, IsActive, DateCreated, DateUpdated) " +
+                                "VALUES" +
+                                "(@Title, @Subtitle, @Text, @CategoryId, @PictureId, @IsActive, " +
+                                "@DateCreated, @DateUpdated);" +
+                                "SELECT SCOPE_IDENTITY();";
+
+                        var recipeParameters = new
+                        {
+                            Title = entity.Title,
+                            Subtitle = entity.Subtitle,
+                            Text = entity.Text,
+                            IsActive = entity.IsActive,
+                            CategoryId = entity.CategoryId,
+                            PictureId = pictureId,
+                            DateCreated = entity.DateCreated,
+                            DateUpdated = entity.DateUpdated,
+                        };
+
+                        var recipeId =
+                            await connection.QuerySingleAsync<int>(insertRecipeQuery, recipeParameters, transaction);
+
+                        var insertMemberRecipeQuery = @"INSERT INTO MemberRecipe(RecipeId, MemberId) " +
+                                                       "VALUES(@RecipeId, @MemberId)";
+
+                        foreach (var memberId in entity.Members)
+                        {
+                            var memberRecipeParametes = new
+                            {
+                                RecipeId = recipeId,
+                                MemberId = memberId.Id
+                            };
+
+                            await connection
+                                .ExecuteAsync(insertMemberRecipeQuery, memberRecipeParametes, transaction);
+                        }
+                        transaction.Commit();
+                        response.Success = true;
+                        response.Message = _successResponses.EntityCreated().ToString();
+                        return response;
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        response.Success = false;
+                        response.Message = _errorMessages.ErrorCreatingEntity(" Recipe ").ToString() + ex.Message;
+                        return response;
+                    }
+                }
 
         }
 
