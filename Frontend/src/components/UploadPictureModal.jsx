@@ -1,4 +1,4 @@
-import { Form, Modal } from "react-bootstrap";
+import { Button, Form, Modal } from "react-bootstrap";
 
 export default function UplaodPictureModal({
   recipe,

@@ -18,9 +18,9 @@ namespace FamilyCookbook.Controllers
     {
         private readonly IRecipeService _service;
         private readonly IWebHostEnvironment _enviroment; 
-        private readonly IService<Category> _categoryService;
+        private readonly ICategoryService _categoryService;
 
-        public RecipeController(IWebHostEnvironment environment, IRecipeService service, IMemberService memberService, IService<Category> categoryService)
+        public RecipeController(IWebHostEnvironment environment, IRecipeService service, ICategoryService categoryService)
         {
             _service = service;
             _categoryService = categoryService;

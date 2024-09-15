@@ -19,6 +19,7 @@ import { RouteNames } from "../../constants/constants";
 import CustomButton from "../../components/CustomButton";
 import RichTextEditor from "../../components/RichTextEditor";
 import UplaodPictureModal from "../../components/UploadPictureModal";
+import { all } from "axios";
 
 export default function CreateRecipe() {
   const [recipe, setRecipe] = useState({
@@ -28,6 +29,7 @@ export default function CreateRecipe() {
     categoryId: null,
     memberIds: [],
     pictureName: "",
+    picture: null,
   });
 
   const [categories, setCategories] = useState([]);
@@ -38,6 +40,12 @@ export default function CreateRecipe() {
 
   const [entity, setEntity] = useState({});
   const [showModal, setShowModal] = useState(false);
+
+  const [uploadedPicture, setUploadedPicture] = useState(null);
+
+  const [error, setError] = useState("");
+
+  const maxPictureSize = 1 * 1024 * 1024;
 
   const quillRef = useRef(null);
 
@@ -52,7 +60,8 @@ export default function CreateRecipe() {
         setCategories(response.data.items);
       }
     } catch (error) {
-      alert(error.message);
+      setError(error.message);
+      alert(error);
     }
   }
 
@@ -78,7 +87,11 @@ export default function CreateRecipe() {
 
   async function postRecipe(entity) {
     try {
-      const response = await RecipeService.create("recipe/create", entity);
+      const response = await RecipeService.create("recipe/create", entity, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       if (response.ok) {
         navigate(RouteNames.RECIPES);
       }
@@ -105,14 +118,9 @@ export default function CreateRecipe() {
       text: recipe.text,
       categoryId: parseInt(selectedCategoryId),
       memberIds: authorIds,
+      pictureName: information.get("Picture name"),
+      picture: uploadedPicture,
     });
-  }
-
-  async function uploadPicture(e) {
-    if (e.currentTarget.files) {
-      const formData = new FormData();
-      formData.append("file", e.currentTarget.files[0]);
-    }
   }
 
   async function assignMemberToRecipe(member) {
@@ -125,7 +133,31 @@ export default function CreateRecipe() {
     navigate(RouteNames.RECIPES);
   }
 
-  console.log("CATEGORY ID " + parseInt(selectedCategoryId));
+  const handlePictureChange = (event) => {
+    const file = event.target.files[0];
+
+    console.log(file);
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
+
+    if (file && !allowedTypes.includes(file.type)) {
+      setError("Only JPEG, JPG and PNG files are allowed!!!");
+      setUploadedPicture(null);
+      return;
+    }
+
+    if (file && file.size > maxPictureSize) {
+      setError(
+        "Maximum file size is " + (maxPictureSize / (1024 * 1024) + " MB!!!")
+      );
+      setUploadedPicture(null);
+      return;
+    }
+
+    setError("");
+
+    setUploadedPicture(file);
+    console.log("Picture ", uploadedPicture);
+  };
 
   return (
     <>
@@ -192,6 +224,22 @@ export default function CreateRecipe() {
             </Col>
             <Col></Col>
           </Row>
+          <Row>
+            <Col>
+              <InputText atribute="Picture name" value=""></InputText>
+            </Col>
+            <Col></Col>
+          </Row>
+          <Row>
+            <Col>
+              <div>
+                <Form.Label>Upload image</Form.Label>
+                <input type="file" onChange={handlePictureChange}></input>
+                {error && <p style={{ color: "red" }}>{error}</p>}
+              </div>
+            </Col>
+          </Row>
+
           <RichTextEditor
             value={recipe.text}
             setValue={(text) => setRecipe({ ...recipe, text })}
@@ -213,10 +261,6 @@ export default function CreateRecipe() {
           </Row>
         </Form>
       </Container>
-      <UplaodPictureModal
-        recipe={recipe}
-        setPicture={uploadPicture}
-      ></UplaodPictureModal>
     </>
   );
 }
