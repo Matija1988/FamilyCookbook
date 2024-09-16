@@ -112,23 +112,6 @@ export default function CreateRecipe() {
 
     const authorIds = recipe.memberIds.map((id) => id);
 
-    // // recipe.title = information.get("Title");
-    // // recipe.subtitle = information.get("Subtitle");
-
-    // information.append("Title", recipe.title);
-    // information.append("Subtitle", recipe.subtitle);
-    // information.append("Text", recipe.text);
-    // information.append("PictureName", pictureName);
-    // information.append("CategoryId", parseInt(selectedCategoryId));
-    // information.append("MemberIds", JSON.stringify(recipe.memberIds));
-
-    // const base64Data = uploadedPicture.split(",")[1];
-    // const fileBlob = new Blob([base64Data], { type: "image/jpg" });
-
-    // information.append("Picture", fileBlob, pictureName);
-
-    // postRecipe(information);
-
     postRecipe({
       title: e.target.Title.value,
       subtitle: e.target.Subtitle.value,

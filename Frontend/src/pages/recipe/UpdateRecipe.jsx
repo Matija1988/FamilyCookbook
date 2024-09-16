@@ -12,6 +12,8 @@ import MembersService from "../../services/MembersService";
 import { AsyncTypeahead } from "react-bootstrap-typeahead";
 import { TbWashDryP } from "react-icons/tb";
 import RichTextEditor from "../../components/RichTextEditor";
+import PictureService from "../../services/PictureService";
+import ImageGallery from "../../components/ImageGallery";
 
 export default function UpdateRecipe() {
   const [recipe, setRecipe] = useState({
@@ -26,18 +28,30 @@ export default function UpdateRecipe() {
         lastName: "",
       },
     ],
+    pictureName: "",
+    pictureLocation: "",
+    pictureId: "",
   });
   const [categories, setCategories] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const [members, setMembers] = useState([]);
   const [foundMembers, setFoundMembers] = useState([]);
 
+  const [newPicture, setNewPicture] = useState(null);
+  const [newPictureName, setNewPictureName] = useState("");
   const quillRef = useRef(null);
+
+  const [isImageGalleryOpen, setIsImageGalleryOpen] = useState(false);
+
+  const maxPictureSize = 1 * 1024 * 1024;
 
   const typeaheadRef = useRef(null);
 
   const routeParams = useParams();
   const navigate = useNavigate();
+  const URL = "https://localhost:7170/";
+
+  const [error, setError] = useState("");
 
   async function fetchRecipe() {
     try {
@@ -49,6 +63,17 @@ export default function UpdateRecipe() {
       }
     } catch (error) {
       alert(error.message);
+    }
+  }
+
+  async function fecthPicture() {
+    try {
+      const response = await PictureService.getById("picture", routeParams.id);
+      if (response.ok) {
+        setOldPicture(response.data.items);
+      }
+    } catch (error) {
+      Alert(error.message);
     }
   }
 
@@ -77,6 +102,7 @@ export default function UpdateRecipe() {
   useEffect(() => {
     fetchRecipe();
     fetchCategories();
+    fecthPicture();
   }, []);
 
   function handleCancel() {
@@ -139,11 +165,39 @@ export default function UpdateRecipe() {
     setFoundMembers([]);
   }
 
-  // function handleCategorySelect(e) {
-  //   setSelectedCategoryId(e.target.value);
+  const handlePictureChange = (event) => {
+    const file = event.target.files[0];
+    setNewPictureName(file.name);
 
-  // }
-  console.log(selectedCategoryId);
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
+
+    if (file && !allowedTypes.includes(file.type)) {
+      setError("Only JPEG, JPG and PNG files are allowed");
+      setNewPicture(null);
+      return;
+    }
+    if (file && file.size > maxPictureSize) {
+      setError(
+        "Maximum file size is " + maxPictureSize / (1024 * 1024) + " MB!!!"
+      );
+      setNewPicture(null);
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setNewPicture(reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const openImageModal = () => {
+    setIsImageGalleryOpen(true);
+  };
+  const closeImageModal = () => {
+    setIsImageGalleryOpen(false);
+  };
+
   return (
     <>
       <Container className="primaryContainer">
@@ -238,6 +292,46 @@ export default function UpdateRecipe() {
             <Col></Col>
           </Row>
           <Row>
+            <Row>
+              <Col>
+                <Form.Label>Picture</Form.Label>
+              </Col>
+            </Row>
+            <Col>
+              <div>
+                <img
+                  src={URL + recipe.pictureLocation}
+                  style={{ width: "300px" }}
+                ></img>
+              </div>
+            </Col>
+            <Row>
+              <Col>
+                <Form.Label>Set new picture</Form.Label>
+              </Col>
+              <Col>
+                <Form.Label>Select image from gallery</Form.Label>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <div>
+                  <input
+                    type="file"
+                    onChange={(e) => handlePictureChange(e)}
+                  ></input>
+                  {error && <p style={{ color: red }}>{error}</p>}
+                </div>
+              </Col>
+              <Col>
+                <CustomButton
+                  label="Images"
+                  onClick={openImageModal}
+                ></CustomButton>
+              </Col>
+            </Row>
+          </Row>
+          <Row>
             <RichTextEditor
               value={recipe.text}
               setValue={(text) => setRecipe({ ...recipe, text })}
@@ -261,6 +355,10 @@ export default function UpdateRecipe() {
           </Row>
         </Form>
       </Container>
+      <ImageGallery
+        isOpen={isImageGalleryOpen}
+        closeModal={closeImageModal}
+      ></ImageGallery>
     </>
   );
 }
