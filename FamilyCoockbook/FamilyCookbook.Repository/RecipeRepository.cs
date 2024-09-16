@@ -368,7 +368,7 @@ namespace FamilyCookbook.Repository
 
             try
             {
-                
+                var incrrasedPageSize = paging.PageSize * 3;                
                 string query = QueryBuilder(paging, filter);
 
                 var entityDictionary = new Dictionary<int, Recipe>();
@@ -378,7 +378,7 @@ namespace FamilyCookbook.Repository
                 using var multipleQuery = await connection.QueryMultipleAsync(query, new
                 {
                     Offset = (paging.PageNumber - 1) * paging.PageSize,
-                    paging.PageSize,
+                    PageSize = incrrasedPageSize,
                 });
 
                 IEnumerable<Recipe> entities =  multipleQuery.Read<Recipe, Member, Category, Picture, Recipe>
@@ -411,7 +411,7 @@ namespace FamilyCookbook.Repository
                     splitOn: "Id");
 
                 response.Success = true;
-                response.Items = entityDictionary.Values.ToList();
+                response.Items = entityDictionary.Values.Take(paging.PageSize).ToList();    
                 response.TotalCount = multipleQuery.ReadSingle<int>();
                 
                 return response;
@@ -435,7 +435,7 @@ namespace FamilyCookbook.Repository
             StringBuilder sb = new StringBuilder();
 
             StringBuilder countQuery = new StringBuilder(
-                $" SELECT COUNT(*) FROM Recipe a " +
+                $" SELECT COUNT(DISTINCT a.Id) FROM Recipe a " +
                 $" JOIN MemberRecipe b ON a.Id = b.RecipeId " +
                 $" JOIN Member c on b.MemberId = c.Id " +
                 $" LEFT JOIN Category d ON d.Id = a.CategoryId " +
@@ -456,10 +456,10 @@ namespace FamilyCookbook.Repository
                 "d.Name," +
                 "e.* " +
                 "FROM Recipe a " +
-                "LEFT JOIN MemberRecipe b on a.Id = b.RecipeId " +
-                "LEFT JOIN Member c on b.MemberId = c.Id " +
+                " JOIN MemberRecipe b on a.Id = b.RecipeId " +
+                " JOIN Member c on b.MemberId = c.Id " +
                 "LEFT JOIN Category d on d.Id = a.CategoryId " +
-                "LEFT JOIN Picture e on e.Id = a.PictureId " +
+                " JOIN Picture e on e.Id = a.PictureId " +
                 "WHERE a.IsActive = 1 ");
 
             if (!string.IsNullOrWhiteSpace(filter.SearchByTitle)) 
@@ -507,7 +507,7 @@ namespace FamilyCookbook.Repository
             }
 
 
-            sb.Append("ORDER BY a.DateCreated ");
+            sb.Append("ORDER BY a.DateCreated DESC ");
             sb.Append($"OFFSET @Offset ROWS ");
             sb.Append($"FETCH NEXT @PageSize ROWS ONLY;");
            
