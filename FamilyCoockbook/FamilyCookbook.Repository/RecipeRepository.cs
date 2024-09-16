@@ -378,7 +378,7 @@ namespace FamilyCookbook.Repository
                 using var multipleQuery = await connection.QueryMultipleAsync(query, new
                 {
                     Offset = (paging.PageNumber - 1) * paging.PageSize,
-                    PageSize = paging.PageSize,
+                    paging.PageSize,
                 });
 
                 IEnumerable<Recipe> entities =  multipleQuery.Read<Recipe, Member, Category, Picture, Recipe>
@@ -442,7 +442,7 @@ namespace FamilyCookbook.Repository
                 $" JOIN Picture e on e.Id = a.PictureId " +
                 $" WHERE a.IsActive = {filter.SearchByActivityStatus} ");
 
-            sb.Append("SELECT " +
+            sb.Append("SELECT  " +
                 "a.Id, " +
                 "a.Title, " +
                 "a.Subtitle, " +
@@ -456,10 +456,10 @@ namespace FamilyCookbook.Repository
                 "d.Name," +
                 "e.* " +
                 "FROM Recipe a " +
-                "JOIN MemberRecipe b on a.Id = b.RecipeId " +
-                "JOIN Member c on b.MemberId = c.Id " +
+                "LEFT JOIN MemberRecipe b on a.Id = b.RecipeId " +
+                "LEFT JOIN Member c on b.MemberId = c.Id " +
                 "LEFT JOIN Category d on d.Id = a.CategoryId " +
-                "JOIN Picture e on e.Id = a.PictureId " +
+                "LEFT JOIN Picture e on e.Id = a.PictureId " +
                 "WHERE a.IsActive = 1 ");
 
             if (!string.IsNullOrWhiteSpace(filter.SearchByTitle)) 
