@@ -248,8 +248,12 @@ export default function CreateRecipe() {
 
           <Row>
             <Col>
+              <Form.Label>Upload image</Form.Label>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
               <div>
-                <Form.Label>Upload image</Form.Label>
                 <input
                   type="file"
                   onChange={(e) => handlePictureChange(e)}
@@ -258,7 +262,11 @@ export default function CreateRecipe() {
               </div>
             </Col>
           </Row>
-
+          <Row>
+            <Col>
+              <img src={uploadedPicture} style={{ width: "300px" }}></img>
+            </Col>
+          </Row>
           <RichTextEditor
             value={recipe.text}
             setValue={(text) => setRecipe({ ...recipe, text })}
