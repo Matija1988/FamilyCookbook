@@ -21,7 +21,7 @@ namespace FamilyCookbook.REST_Models.Recipe
         
         public string PictureName { get; set; }
 
-        public IFormFile Picture { get; set; }
+        public string Picture { get; set; }
  
 
     }

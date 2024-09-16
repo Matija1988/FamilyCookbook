@@ -74,9 +74,6 @@ namespace FamilyCookbook.Service
             return chk;
         }
 
-
-      
-
         public async Task<RepositoryResponse<Recipe>> DeleteAsync(int id)
         {
             var response = await _repository.DeleteAsync(id);
@@ -109,6 +106,8 @@ namespace FamilyCookbook.Service
         public async Task<RepositoryResponse<List<Recipe>>> PaginateAsync(Paging paging, RecipeFilter filter)
         {
           var response = await _repository.PaginateAsync(paging, filter);
+
+            response.PageCount = (int)Math.Ceiling(response.TotalCount / (double)paging.PageSize);
 
             return response;
         }

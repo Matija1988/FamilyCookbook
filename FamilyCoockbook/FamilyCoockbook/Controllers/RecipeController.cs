@@ -105,18 +105,46 @@ namespace FamilyCookbook.Controllers
 
         [HttpPost]
         [Route("create")]
-        public async Task<IActionResult> CreateAsync([FromForm] RecipeCreate newRecipe)
+        public async Task<IActionResult> CreateAsync(RecipeCreate newRecipe)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var validatePicture = PictureValidations.ValidatePicture(newRecipe.Picture);
-
-            if(validatePicture is not OkResult)
+            if (string.IsNullOrEmpty(newRecipe.Picture))
             {
-                return validatePicture;
+                return BadRequest("Picture data is missing");
+            }
+
+            byte[] imageBytes;
+            string fileExtenxion = "";
+
+            try
+            {
+                var base64DataParts = newRecipe.Picture.Split(',');
+                var mimeType = base64DataParts[0];
+                var base64Data = base64DataParts[1];
+
+                imageBytes = Convert.FromBase64String(base64Data);
+
+                fileExtenxion = mimeType switch
+                {
+                    "data:image/jpeg;base64" => ".jpg",
+                    "data:image/jpg;base64" => ".jpg",
+                    "data:image/png;base64" => ".png",
+                    _ => ""
+                };
+
+                if (string.IsNullOrEmpty(fileExtenxion))
+                {
+                    return BadRequest("Unsported file type. Use JPEG, JPG or PNG!");
+                }
+               
+            }
+            catch (Exception ex) 
+            {
+                return BadRequest($"Failed to create image: {ex.Message}");
             }
 
             var uploadsFolder = Path.Combine(_enviroment.WebRootPath, "uploads");
@@ -126,11 +154,11 @@ namespace FamilyCookbook.Controllers
                 Directory.CreateDirectory(uploadsFolder);
             }
 
-            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(newRecipe.Picture.FileName);
+            var fileName = Guid.NewGuid().ToString() + fileExtenxion;
             var filePath = Path.Combine(uploadsFolder, fileName);
             var relativePath = Path.Combine("uploads", fileName);
 
-            await PictureUpload.SavePictureAsync(newRecipe.Picture, filePath);
+            await System.IO.File.WriteAllBytesAsync(filePath, imageBytes);
 
             var sanitizer = new HtmlSanitizer();
 

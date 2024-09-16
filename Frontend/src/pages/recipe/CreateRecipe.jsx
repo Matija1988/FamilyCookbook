@@ -18,8 +18,6 @@ import { useNavigate } from "react-router-dom";
 import { RouteNames } from "../../constants/constants";
 import CustomButton from "../../components/CustomButton";
 import RichTextEditor from "../../components/RichTextEditor";
-import UplaodPictureModal from "../../components/UploadPictureModal";
-import { all } from "axios";
 
 export default function CreateRecipe() {
   const [recipe, setRecipe] = useState({
@@ -29,7 +27,6 @@ export default function CreateRecipe() {
     categoryId: null,
     memberIds: [],
     pictureName: "",
-    picture: null,
   });
 
   const [categories, setCategories] = useState([]);
@@ -38,9 +35,7 @@ export default function CreateRecipe() {
   const [members, setMembers] = useState([]);
   const [foundMembers, setFoundMembers] = useState([]);
 
-  const [entity, setEntity] = useState({});
-  const [showModal, setShowModal] = useState(false);
-
+  const [pictureName, setPictureName] = useState("");
   const [uploadedPicture, setUploadedPicture] = useState(null);
 
   const [error, setError] = useState("");
@@ -85,13 +80,13 @@ export default function CreateRecipe() {
     setMembers(response.data.items);
   }
 
-  async function postRecipe(entity) {
+  async function postRecipe(entity, isMultiPart = false) {
     try {
-      const response = await RecipeService.create("recipe/create", entity, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await RecipeService.create(
+        "recipe/create",
+        entity,
+        isMultiPart
+      );
       if (response.ok) {
         navigate(RouteNames.RECIPES);
       }
@@ -108,17 +103,39 @@ export default function CreateRecipe() {
   function handleSubmit(e) {
     e.preventDefault();
 
-    const information = new FormData(e.target);
+    const formData = new FormData(e.target);
+
+    recipe.title = formData.get("Title");
+    recipe.subtitle = formData.get("Subtitle");
+
+    const information = new FormData();
 
     const authorIds = recipe.memberIds.map((id) => id);
 
+    // // recipe.title = information.get("Title");
+    // // recipe.subtitle = information.get("Subtitle");
+
+    // information.append("Title", recipe.title);
+    // information.append("Subtitle", recipe.subtitle);
+    // information.append("Text", recipe.text);
+    // information.append("PictureName", pictureName);
+    // information.append("CategoryId", parseInt(selectedCategoryId));
+    // information.append("MemberIds", JSON.stringify(recipe.memberIds));
+
+    // const base64Data = uploadedPicture.split(",")[1];
+    // const fileBlob = new Blob([base64Data], { type: "image/jpg" });
+
+    // information.append("Picture", fileBlob, pictureName);
+
+    // postRecipe(information);
+
     postRecipe({
-      title: information.get("Title"),
-      subtitle: information.get("Subtitle"),
+      title: e.target.Title.value,
+      subtitle: e.target.Subtitle.value,
       text: recipe.text,
       categoryId: parseInt(selectedCategoryId),
       memberIds: authorIds,
-      pictureName: information.get("Picture name"),
+      pictureName: pictureName,
       picture: uploadedPicture,
     });
   }
@@ -135,7 +152,7 @@ export default function CreateRecipe() {
 
   const handlePictureChange = (event) => {
     const file = event.target.files[0];
-
+    setPictureName(file.name);
     console.log(file);
     const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
 
@@ -153,10 +170,14 @@ export default function CreateRecipe() {
       return;
     }
 
-    setError("");
+    const reader = new FileReader();
 
-    setUploadedPicture(file);
-    console.log("Picture ", uploadedPicture);
+    reader.onloadend = () => {
+      setUploadedPicture(reader.result);
+    };
+
+    reader.readAsDataURL(file);
+    console.log("Picture: ", uploadedPicture);
   };
 
   return (
@@ -224,17 +245,15 @@ export default function CreateRecipe() {
             </Col>
             <Col></Col>
           </Row>
-          <Row>
-            <Col>
-              <InputText atribute="Picture name" value=""></InputText>
-            </Col>
-            <Col></Col>
-          </Row>
+
           <Row>
             <Col>
               <div>
                 <Form.Label>Upload image</Form.Label>
-                <input type="file" onChange={handlePictureChange}></input>
+                <input
+                  type="file"
+                  onChange={(e) => handlePictureChange(e)}
+                ></input>
                 {error && <p style={{ color: "red" }}>{error}</p>}
               </div>
             </Col>
