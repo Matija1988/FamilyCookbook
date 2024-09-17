@@ -22,6 +22,8 @@ import ImageGallery from "../../components/ImageGallery";
 import PictureService from "../../services/PictureService";
 import { httpService } from "../../services/HttpService";
 
+import "./createForm.css";
+
 export default function CreateRecipe() {
   const [recipe, setRecipe] = useState({
     title: "",
@@ -276,16 +278,21 @@ export default function CreateRecipe() {
           <Row>
             <Col>
               <img src={uploadedPicture} style={{ width: "300px" }}></img>
-              <img
-                src={URL + imageFromGallery.location}
-                style={{ width: "300px" }}
-              ></img>
+              {imageFromGallery ? (
+                <img
+                  src={URL + imageFromGallery.location}
+                  style={{ width: "300px" }}
+                ></img>
+              ) : (
+                <div></div>
+              )}
             </Col>
           </Row>
           <RichTextEditor
             value={recipe.text}
             setValue={(text) => setRecipe({ ...recipe, text })}
             ref={quillRef}
+            className="ql-editor"
           />
           <Row>
             <Col>

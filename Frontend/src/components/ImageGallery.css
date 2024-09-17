@@ -1,7 +1,7 @@
 .image-glry-sdbr {
-  width: 10%;
+  width: 15%;
   height: 100%;
-  background-color: #f0f0f0;
+  background-color: #aaa6a6;
   padding: 20px;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   position: absolute;
@@ -13,6 +13,16 @@
   margin-top: 10px;
   padding: 10px;
   background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.close-main-image-btn {
+  margin-left: 5px;
+  background-color: grey;
+  border-radius: 4px;
+  padding: 10px;
   color: white;
   border: none;
   cursor: pointer;
@@ -36,8 +46,10 @@
   padding: 20px;
   border-radius: 10px;
   position: relative;
-  max-width: 600px;
+  max-width: 90%;
+  max-height: 80%;
   width: 100%;
+  overflow-y: auto;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   animation: fadeIn 0.3s;
 }
@@ -51,6 +63,10 @@
   background-color: white;
 }
 
+.close-modal-btn:hover {
+  background: #c82333;
+}
+
 .gallery {
   display: flex;
   gap: 10px;
@@ -62,9 +78,11 @@
   width: 150px;
   height: 150px;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 4px;
+  margin: 5px;
   cursor: pointer;
   transition: transform 0.2;
+  border: 1px solid #dee2e6;
 }
 
 .gallery-image:hover {
@@ -73,6 +91,10 @@
 
 .selected {
   border: 3px solid #007bff;
+}
+
+.selected:hover {
+  border-color: #0056b3;
 }
 
 .fullscreen-overlay {
@@ -91,6 +113,7 @@
 .fullscreen-image {
   max-width: 90%;
   max-height: 90%;
+  border-radius: 8px;
 }
 
 @keyframes fadeId {
