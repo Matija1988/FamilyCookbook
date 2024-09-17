@@ -55,6 +55,7 @@ function RotatingCarousel({}) {
               width: "70%",
               justifyContent: "center",
               marginLeft: "15%",
+              marginTop: "4%",
             }}
           />
           <Carousel.Caption>
