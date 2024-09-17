@@ -167,29 +167,7 @@ export default function CreateRecipe() {
   };
 
   const setMainImage = (image) => {
-    const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
-
-    if (!allowedTypes.includes(image.type)) {
-      setError("Only JPEG, JPG and PNG files are allowed!!!");
-      setUploadedPicture(null);
-      return;
-    }
-
-    if (image.size > maxPictureSize) {
-      setError(
-        "Maximum file size is " + (maxPictureSize / (1024 * 1024) + " MB!!!")
-      );
-      setUploadedPicture(null);
-      return;
-    }
-
-    const reader = new FileReader();
-
-    reader.onloadend = () => {
-      setUploadedPicture(reader.result);
-    };
-
-    reader.readAsDataURL(image);
+    setUploadedPicture(image);
   };
 
   const openImageGallery = () => {

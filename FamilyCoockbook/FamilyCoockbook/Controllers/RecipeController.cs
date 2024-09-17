@@ -17,14 +17,19 @@ namespace FamilyCookbook.Controllers
     public class RecipeController : ControllerBase
     {
         private readonly IRecipeService _service;
-        private readonly IWebHostEnvironment _enviroment; 
+        private readonly IWebHostEnvironment _enviroment;
         private readonly ICategoryService _categoryService;
+        private readonly IPictureService _pictureService;
 
-        public RecipeController(IWebHostEnvironment environment, IRecipeService service, ICategoryService categoryService)
+        public RecipeController(IWebHostEnvironment environment,
+            IRecipeService service,
+            ICategoryService categoryService,
+            IPictureService pictureService)
         {
             _service = service;
             _categoryService = categoryService;
             _enviroment = environment;
+            _pictureService = pictureService;
         }
 
         [HttpGet]
@@ -66,11 +71,11 @@ namespace FamilyCookbook.Controllers
         [HttpGet]
         [Route("paginate")]
 
-        public async Task<IActionResult> PaginateAsync([FromQuery]Paging paging, [FromQuery] RecipeFilter filter)
+        public async Task<IActionResult> PaginateAsync([FromQuery] Paging paging, [FromQuery] RecipeFilter filter)
         {
             var response = await _service.PaginateAsync(paging, filter);
 
-            if(response.Success == false)
+            if (response.Success == false)
             {
                 return NotFound(response.Message);
             }
@@ -140,26 +145,39 @@ namespace FamilyCookbook.Controllers
                 {
                     return BadRequest("Unsported file type. Use JPEG, JPG or PNG!");
                 }
-               
+
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 return BadRequest($"Failed to create image: {ex.Message}");
             }
 
+
             var uploadsFolder = Path.Combine(_enviroment.WebRootPath, "uploads");
-            
-            if(!Directory.Exists(uploadsFolder))
+
+            if (!Directory.Exists(uploadsFolder))
             {
                 Directory.CreateDirectory(uploadsFolder);
             }
 
-            var fileName = Guid.NewGuid().ToString() + fileExtenxion;
+            var fileName = newRecipe.PictureName + fileExtenxion;
             var filePath = Path.Combine(uploadsFolder, fileName);
             var relativePath = Path.Combine("uploads", fileName);
 
-            await System.IO.File.WriteAllBytesAsync(filePath, imageBytes);
+            var pictures = await _pictureService.GetAllAsync();
 
+            var image = pictures.Items.Find(pic => pic.Name == newRecipe.PictureName);
+
+            if (image is null)
+            {
+                await System.IO.File.WriteAllBytesAsync(filePath, imageBytes);
+            }
+            else
+            {
+                relativePath = image.Location;
+                fileName = image.Name;
+            }
+            
             var sanitizer = new HtmlSanitizer();
 
             string sanitizedText = sanitizer.Sanitize(newRecipe.Text);
@@ -184,7 +202,7 @@ namespace FamilyCookbook.Controllers
 
         }
 
-       
+
 
         [HttpPut]
         [Route("addPictureToRecipe/{recipeId:int}/{pictureId:int}")]
@@ -193,11 +211,11 @@ namespace FamilyCookbook.Controllers
         {
             var response = await _service.AddPictureToRecipeAsync(pictureId, recipeId);
 
-            if(response.Success)
+            if (response.Success)
             {
                 return Ok(response);
             }
-            return BadRequest(response.Message);    
+            return BadRequest(response.Message);
         }
 
         [HttpPut]
@@ -247,7 +265,7 @@ namespace FamilyCookbook.Controllers
         {
             var response = await _service.SoftDeleteAsync(id);
 
-            if(response.Success == false)
+            if (response.Success == false)
             {
                 return BadRequest(response.Message);
             }
@@ -262,7 +280,7 @@ namespace FamilyCookbook.Controllers
         {
             var response = await _service.AddMemberToRecipe(entity);
 
-            if (response.Success == false) 
+            if (response.Success == false)
             {
                 return BadRequest(response.Message);
             }
@@ -275,7 +293,7 @@ namespace FamilyCookbook.Controllers
         {
             var response = await _service.RemoveMemberFromRecipeAsync(memberId, recipeId);
 
-            if(response.Success == false)
+            if (response.Success == false)
             {
                 return BadRequest(response.Message);
             }
