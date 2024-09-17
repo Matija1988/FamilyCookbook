@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace FamilyCookbook.REST_Models.Recipe
 {
@@ -21,7 +22,7 @@ namespace FamilyCookbook.REST_Models.Recipe
         
         public string PictureName { get; set; }
 
-        public string Picture { get; set; }
+        public string? PictureBlob { get; set; }
  
 
     }

@@ -19,6 +19,8 @@ import { RouteNames } from "../../constants/constants";
 import CustomButton from "../../components/CustomButton";
 import RichTextEditor from "../../components/RichTextEditor";
 import ImageGallery from "../../components/ImageGallery";
+import PictureService from "../../services/PictureService";
+import { httpService } from "../../services/HttpService";
 
 export default function CreateRecipe() {
   const [recipe, setRecipe] = useState({
@@ -41,6 +43,8 @@ export default function CreateRecipe() {
 
   const [error, setError] = useState("");
 
+  const [imageFromGallery, setImageFromGallery] = useState(null);
+
   const maxPictureSize = 1 * 1024 * 1024;
 
   const quillRef = useRef(null);
@@ -48,6 +52,8 @@ export default function CreateRecipe() {
   const typeaheadRef = useRef(null);
 
   const navigate = useNavigate();
+
+  const URL = "https://localhost:7170/";
 
   const [isImageGalleryOpen, setIsImageGalleryOpen] = useState(false);
 
@@ -122,7 +128,7 @@ export default function CreateRecipe() {
       categoryId: parseInt(selectedCategoryId),
       memberIds: authorIds,
       pictureName: pictureName,
-      picture: uploadedPicture,
+      pictureBlob: uploadedPicture,
     });
   }
 
@@ -166,8 +172,11 @@ export default function CreateRecipe() {
     console.log("Picture: ", uploadedPicture);
   };
 
-  const setMainImage = (image) => {
-    setUploadedPicture(image);
+  const setMainImage = async (image) => {
+    setPictureName(image.name);
+    console.log("Image name " + image.name);
+    console.log("Image location " + image.location);
+    setImageFromGallery(image);
   };
 
   const openImageGallery = () => {
@@ -267,6 +276,10 @@ export default function CreateRecipe() {
           <Row>
             <Col>
               <img src={uploadedPicture} style={{ width: "300px" }}></img>
+              <img
+                src={URL + imageFromGallery.location}
+                style={{ width: "300px" }}
+              ></img>
             </Col>
           </Row>
           <RichTextEditor

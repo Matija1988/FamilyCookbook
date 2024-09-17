@@ -68,6 +68,9 @@ export default function ImageGallery({ isOpen, closeModal, setMainImage }) {
           <button className="set-main-image-btn" onClick={handleSetMainImage}>
             Set main image
           </button>
+          <button className="close-main-image=btn" onClick={closeModal}>
+            CLOSE
+          </button>
         </div>
 
         <h2>Image gallery</h2>

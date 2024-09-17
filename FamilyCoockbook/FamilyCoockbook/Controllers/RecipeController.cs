@@ -112,46 +112,46 @@ namespace FamilyCookbook.Controllers
         [Route("create")]
         public async Task<IActionResult> CreateAsync(RecipeCreate newRecipe)
         {
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (string.IsNullOrEmpty(newRecipe.Picture))
-            {
-                return BadRequest("Picture data is missing");
-            }
 
-            byte[] imageBytes;
-            string fileExtenxion = "";
+            byte[] imageBytes = null;
+            string fileExtension = "";
+            string relativePath = "";
 
             try
             {
-                var base64DataParts = newRecipe.Picture.Split(',');
-                var mimeType = base64DataParts[0];
-                var base64Data = base64DataParts[1];
-
-                imageBytes = Convert.FromBase64String(base64Data);
-
-                fileExtenxion = mimeType switch
+                if (!string.IsNullOrEmpty(newRecipe.PictureBlob))
                 {
-                    "data:image/jpeg;base64" => ".jpg",
-                    "data:image/jpg;base64" => ".jpg",
-                    "data:image/png;base64" => ".png",
-                    _ => ""
-                };
+                    var base64DataParts = newRecipe.PictureBlob.Split(',');
+                    var mimeType = base64DataParts[0];
+                    var base64Data = base64DataParts[1];
 
-                if (string.IsNullOrEmpty(fileExtenxion))
-                {
-                    return BadRequest("Unsported file type. Use JPEG, JPG or PNG!");
+                    imageBytes = Convert.FromBase64String(base64Data);
+
+                    fileExtension = mimeType switch
+                    {
+                        "data:image/jpeg;base64" => ".jpg",
+                        "data:image/jpg;base64" => ".jpg",
+                        "data:image/png;base64" => ".png",
+                        _ => ""
+                    };
+
+
+                    if (string.IsNullOrEmpty(fileExtension))
+                    {
+                        return BadRequest("Unsported file type. Use JPEG, JPG or PNG!");
+                    }
                 }
-
             }
             catch (Exception ex)
             {
                 return BadRequest($"Failed to create image: {ex.Message}");
             }
-
 
             var uploadsFolder = Path.Combine(_enviroment.WebRootPath, "uploads");
 
@@ -160,24 +160,23 @@ namespace FamilyCookbook.Controllers
                 Directory.CreateDirectory(uploadsFolder);
             }
 
-            var fileName = newRecipe.PictureName + fileExtenxion;
-            var filePath = Path.Combine(uploadsFolder, fileName);
-            var relativePath = Path.Combine("uploads", fileName);
-
             var pictures = await _pictureService.GetAllAsync();
 
             var image = pictures.Items.Find(pic => pic.Name == newRecipe.PictureName);
 
-            if (image is null)
+            if (image is null && imageBytes != null)
             {
+                var fileName = newRecipe.PictureName + fileExtension;
+                var filePath = Path.Combine(uploadsFolder, fileName);
+                relativePath = Path.Combine("uploads", fileName);
+
                 await System.IO.File.WriteAllBytesAsync(filePath, imageBytes);
             }
-            else
+            else if (image is not null)
             {
                 relativePath = image.Location;
-                fileName = image.Name;
             }
-            
+
             var sanitizer = new HtmlSanitizer();
 
             string sanitizedText = sanitizer.Sanitize(newRecipe.Text);
@@ -188,8 +187,12 @@ namespace FamilyCookbook.Controllers
 
             var recipe = mapper.RecipeCreateToRecipeCreateDTO(newRecipe);
 
-            recipe.Picture.Location = relativePath;
-            recipe.Picture.Name = newRecipe.PictureName;
+            Picture interMediaryPicture = new Picture();
+
+            interMediaryPicture.Name = newRecipe.PictureName;
+            interMediaryPicture.Location = relativePath;
+
+            recipe.Picture = interMediaryPicture;
 
             var response = await _service.CreateAsync(recipe);
 
