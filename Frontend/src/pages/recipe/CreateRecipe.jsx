@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import { RouteNames } from "../../constants/constants";
 import CustomButton from "../../components/CustomButton";
 import RichTextEditor from "../../components/RichTextEditor";
+import ImageGallery from "../../components/ImageGallery";
 
 export default function CreateRecipe() {
   const [recipe, setRecipe] = useState({
@@ -47,6 +48,8 @@ export default function CreateRecipe() {
   const typeaheadRef = useRef(null);
 
   const navigate = useNavigate();
+
+  const [isImageGalleryOpen, setIsImageGalleryOpen] = useState(false);
 
   async function fetchCategories() {
     try {
@@ -163,6 +166,36 @@ export default function CreateRecipe() {
     console.log("Picture: ", uploadedPicture);
   };
 
+  const setMainImage = (image) => {
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
+
+    if (!allowedTypes.includes(image.type)) {
+      setError("Only JPEG, JPG and PNG files are allowed!!!");
+      setUploadedPicture(null);
+      return;
+    }
+
+    if (image.size > maxPictureSize) {
+      setError(
+        "Maximum file size is " + (maxPictureSize / (1024 * 1024) + " MB!!!")
+      );
+      setUploadedPicture(null);
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      setUploadedPicture(reader.result);
+    };
+
+    reader.readAsDataURL(image);
+  };
+
+  const openImageGallery = () => {
+    setIsImageGalleryOpen(true);
+  };
+
   return (
     <>
       <Container className="primaryContainer">
@@ -233,6 +266,7 @@ export default function CreateRecipe() {
             <Col>
               <Form.Label>Upload image</Form.Label>
             </Col>
+            <Col>Select image from galley</Col>
           </Row>
           <Row>
             <Col>
@@ -243,6 +277,13 @@ export default function CreateRecipe() {
                 ></input>
                 {error && <p style={{ color: "red" }}>{error}</p>}
               </div>
+            </Col>
+            <Col>
+              <CustomButton
+                label="Images"
+                type="button"
+                onClick={() => setIsImageGalleryOpen(true)}
+              ></CustomButton>
             </Col>
           </Row>
           <Row>
@@ -270,6 +311,11 @@ export default function CreateRecipe() {
             </Col>
           </Row>
         </Form>
+        <ImageGallery
+          isOpen={isImageGalleryOpen}
+          closeModal={() => setIsImageGalleryOpen(false)}
+          setMainImage={setMainImage}
+        ></ImageGallery>
       </Container>
     </>
   );

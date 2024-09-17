@@ -1,3 +1,23 @@
+.image-glry-sdbr {
+  width: 10%;
+  height: 100%;
+  background-color: #f0f0f0;
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.set-main-image-btn {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -8,7 +28,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 1050;
 }
 
 .modal-content {
@@ -28,19 +48,49 @@
   right: 10px;
   font-size: 24;
   cursor: pointer;
+  background-color: white;
 }
 
 .gallery {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
+  margin-left: 12%;
 }
 
 .gallery-image {
-  width: 100px;
-  height: 100px;
+  width: 150px;
+  height: 150px;
   object-fit: cover;
   border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2;
+}
+
+.gallery-image:hover {
+  transform: (scale(1.1));
+}
+
+.selected {
+  border: 3px solid #007bff;
+}
+
+.fullscreen-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1100;
+}
+
+.fullscreen-image {
+  max-width: 90%;
+  max-height: 90%;
 }
 
 @keyframes fadeId {

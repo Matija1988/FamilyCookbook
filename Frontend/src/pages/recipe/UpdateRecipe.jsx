@@ -66,17 +66,6 @@ export default function UpdateRecipe() {
     }
   }
 
-  async function fecthPicture() {
-    try {
-      const response = await PictureService.getById("picture", routeParams.id);
-      if (response.ok) {
-        setOldPicture(response.data.items);
-      }
-    } catch (error) {
-      Alert(error.message);
-    }
-  }
-
   async function fetchCategories() {
     try {
       const response = await CategoriesService.readAll("category");
@@ -102,7 +91,6 @@ export default function UpdateRecipe() {
   useEffect(() => {
     fetchRecipe();
     fetchCategories();
-    fecthPicture();
   }, []);
 
   function handleCancel() {
