@@ -1,9 +1,20 @@
 import PropTypes from "prop-types";
 import { Button } from "react-bootstrap";
 
-export default function CustomButton({ label, onClick, variant, type }) {
+export default function CustomButton({
+  label,
+  onClick,
+  variant,
+  type,
+  className,
+}) {
   return (
-    <Button onClick={onClick} variant={variant} type={type}>
+    <Button
+      onClick={onClick}
+      variant={variant}
+      type={type}
+      className={className}
+    >
       {label}
     </Button>
   );

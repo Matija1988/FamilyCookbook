@@ -13,6 +13,8 @@ import SelectionDropdown from "../../components/SelectionDropdown";
 import CategoriesService from "../../services/CategoriesService";
 import RecipeTable from "./components/RecipeTable";
 
+import "./createForm.css";
+
 export default function Recipe() {
   const recipeState = {
     id: "",
@@ -154,6 +156,7 @@ export default function Recipe() {
               label="Create new"
               variant="primary"
               onClick={() => createRecipe()}
+              className="create-new-btn"
             ></CustomButton>
           </Col>
           <Col>
@@ -214,10 +217,13 @@ export default function Recipe() {
         </Row>
         <Row>
           <Col></Col>
+          <Col></Col>
+          <Col></Col>
           <Col>
             <CustomButton
               label="Search"
               onClick={paginateRecipes}
+              className="search-btn"
             ></CustomButton>
           </Col>
         </Row>

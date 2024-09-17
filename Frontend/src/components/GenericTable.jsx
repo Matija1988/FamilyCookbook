@@ -9,6 +9,7 @@ export default function GenericTable({
   cutRange,
   cutRangeForIsActiveStart,
   cutRangeForIsActiveEnd,
+  className,
 }) {
   if (!dataArray || dataArray.lenght === 0) {
     return <p>No data to load</p>;
@@ -25,7 +26,7 @@ export default function GenericTable({
 
   return (
     <>
-      <Table striped bordered hover responsive>
+      <Table striped bordered hover responsive className={className}>
         <thead>
           <tr>
             {columns.map((column) => (

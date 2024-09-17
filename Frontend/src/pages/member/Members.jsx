@@ -18,6 +18,8 @@ import InputText from "../../components/InputText";
 import GenericInputs from "../../components/GenericInputs";
 import RoleService from "../../services/RoleService";
 
+import "./memberWorkspace.css";
+
 export default function Members() {
   const [members, setMembers] = useState();
   const [roles, setRoles] = useState([]);
@@ -217,14 +219,17 @@ export default function Members() {
             <CustomButton
               label="Search"
               onClick={paginateMembers}
+              className="search-btn-2"
             ></CustomButton>
           </Col>
         </Row>
+
         <GenericTable
           dataArray={members}
           onDelete={deleteMember}
           onUpdate={handleUpdate}
           cutRange={2}
+          className="gen-tbl"
         ></GenericTable>
 
         <CustomPagination

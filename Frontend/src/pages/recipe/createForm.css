@@ -95,3 +95,19 @@ img {
   border-radius: 4px;
   padding: 10px;
 }
+
+.search-btn {
+  margin-top: 4%;
+  margin-bottom: 4%;
+  font-size: medium;
+  width: 100%;
+  font-weight: bold;
+}
+
+.create-new-btn {
+  margin-top: 4%;
+  margin-bottom: 4%;
+  font-size: medium;
+  width: 100%;
+  font-weight: bold;
+}
