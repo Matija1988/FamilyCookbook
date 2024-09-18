@@ -5,15 +5,14 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import RotatingCarousel from "../components/RotatingCarousel";
 import { useState } from "react";
 import RecipeService from "../services/RecipeService";
+import HomeArticleList from "./homeComponents/HomeArticleList";
 
 export default function Home() {
-  
-
   return (
     <>
       <RotatingCarousel></RotatingCarousel>
       <Container>
-        <Form.Label>HOME PAGE</Form.Label>
+        <HomeArticleList></HomeArticleList>
       </Container>
     </>
   );
