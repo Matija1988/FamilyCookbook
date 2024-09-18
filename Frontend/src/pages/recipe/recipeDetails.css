@@ -1,0 +1,75 @@
+body {
+  background-color: #121212;
+}
+
+.recDetails {
+  background-color: #343a40;
+  color: white;
+  padding: 5%;
+  border-radius: 5%;
+  box-shadow: 0% 2% 4% rgba(0, 0, 0, 0.6);
+  margin-top: 2%;
+}
+
+.recDetails h2,
+.recDetails h4 {
+  font-family: "Georgia", serif;
+  color: #f8f9fa;
+  text-shadow: 1% 1% 4% rgba(0, 0, 0, 0.5);
+  margin-bottom: 1%;
+}
+
+.recDetails img {
+  border: 2% solid #444;
+  border-radius: 2%;
+  margin-bottom: 2%;
+  box-shadow: 0 2% 5% rgba(0, 0, 0, 0.5);
+}
+
+.recDetails div[dangerouslySetInnerHTML] {
+  line-height: 1.7;
+  color: #d3d3d3;
+  font-size: medium;
+  margin-bottom: 2%;
+}
+
+.recDetails .lg-item {
+  background-color: #495057;
+  color: #f8f9fa;
+  border: none;
+  margin-bottom: 0.2%;
+  padding: 1%;
+  border-radius: 1%;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.recDetails .lg-item:hover {
+  background-color: #6c757d;
+  color: white;
+}
+
+.recDetails .btn-link {
+  color: #f8f9fa;
+  text-decoration: underline;
+  padding: 0;
+  font-size: 0.8rem;
+}
+
+.recDetails .btn-link:hover {
+  color: #ff6347;
+  text-decoration: none;
+}
+
+.recDetails .collapse {
+  background-color: #6c757d;
+  padding: 2%;
+  border-radius: 1%;
+  margin-top: 2%;
+  color: #f8f9fa;
+}
+
+.recDetails .collapse p {
+  margin: 0;
+  color: #d3d3d3;
+}

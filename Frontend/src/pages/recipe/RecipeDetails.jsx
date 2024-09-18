@@ -10,6 +10,8 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import RecipeService from "../../services/RecipeService";
 
+import "./recipeDetails.css";
+
 export default function RecipeDetails() {
   const recipeState = {
     id: "",
@@ -54,17 +56,17 @@ export default function RecipeDetails() {
 
   return (
     <>
-      <Container className="primaryContainer">
+      <Container className="recDetails">
         <h2>{recipe.title}</h2>
         <h4>{recipe.subtitle}</h4>
         <img
           src={"https://localhost:7170/" + recipe.pictureLocation}
-          style={{ width: "300px" }}
+         
         />
         <div dangerouslySetInnerHTML={{ __html: recipe.text }}></div>
         <ListGroup>
           {members.map((member) => (
-            <ListGroup.Item key={member.id}>
+            <ListGroup.Item className="lg-item" key={member.id}>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <div>{member.firstName + " " + member.lastName}</div>
 

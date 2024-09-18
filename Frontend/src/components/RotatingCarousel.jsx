@@ -5,6 +5,8 @@ import { Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { RouteNames } from "../constants/constants";
 
+import "./Carousel.css";
+
 function RotatingCarousel({}) {
   const [recipes, setRecipes] = useState([]);
   const [pageNumber, setPageNumber] = useState(1);
@@ -39,14 +41,13 @@ function RotatingCarousel({}) {
   }, [pageNumber, pageSize]);
 
   return (
-    <Carousel>
+    <Carousel className="rotating-carousel">
       {recipes.map((recipe) => (
         <Carousel.Item key={recipe.id}>
           <img
             onClick={() => {
               navigate(RouteNames.RECIPE_DETAILS.replace(":id", recipe.id));
             }}
-            className="d-block w-80"
             src={"https://localhost:7170/" + recipe.pictureLocation}
             alt={recipe.title}
             style={{
