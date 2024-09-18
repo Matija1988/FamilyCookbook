@@ -4,6 +4,8 @@ import RecipeService from "../../services/RecipeService";
 import CustomPagination from "../../components/CustomPagination";
 import ArticleCard from "./ArticleCard";
 
+import "./homeArticleList.css";
+
 export default function HomeArticleList() {
   const recipeState = {
     id: "",
@@ -19,6 +21,7 @@ export default function HomeArticleList() {
 
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(12);
+  const [totalPages, setTotalPages] = useState(0);
   const [searchByActivityStatus, setSearchByActivityStatus] = useState(1);
 
   const getRequestParams = (pageSize, pageNumber, searchByActivityStatus) => {
@@ -38,7 +41,9 @@ export default function HomeArticleList() {
     try {
       const response = await RecipeService.paginate(params);
       if (response.ok) {
-        setRecipes(response.data.items);
+        const { items, pageCount } = response.data;
+        setRecipes(items);
+        setTotalPages(pageCount);
       }
     } catch (error) {
       alert(error.message);
@@ -49,7 +54,9 @@ export default function HomeArticleList() {
     fetchRecipes();
   }, [pageNumber]);
 
-  function handlePageChange() {}
+  const handlePageChange = (value) => {
+    setPageNumber(value);
+  };
 
   return (
     <>
@@ -64,7 +71,9 @@ export default function HomeArticleList() {
         <CustomPagination
           pageNumber={pageNumber}
           pageSize={pageSize}
+          totalPages={totalPages}
           handlePageChange={handlePageChange}
+          className="home-article-pagination"
         ></CustomPagination>
       </Container>
     </>

@@ -1,0 +1,22 @@
+.home-article-pagination .pagination {
+  justify-content: right;
+  margin-top: 1%;
+}
+
+.home-article-pagination .page-item .page-link {
+  background-color: #343a40;
+  color: white;
+  border-color: #343a10;
+}
+
+.home-article-pagination .page-item.active .page-link {
+  background-color: darkred;
+  border-color: darkred;
+  color: white;
+}
+
+.home-article-pagination .page-item:hover .page-link {
+  background-color: #0056b3;
+  border-color: #0056b3;
+  color: white;
+}
