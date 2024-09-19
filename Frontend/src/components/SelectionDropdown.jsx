@@ -18,6 +18,7 @@ export default function SelectionDropdown({
         onChange={onChanged}
         className="select-header"
         value={initValue}
+        required
       >
         <option>{atribute}</option>
         {entities.map((item) => (

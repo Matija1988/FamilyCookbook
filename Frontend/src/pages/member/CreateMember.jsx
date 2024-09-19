@@ -86,10 +86,18 @@ export default function CreateMember() {
         <Form onSubmit={handleSubmit} className="createForm">
           <Row>
             <Col>
-              <InputText atribute="First name" value=""></InputText>
+              <InputText
+                atribute="First name"
+                value=""
+                required={true}
+              ></InputText>
             </Col>
             <Col>
-              <InputText atribute="Last name" value=""></InputText>
+              <InputText
+                atribute="Last name"
+                value=""
+                required={true}
+              ></InputText>
             </Col>
           </Row>
           <Row>
@@ -97,6 +105,7 @@ export default function CreateMember() {
               <DateAndTime
                 atribute="Date of birth"
                 propertyName="dateOfBirth"
+                required={true}
               ></DateAndTime>
             </Col>
             <Col>
@@ -109,10 +118,18 @@ export default function CreateMember() {
           </Row>
           <Row>
             <Col>
-              <InputText atribute="Username" value=""></InputText>
+              <InputText
+                atribute="Username"
+                value=""
+                required={true}
+              ></InputText>
             </Col>
             <Col>
-              <InputText atribute="Password" value=""></InputText>
+              <InputText
+                atribute="Password"
+                value=""
+                required={true}
+              ></InputText>
             </Col>
           </Row>
           <Row>
