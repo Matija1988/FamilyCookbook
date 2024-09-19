@@ -256,6 +256,7 @@ namespace FamilyCookbook.Repository
                     "c.Bio, " +
                     "d.Id," +
                     "d.Name, " +
+                    "d.Description, " +
                     "e.* " +
                     "FROM Recipe a " +
                     "JOIN MemberRecipe b on a.Id = b.RecipeId " +
@@ -453,7 +454,8 @@ namespace FamilyCookbook.Repository
                 "c.LastName, " +
                 "c.Bio, " +
                 "d.Id, " +
-                "d.Name," +
+                "d.Name, " +
+                "d.Description, " +
                 "e.* " +
                 "FROM Recipe a " +
                 " JOIN MemberRecipe b on a.Id = b.RecipeId " +

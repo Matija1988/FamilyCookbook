@@ -19,6 +19,7 @@ export default function RecipeDetails() {
     subtitle: "",
     text: "",
     categoryName: "",
+    categoryDescription: "",
     members: [],
     pictureLocation: "",
   };
@@ -60,6 +61,7 @@ export default function RecipeDetails() {
         <h2>{recipe.title}</h2>
         <h4>{recipe.subtitle}</h4>
         <h6 className="category">CATEGORY: {recipe.categoryName}</h6>
+        <h7 className="category-desc">{recipe.categoryDescription}</h7>
         <img src={"https://localhost:7170/" + recipe.pictureLocation} />
         <div dangerouslySetInnerHTML={{ __html: recipe.text }}></div>
         <ListGroup>

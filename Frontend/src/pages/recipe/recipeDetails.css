@@ -73,3 +73,8 @@ body {
   margin: 0;
   color: #d3d3d3;
 }
+
+.recDetails .category {
+  margin-top: 1%;
+  margin-bottom: 1%;
+}

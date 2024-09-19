@@ -8,3 +8,66 @@
   align-items: center;
   justify-content: center;
 }
+
+.delete-modal {
+  justify-content: center;
+  align-self: center;
+}
+
+.delete-modal .modal-header {
+  background-color: #343a40;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+}
+
+.delete-modal .modal-body {
+  background-color: darkred;
+  color: white;
+  font-size: 1.2rem;
+  padding: 5%;
+}
+
+.delete-modal .modal-footer {
+  background-color: #343a40;
+  padding: 3% 5%;
+}
+
+.delete-modal .btn-primary {
+  border: none;
+  font-size: 1rem;
+  padding: 0.7rem 1.2rem;
+}
+
+.delete-modal .btn-danger {
+  background-color: #dc3545;
+  border: none;
+  padding: 0.7rem;
+}
+
+.delete-modal .btn-primary:hover,
+.delete-modal .btn-danger:hover {
+  color: #721c24;
+  opacity: 0.8;
+}
+
+.delete-modal .modal-header .close {
+  color: #731c24;
+  opacity: 0.8;
+}
+
+.delete-modal .modal-header .close:hover {
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.delete-modal .modal-dialog {
+  max-width: 25%;
+  margin: 10% auto;
+}
+
+.delete-modal .modal-content {
+  background-color: #212529;
+  border-radius: 8px;
+  overflow: hidden;
+}

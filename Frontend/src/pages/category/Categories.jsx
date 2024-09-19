@@ -5,21 +5,30 @@ import CustomButton from "../../components/CustomButton";
 import GenericTable from "../../components/GenericTable";
 import { useNavigate } from "react-router-dom";
 import { RouteNames } from "../../constants/constants";
+import useError from "../../hooks/useError";
+import useLoading from "../../hooks/useLoading";
+import DeleteModal from "../../components/DeleteModal";
+import ErrorModal from "../../components/ErrorModal";
 
 export default function Categories() {
   const [categories, setCategories] = useState();
+  const { showLoading, hideLoading } = useLoading();
+  const { showError, showErrorModal, errors, hideError } = useError();
+  const [entityToDelete, setEntityToDelete] = useState(null);
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const navigate = useNavigate();
 
   async function fetchCategories() {
-    try {
-      const response = await CategoriesService.readAll("category");
-      if (response.ok) {
-        setCategories(response.data.items);
-      }
-    } catch (error) {
-      alert(error.message);
+    showLoading();
+    const response = await CategoriesService.readAll("category");
+    if (!response.ok) {
+      hideLoading();
+      showError(response.data);
     }
+    setCategories(response.data.items);
+    hideLoading();
   }
 
   useEffect(() => {
@@ -31,6 +40,7 @@ export default function Categories() {
       "category/softDelete/" + category.id
     );
     if (response.ok) {
+      setShowDeleteModal(false);
       fetchCategories();
     }
   }
@@ -55,13 +65,26 @@ export default function Categories() {
 
         <GenericTable
           dataArray={categories}
-          onDelete={deleteCategory}
+          onDelete={(category) => (
+            setEntityToDelete(category), setShowDeleteModal(true)
+          )}
           onUpdate={updateCategory}
           cutRange={1}
           cutRangeForIsActiveStart={2}
           cutRangeForIsActiveEnd={3}
         ></GenericTable>
       </Container>
+      <DeleteModal
+        show={showDeleteModal}
+        handleClose={() => setShowDeleteModal(false)}
+        handleDelete={deleteCategory}
+        entity={entityToDelete}
+      ></DeleteModal>
+      <ErrorModal
+        show={showErrorModal}
+        onHide={hideError}
+        errors={errors}
+      ></ErrorModal>
     </>
   );
 }

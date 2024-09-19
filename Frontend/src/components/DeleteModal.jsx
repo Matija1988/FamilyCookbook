@@ -7,14 +7,14 @@ export default function DeleteModal({
   entity,
 }) {
   return (
-    <Modal show={show} onHide={handleClose} centered>
+    <Modal show={show} onHide={handleClose} className="delete-modal">
       <Modal.Header closeButton className="modal-header">
         CONFIRM ACTION
       </Modal.Header>
       <Modal.Body className="modal-body">
         This action will delete this entry!!! Do you wish to continue?
       </Modal.Body>
-      <Modal.Footer className="modalFooter">
+      <Modal.Footer className="modal-footer">
         <Row>
           <Col>
             <Button variant="primary" onClick={handleClose}>
@@ -22,7 +22,7 @@ export default function DeleteModal({
             </Button>
           </Col>
           <Col>
-            <Button varinat="danger" onClick={() => handleDelete(entity)}>
+            <Button variant="danger" onClick={() => handleDelete(entity)}>
               CONFIRM
             </Button>
           </Col>
