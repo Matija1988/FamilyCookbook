@@ -59,10 +59,8 @@ export default function RecipeDetails() {
       <Container className="recDetails">
         <h2>{recipe.title}</h2>
         <h4>{recipe.subtitle}</h4>
-        <img
-          src={"https://localhost:7170/" + recipe.pictureLocation}
-         
-        />
+        <h6 className="category">CATEGORY: {recipe.categoryName}</h6>
+        <img src={"https://localhost:7170/" + recipe.pictureLocation} />
         <div dangerouslySetInnerHTML={{ __html: recipe.text }}></div>
         <ListGroup>
           {members.map((member) => (

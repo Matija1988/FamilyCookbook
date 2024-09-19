@@ -124,18 +124,6 @@ export default function Members() {
     }
   }
 
-  // const deleteMember = async (member) => {
-  //   const response = await MembersService.setNotActive(
-  //     "member/delete/" + member.id
-  //   );
-  //   if (response.ok) {
-  //     paginateMembers();
-  //     setShowDeleteModal(false);
-  //   } else {
-  //     showError(response.data);
-  //   }
-  // };
-
   function createMember() {
     navigate(RouteNames.MEMBER_CREATE);
   }
