@@ -6,25 +6,32 @@ import { useNavigate, useParams } from "react-router-dom";
 import { RouteNames } from "../../constants/constants";
 import CategoriesService from "../../services/CategoriesService";
 import { useEffect, useState } from "react";
+import useLoading from "../../hooks/useLoading";
+import useError from "../../hooks/useError";
+import ErrorModal from "../../components/ErrorModal";
 
 export default function CategoryUpdate() {
   const [category, setCategory] = useState({});
+
+  const { showLoading, hideLoading } = useLoading();
+  const { showError, showErrorModal, errors, hideError } = useError();
 
   const routeParamas = useParams();
   const navigate = useNavigate();
 
   async function fetchCategory() {
-    try {
-      const response = await CategoriesService.getById(
-        "category",
-        routeParamas.id
-      );
-      if (response.ok) {
-        setCategory(response.data);
-      }
-    } catch (error) {
-      alert(error.message);
+    showLoading();
+
+    const response = await CategoriesService.getById(
+      "category",
+      routeParamas.id
+    );
+    if (!response.ok) {
+      hideLoading();
+      showError(response.data);
     }
+    setCategory(response.data);
+    hideLoading();
   }
 
   useEffect(() => {
@@ -32,18 +39,19 @@ export default function CategoryUpdate() {
   }, []);
 
   async function updateCategory(category) {
-    try {
-      const response = await CategoriesService.update(
-        "category/update",
-        routeParamas.id,
-        category
-      );
-      if (response.ok) {
-        navigate(RouteNames.CATEGORIES);
-      }
-    } catch (error) {
-      alert(error.message);
+    showLoading();
+
+    const response = await CategoriesService.update(
+      "category/update",
+      routeParamas.id,
+      category
+    );
+    if (!response.ok) {
+      hideLoading();
+      showError(response.data);
     }
+    hideLoading();
+    navigate(RouteNames.CATEGORIES);
   }
 
   function handleSubmit(e) {
@@ -84,6 +92,11 @@ export default function CategoryUpdate() {
           ></CustomButton>
         </Form>
       </Container>
+      <ErrorModal
+        show={showErrorModal}
+        onHide={hideError}
+        errors={errors}
+      ></ErrorModal>
     </>
   );
 }
