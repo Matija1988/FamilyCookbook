@@ -18,10 +18,19 @@ import Recipe from "./pages/recipe/Recipe";
 import CreateRecipe from "./pages/recipe/CreateRecipe";
 import UpdateRecipe from "./pages/recipe/UpdateRecipe";
 import RecipeDetails from "./pages/recipe/RecipeDetails";
+import useError from "./hooks/useError";
+import ErrorModal from "./components/ErrorModal";
 function App() {
+  const { errors, showErrorModal, hideErrorModal } = useError();
+
   return (
     <>
       <NavBar />
+      <ErrorModal
+        show={showErrorModal}
+        onHide={hideErrorModal}
+        errors={errors}
+      ></ErrorModal>
       <Routes>
         <Route path={RouteNames.HOME} element={<Home />}></Route>
         <Route path={RouteNames.MEMBERS} element={<Members />}></Route>
