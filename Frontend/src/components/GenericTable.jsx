@@ -62,7 +62,6 @@ export default function GenericTable({
 }
 
 GenericTable.propTypes = {
-  dataArray: PropTypes.arrayOf(PropTypes.object).isRequired,
   onUpdate: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   cutRange: PropTypes.number,

@@ -21,6 +21,8 @@ import RoleService from "../../services/RoleService";
 import "./memberWorkspace.css";
 import useLoading from "../../hooks/useLoading";
 import useError from "../../hooks/useError";
+import ErrorModal from "../../components/ErrorModal";
+import DeleteModal from "../../components/DeleteModal";
 
 export default function Members() {
   const [members, setMembers] = useState();
@@ -40,7 +42,10 @@ export default function Members() {
 
   const [activityStatus, setActivityStatus] = useState(1);
   const { hideLoading, showLoading } = useLoading();
-  const { showError } = useError();
+  const { showError, showErrorModal, errors, hideError } = useError();
+  const [entityToDelete, setEntityToDelete] = useState(null);
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const navigate = useNavigate();
 
@@ -113,10 +118,23 @@ export default function Members() {
     );
     if (response.ok) {
       paginateMembers();
+      setShowDeleteModal(false);
     } else {
-      alert("Error");
+      showError(response.data);
     }
   }
+
+  // const deleteMember = async (member) => {
+  //   const response = await MembersService.setNotActive(
+  //     "member/delete/" + member.id
+  //   );
+  //   if (response.ok) {
+  //     paginateMembers();
+  //     setShowDeleteModal(false);
+  //   } else {
+  //     showError(response.data);
+  //   }
+  // };
 
   function createMember() {
     navigate(RouteNames.MEMBER_CREATE);
@@ -231,7 +249,9 @@ export default function Members() {
 
         <GenericTable
           dataArray={members}
-          onDelete={deleteMember}
+          onDelete={(member) => (
+            setEntityToDelete(member), setShowDeleteModal(true)
+          )}
           onUpdate={handleUpdate}
           cutRange={2}
           className="gen-tbl"
@@ -243,6 +263,17 @@ export default function Members() {
           handlePageChange={handlePageChange}
         ></CustomPagination>
       </Container>
+      <ErrorModal
+        show={showErrorModal}
+        onHide={hideError}
+        errors={errors}
+      ></ErrorModal>
+      <DeleteModal
+        show={showDeleteModal}
+        handleClose={() => setShowDeleteModal(false)}
+        handleDelete={deleteMember}
+        entity={entityToDelete}
+      ></DeleteModal>
     </>
   );
 }

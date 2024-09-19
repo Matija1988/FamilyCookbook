@@ -10,62 +10,60 @@ import MembersService from "../../services/MembersService";
 import moment from "moment";
 import { RouteNames } from "../../constants/constants";
 import { update } from "../../services/HttpService";
+import useLoading from "../../hooks/useLoading";
+import useError from "../../hooks/useError";
+import ErrorModal from "../../components/ErrorModal";
 
 export default function UpdateMember() {
   const [roles, setRoles] = useState();
   const [selectRoleId, setRoleId] = useState("");
   const [member, setMember] = useState({});
 
-  const [error, setError] = useState(null);
+  const { showLoading, hideLoading } = useLoading();
+
+  const { showError, showErrorModal, errors, hideError } = useError();
 
   const navigate = useNavigate();
 
   const routeParams = useParams();
 
   async function fetchRoles() {
-    try {
-      const response = await RoleService.readAll("role");
-      if (response.ok) {
-        setRoles(response.data);
-      }
-    } catch (error) {
-      setError("Error fetching roles " + error.message);
-      alert(error.message);
+    const response = await RoleService.readAll("role");
+    if (!response.ok) {
+      showError(response.data);
     }
+    setRoles(response.data);
   }
 
   async function fetchMember() {
-    try {
-      const response = await MembersService.getById("member", routeParams.id);
-      if (response.ok) {
-        let member = response.data;
-        member.birthDate = moment.utc(member.dateOfBirth).format("yyyy-MM-DD");
-        setMember(response.data);
-        setRoleId(response.data.roleId);
-      }
-    } catch (error) {
-      alert(error.message);
+    const response = await MembersService.getById("member", routeParams.id);
+    if (!response.ok) {
+      showError(response.data);
     }
+    let member = response.data;
+    member.birthDate = moment.utc(member.dateOfBirth).format("yyyy-MM-DD");
+    setMember(response.data);
+    setRoleId(response.data.roleId);
   }
 
   async function updateMember(entity) {
-    try {
-      const response = await MembersService.update(
-        "member/update",
-        routeParams.id,
-        entity
-      );
-      if (response.ok) {
-        navigate(RouteNames.MEMBERS);
-      }
-    } catch (error) {
-      alert(error.message);
+    showLoading();
+    const response = await MembersService.update(
+      "member/update",
+      routeParams.id,
+      entity
+    );
+    if (!response.ok) {
+      showError(response.data);
     }
+    navigate(RouteNames.MEMBERS);
   }
 
   useEffect(() => {
+    showLoading();
     fetchRoles();
     fetchMember();
+    hideLoading();
   }, []);
 
   function handleSubmit(e) {
@@ -170,6 +168,11 @@ export default function UpdateMember() {
           </Row>
         </Form>
       </Container>
+      <ErrorModal
+        show={showErrorModal}
+        onHide={hideError}
+        errors={errors}
+      ></ErrorModal>
     </>
   );
 }
