@@ -9,38 +9,41 @@ import CustomButton from "../../components/CustomButton";
 import MembersService from "../../services/MembersService";
 import { useNavigate } from "react-router-dom";
 import { RouteNames } from "../../constants/constants";
+import useLoading from "../../hooks/useLoading";
+import useError from "../../hooks/useError";
+import ErrorModal from "../../components/ErrorModal";
 
 export default function CreateMember() {
   const [roles, setRoles] = useState();
   const [roleId, setRoleId] = useState();
 
-  const [error, setError] = useState(null);
-  const { showError } = useState(false);
+  const { showLoading, hideLoading } = useLoading();
+
+  const { showError, showErrorModal, errors, hideError } = useError();
 
   const navigate = useNavigate();
 
   async function fetchRoles() {
-    try {
-      const response = await RoleService.readAll("role");
-      if (response.ok) {
-        setRoles(response.data);
-      }
-    } catch (error) {
-      setError("Error fetching roles " + error.message);
-      alert(error.message);
+    showLoading();
+
+    const response = await RoleService.readAll("role");
+    if (!response.ok) {
+      hideLoading();
+      showError(response);
     }
+    setRoles(response.data);
+    hideLoading();
   }
 
-  async function addActivity(e) {
+  async function addMember(e) {
+    showLoading();
     const response = await MembersService.create("member/create", e);
-    try {
-      if (response.ok) {
-        navigate(RouteNames.MEMBERS);
-        return;
-      }
-    } catch (error) {
-      alert(error.message);
+    if (!response.ok) {
+      showError(response.data);
+      hideLoading();
+      return;
     }
+    navigate(RouteNames.MEMBERS);
   }
 
   useEffect(() => {
@@ -65,7 +68,7 @@ export default function CreateMember() {
     let user = information.get("Username");
     let pass = information.get("Password");
 
-    addActivity({
+    addMember({
       firstName: name,
       lastName: surname,
       bio: biography,
@@ -153,6 +156,11 @@ export default function CreateMember() {
           </Row>
         </Form>
       </Container>
+      <ErrorModal
+        show={showErrorModal}
+        onHide={hideError}
+        errors={errors}
+      ></ErrorModal>
     </>
   );
 }

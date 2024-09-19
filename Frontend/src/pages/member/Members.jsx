@@ -41,7 +41,6 @@ export default function Members() {
   const [activityStatus, setActivityStatus] = useState(1);
   const { hideLoading, showLoading } = useLoading();
   const { showError } = useError();
-  const [error, setError] = useState("");
 
   const navigate = useNavigate();
 
@@ -75,19 +74,21 @@ export default function Members() {
     const params = getRequestParams(pageSize, pageNumber, activityStatus);
 
     const response = await MembersService.paginate(params);
-    try {
-      const { items, pageCount } = response.data;
-
-      const formattedItems = items.map((member) => ({
-        ...member,
-        dateOfBirth: formatDate(member.dateOfBirth),
-      }));
-
-      setMembers(formattedItems);
-      setTotalPages(pageCount);
-    } catch (e) {
-      setError("Error fetching users" + e.message);
+    showLoading();
+    if (!response.ok) {
+      hideLoading();
+      showError(response.data);
     }
+    const { items, pageCount } = response.data;
+
+    const formattedItems = items.map((member) => ({
+      ...member,
+      dateOfBirth: formatDate(member.dateOfBirth),
+    }));
+
+    setMembers(formattedItems);
+    setTotalPages(pageCount);
+    hideLoading();
   }
 
   async function fetchRoles() {

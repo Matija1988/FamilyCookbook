@@ -7,8 +7,8 @@ export const ErrorProvider = ({ children }) => {
   const [errors, setErrors] = useState([]);
   const [showErrorModal, setShowErrorModal] = useState(false);
 
-  function showError(errorsMessage) {
-    setErrors(errorsMessage);
+  function showError(errorsMessages) {
+    setErrors(errorsMessages);
     setShowErrorModal(true);
   }
 
@@ -21,12 +21,10 @@ export const ErrorProvider = ({ children }) => {
     <ErrorContext.Provider
       value={{ errors, showErrorModal, showError, hideError }}
     >
-      {" "}
       {children}
     </ErrorContext.Provider>
   );
 };
-
 ErrorProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };

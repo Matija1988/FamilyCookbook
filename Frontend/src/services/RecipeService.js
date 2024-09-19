@@ -27,7 +27,7 @@ async function paginate(params) {
       return handleSuccess(res);
     })
     .catch((e) => {
-      processError(e);
+      return processError(e);
     });
 }
 
