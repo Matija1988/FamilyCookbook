@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { App } from "../constants/constants";
 
 export const httpService = axios.create({
@@ -34,6 +34,25 @@ export async function setNotActive(name, id) {
   return await httpService.put("/" + name + "/", id).then((res) => {
     return handleSuccess(res);
   });
+}
+
+export function processError(e) {
+  if (!e.response) {
+    return {
+      ok: false,
+      data: [generateMessage("Network issue", "server unresponsive")],
+    };
+  }
+  if (e.code == AxiosError.ERR_NETWORK) {
+    return {
+      ok: false,
+      data: [generateMessage("Network issue", "Try again later")],
+    };
+  }
+}
+
+function generateMessage(property, message) {
+  return { property: property, message: message };
 }
 
 export function handleSuccess(res) {

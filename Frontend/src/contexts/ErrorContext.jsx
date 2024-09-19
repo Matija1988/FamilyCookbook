@@ -20,7 +20,9 @@ export const ErrorProvider = ({ children }) => {
   return (
     <ErrorContext.Provider
       value={{ errors, showErrorModal, showError, hideError }}
-    > {children}
+    >
+      {" "}
+      {children}
     </ErrorContext.Provider>
   );
 };

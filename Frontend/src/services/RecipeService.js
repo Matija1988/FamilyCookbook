@@ -6,6 +6,7 @@ import {
   create,
   update,
   setNotActive,
+  processError,
 } from "./HttpService";
 
 async function removeMemberFromRecipe(memberId, recipeId) {
@@ -13,13 +14,21 @@ async function removeMemberFromRecipe(memberId, recipeId) {
     .delete("recipe/RemoveMemberFromRecipe/" + memberId + "/" + recipeId)
     .then((res) => {
       return handleSuccess(res);
+    })
+    .catch((e) => {
+      processError(e);
     });
 }
 
 async function paginate(params) {
-  return await httpService.get("/recipe/paginate", { params }).then((res) => {
-    return handleSuccess(res);
-  });
+  return await httpService
+    .get("/recipe/paginate", { params })
+    .then((res) => {
+      return handleSuccess(res);
+    })
+    .catch((e) => {
+      processError(e);
+    });
 }
 
 export default {

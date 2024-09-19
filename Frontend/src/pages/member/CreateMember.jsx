@@ -15,6 +15,7 @@ export default function CreateMember() {
   const [roleId, setRoleId] = useState();
 
   const [error, setError] = useState(null);
+  const { showError } = useState(false);
 
   const navigate = useNavigate();
 

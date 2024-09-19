@@ -5,7 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import RotatingCarousel from "../components/RotatingCarousel";
 import { useState } from "react";
 import RecipeService from "../services/RecipeService";
-import HomeArticleList from "./homeComponents/HomeArticleList";
+import HomeArticleList from "./homeComponents/HomeArticleList.jsx";
 
 export default function Home() {
   return (

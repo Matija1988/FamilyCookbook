@@ -20,12 +20,14 @@ import UpdateRecipe from "./pages/recipe/UpdateRecipe";
 import RecipeDetails from "./pages/recipe/RecipeDetails";
 import useError from "./hooks/useError";
 import ErrorModal from "./components/ErrorModal";
+import LoadingSpinner from "./components/LoadingSpinner";
 function App() {
   const { errors, showErrorModal, hideErrorModal } = useError();
 
   return (
     <>
       <NavBar />
+      <LoadingSpinner />
       <ErrorModal
         show={showErrorModal}
         onHide={hideErrorModal}

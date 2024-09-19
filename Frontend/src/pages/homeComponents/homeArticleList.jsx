@@ -5,6 +5,8 @@ import CustomPagination from "../../components/CustomPagination";
 import ArticleCard from "./ArticleCard";
 
 import "./homeArticleList.css";
+import useError from "../../hooks/useError";
+import useLoading from "../../hooks/useLoading";
 
 export default function HomeArticleList() {
   const recipeState = {
@@ -18,6 +20,8 @@ export default function HomeArticleList() {
 
   const [recipes, setRecipes] = useState([]);
   const [error, setError] = useState("");
+  const { showError } = useError();
+  const { showLoading, hideLoading } = useLoading();
 
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(12);
@@ -38,16 +42,16 @@ export default function HomeArticleList() {
       pageNumber,
       searchByActivityStatus
     );
-    try {
-      const response = await RecipeService.paginate(params);
-      if (response.ok) {
-        const { items, pageCount } = response.data;
-        setRecipes(items);
-        setTotalPages(pageCount);
-      }
-    } catch (error) {
-      alert(error.message);
+    showLoading();
+    const response = await RecipeService.paginate(params);
+    if (!response.ok) {
+      hideLoading();
+      showError(response.data);
     }
+    const { items, pageCount } = response.data;
+    setRecipes(items);
+    setTotalPages(pageCount);
+    hideLoading();
   }
 
   useEffect(() => {

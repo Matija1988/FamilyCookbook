@@ -19,6 +19,8 @@ import GenericInputs from "../../components/GenericInputs";
 import RoleService from "../../services/RoleService";
 
 import "./memberWorkspace.css";
+import useLoading from "../../hooks/useLoading";
+import useError from "../../hooks/useError";
 
 export default function Members() {
   const [members, setMembers] = useState();
@@ -37,6 +39,8 @@ export default function Members() {
   ];
 
   const [activityStatus, setActivityStatus] = useState(1);
+  const { hideLoading, showLoading } = useLoading();
+  const { showError } = useError();
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
