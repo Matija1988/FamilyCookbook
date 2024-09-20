@@ -61,6 +61,11 @@ input[type="file"] {
   background-color: #6c757d;
   border: none;
   color: white;
+  margin-left: 1%;
+}
+
+.btn-danger {
+  margin-left: 1%;
 }
 
 .btn-secondary:hover {
@@ -111,4 +116,3 @@ img {
   width: 100%;
   font-weight: bold;
 }
-

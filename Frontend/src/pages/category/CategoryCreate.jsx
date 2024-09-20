@@ -68,7 +68,7 @@ export default function CategoryCreate() {
 
         {submited ? (
           <div>
-            <h4>Category submitted succesfully</h4>
+            <h4>Category submitted successfully</h4>
             <CustomButton
               variant="primary"
               label="ADD ANOTHER"
@@ -80,6 +80,7 @@ export default function CategoryCreate() {
               label="RETURN"
               onClick={handleReturn}
               variant="secondary"
+              className="btn-secondary"
             ></CustomButton>
           </div>
         ) : (
