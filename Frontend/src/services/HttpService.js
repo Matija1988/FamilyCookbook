@@ -74,6 +74,16 @@ export function processError(e) {
       data: [generateMessage("Network issue", "Try again later")],
     };
   }
+
+  if (e.response.status === 400 || e.response.status === 500) {
+    if (e.response.headers["content-type"].includes("text/plain")) {
+      return {
+        ok: false,
+        data: [generateMessage("Error", e.response.data)],
+      };
+    }
+  }
+
   if (e.response.status === 400 && e.response.data.errors) {
     const validationErrors = Object.entries(e.response.data.errors).map(
       ([key, messages]) => ({

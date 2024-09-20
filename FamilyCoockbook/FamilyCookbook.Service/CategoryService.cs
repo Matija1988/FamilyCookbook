@@ -11,14 +11,11 @@ using System.Threading.Tasks;
 
 namespace FamilyCookbook.Service
 {
-    public sealed class CategoryService : ICategoryService
+    public sealed class CategoryService(ICategoryRepository repository, 
+        IRecipeRepository recipeRepository) : ICategoryService
     {
-        private readonly ICategoryRepository _repository;
-        public CategoryService(ICategoryRepository repository)
-        {
-            _repository = repository;
-            
-        }
+        private readonly ICategoryRepository _repository = repository;
+        private readonly IRecipeRepository _recipeRepository = recipeRepository;
 
         public async Task<RepositoryResponse<Category>> CreateAsync(Category entity)
         {
@@ -56,7 +53,31 @@ namespace FamilyCookbook.Service
 
         public async Task<RepositoryResponse<Category>> SoftDeleteAsync(int id)
         {
-            return await _repository.SoftDeleteAsync(id);   
+            var response = new RepositoryResponse<Category>();
+
+            var recipeResponse = await _recipeRepository.GetAllAsync();
+
+            StringBuilder errorBuilder = new StringBuilder();
+
+            if (recipeResponse == null || recipeResponse.Items.Count == 0)
+            {
+                response.Success = false;
+                response.Message = errorBuilder.Append("Error parsing recipes!");
+                return response;
+            }
+
+            bool chk = recipeResponse.Items.Any(r => r.CategoryId == id);
+
+            if (chk) 
+            {
+                response.Success = false;
+                response.Message = errorBuilder.Append("The category you are trying to delete has active recipes." +
+                    "Deleting the category before deleting the recipes that belong to this category will " +
+                    "cause issues in the program. Please delete all active recipes in this category first!");
+                return response;
+            }
+
+            return response;   
         }
     }
 }

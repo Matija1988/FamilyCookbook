@@ -246,6 +246,13 @@ namespace FamilyCookbook.Repository
 
                 rowsAffected = await connection.ExecuteAsync(query, new { id });
 
+                if(rowsAffected == 0)
+                {
+                    response.Success = false;
+                    response.Message = _errorMessages.NotFound(id);
+                    return response;
+                }
+
                 response.Success = rowsAffected > 0;
                 response.Message = _successResponses.EntityDeleted(tableName);
                 return response;

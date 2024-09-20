@@ -43,6 +43,7 @@ export default function Categories() {
       setShowDeleteModal(false);
       fetchCategories();
     }
+    showError(response.data);
   }
 
   function updateCategory(category) {
