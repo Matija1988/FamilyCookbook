@@ -40,21 +40,19 @@ namespace FamilyCookbook.Service
             var recipeResponse = await _recipeRepository.GetAllAsync();
 
             if (recipeResponse.Success == false || recipeResponse == null)
-            {
-                
+            {          
                 response.Success = false;
                 response.Message = errorBuilder.Append("Error parsing recipes! " + recipeResponse.Message); ;
                 return response;
             }
 
-            var recipe = recipeResponse.Items.Where(r => r.Members.Any(m => m.Id == id))
-                .Where(r => r.IsActive == true);
-
-            if (recipe != null)
+            bool chk = recipeResponse.Items.Any(r => r.Members.Any(m => m.Id == id));
+    
+            if (chk)
             {
                 response.Success = false;
                 response.Message = errorBuilder.Append("The member you are trying to delete is an author of active recipes." +
-                    "Deleting him before the recipes can cause issues in the programe. Please delete his " +
+                    "Deleting him before the recipes can cause issues in the program. Please delete his " +
                     "active recipes first!");
                 return response;
             }
@@ -62,7 +60,6 @@ namespace FamilyCookbook.Service
             response = await _repository.SoftDeleteAsync(id);
 
             return response;
-
 
         }
 
@@ -135,5 +132,7 @@ namespace FamilyCookbook.Service
 
             return response;
         }
+
+
     }
 }

@@ -98,6 +98,13 @@ namespace FamilyCookbook.Repository
 
                 rowAffected = await connection.ExecuteAsync(query, new { Id = id });
 
+                if(rowAffected == 0)
+                {
+                    response.Success = false;
+                    response.Message = _errorMessages.NotFound(id);
+                    return response;
+                }
+
                 response.Success = rowAffected > 0;
                 response.Message = _successResponses.EntityUpdated();
 
