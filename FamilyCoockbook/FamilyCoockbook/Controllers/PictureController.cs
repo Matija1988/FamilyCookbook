@@ -32,7 +32,7 @@ namespace FamilyCookbook.Controllers
 
             if (response.Success == false)
             {
-                return NotFound(response.Message);
+                return NotFound(response.Message.ToString());
             }
             return Ok(response);
         }
@@ -46,7 +46,7 @@ namespace FamilyCookbook.Controllers
 
             if (response.Success == false)
             {
-                return NotFound(response.Message);
+                return NotFound(response.Message.ToString());
             }
             return Ok(response);
 
@@ -99,7 +99,7 @@ namespace FamilyCookbook.Controllers
 
             if (response.Success == false)
             {
-                return BadRequest(response.Message);
+                return BadRequest(response.Message.ToString());
             }
             return Ok(response);
 
@@ -120,7 +120,7 @@ namespace FamilyCookbook.Controllers
 
             if(response.Success == false)
             {
-                return BadRequest(response.Message);
+                return BadRequest(response.Message.ToString());
             }
 
             return Ok(response);
@@ -135,10 +135,10 @@ namespace FamilyCookbook.Controllers
 
             if(response.Success == false)
             {
-                return NotFound(response.Message);
+                return NotFound(response.Message.ToString());
             }
 
-            return Ok(response.Message);
+            return Ok(response.Message.ToString());
 
         }
     }

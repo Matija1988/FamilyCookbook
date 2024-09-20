@@ -25,7 +25,7 @@ namespace FamilyCookbook.Controllers
 
             if (response.Success == false)
             {
-                return NotFound(response.Message);
+                return NotFound(response.Message.ToString());
             }
 
             var mapper = new MemberMapper();
@@ -50,7 +50,7 @@ namespace FamilyCookbook.Controllers
 
             if(response.Success == false)
             {
-                return NotFound(response.Message);
+                return NotFound(response.Message.ToString());
             }
 
             var mapper = new MemberMapper();
@@ -69,7 +69,7 @@ namespace FamilyCookbook.Controllers
 
             if (response.Success == false)
             {
-                return NotFound(response.Message);
+                return NotFound(response.Message.ToString());
             }
 
             var mapper = new MemberMapper();
@@ -89,7 +89,7 @@ namespace FamilyCookbook.Controllers
 
             if (response.Success == false) 
             {
-                return NotFound(response.Message);
+                return NotFound(response.Message.ToString());
             }
 
             var mapper = new MemberMapper();
@@ -122,7 +122,7 @@ namespace FamilyCookbook.Controllers
 
             if (response.Success == false)
             {   
-                return NotFound(response.Message);
+                return NotFound(response.Message.ToString());
             }
             return Ok(finalResponse);
         }
@@ -139,10 +139,10 @@ namespace FamilyCookbook.Controllers
 
             if(response.Success == false)
             {
-                return BadRequest(response.Message);
-            }
+                return BadRequest(response.Message.ToString());
+            }   
 
-            return Ok(response.Message);    
+            return Ok(response.Message.ToString());    
         }
 
         [HttpPut]
@@ -157,9 +157,9 @@ namespace FamilyCookbook.Controllers
 
             if (response.Success == false) 
             {
-                return BadRequest(response.Message);
+                return BadRequest(response.Message.ToString());
             }
-            return Ok(response.Message);
+            return Ok(response.Message.ToString());
         }
 
         [HttpPut]
@@ -170,9 +170,9 @@ namespace FamilyCookbook.Controllers
 
             if(response.Success == false)
             {
-                return BadRequest(response.Message);
+                return BadRequest(response.Message.ToString());
             }
-            return Ok(response.Message);
+            return Ok(response.Message.ToString());
         }
 
         [HttpDelete]
@@ -184,9 +184,9 @@ namespace FamilyCookbook.Controllers
 
             if(response.Success == false)
             {
-                return BadRequest(response.Message);
+                return BadRequest(response.Message.ToString());
             }
-            return Ok(response.Message);
+            return Ok(response.Message.ToString());
         }
 
         

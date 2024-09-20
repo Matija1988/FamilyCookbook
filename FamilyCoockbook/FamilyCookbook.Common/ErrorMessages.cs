@@ -40,5 +40,12 @@ namespace FamilyCookbook.Common
 
             return sb.Append("Member not found!!!");
         }
+
+        public StringBuilder NestedEntityWithIdFound(string entityName, string nestedEntity)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            return sb.Append($"Unable create entity {entityName}. No {nestedEntity} with requested ids found.");
+        }
     }
 }

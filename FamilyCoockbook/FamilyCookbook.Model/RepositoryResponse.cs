@@ -12,7 +12,7 @@ namespace FamilyCookbook.Model
 
         public bool Success { get; set; }
 
-        public string Message { get; set; }
+        public StringBuilder Message { get; set; }
 
         public int TotalCount { get; set; }
 

@@ -25,7 +25,7 @@ namespace FamilyCookbook.Controllers
 
             if(response.Success == false)
             {
-                return NotFound(response.Message);
+                return NotFound(response.Message.ToString());
             }
 
             return Ok(response.Items);
@@ -39,7 +39,7 @@ namespace FamilyCookbook.Controllers
 
             if (response.Success == false) 
             {
-                return NotFound(response.Message);
+                return NotFound(response.Message.ToString());
             }
             return Ok(response.Items);
         } 

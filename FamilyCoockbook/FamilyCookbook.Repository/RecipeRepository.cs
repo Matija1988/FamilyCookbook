@@ -43,14 +43,14 @@ namespace FamilyCookbook.Repository
                 rowsAffected = await connection.ExecuteAsync(query, new {MemberId = memberId, RecipeId = recipeId});
 
                 response.Success = rowsAffected > 0;
-                response.Message = _successResponses.EntityDeleted(" member from recipe").ToString();
+                response.Message = _successResponses.EntityDeleted(" member from recipe");
 
                 return response;
             }
             catch (Exception ex) 
             { 
                 response.Success = false;
-                response.Message = _errorMessages.ErrorAccessingDb("MemberRecipe").ToString() + ex.Message;
+                response.Message = _errorMessages.ErrorAccessingDb("MemberRecipe");
                 return response;
             }
             finally
@@ -76,7 +76,7 @@ namespace FamilyCookbook.Repository
                 rowsAffected = await connection.ExecuteAsync(query, entity);
 
                 response.Success = rowsAffected > 0;
-                response.Message = _successResponses.EntityCreated().ToString();
+                response.Message = _successResponses.EntityCreated();
 
                 return response;
 
@@ -84,7 +84,7 @@ namespace FamilyCookbook.Repository
             catch (Exception ex) 
             {
                 response.Success = false;
-                response.Message = _errorMessages.ErrorAccessingDb("MemberRecipe").ToString();
+                response.Message = _errorMessages.ErrorAccessingDb("MemberRecipe");
                 return response;
             } 
             finally
@@ -107,14 +107,14 @@ namespace FamilyCookbook.Repository
                 var updatedEntity = await connection.ExecuteScalarAsync(query);
 
                 response.Success = true;
-                response.Message = _successResponses.EntityUpdated().ToString();
+                response.Message = _successResponses.EntityUpdated();
                 return response;
 
             }
             catch (Exception ex) 
             { 
                 response.Success= false;
-                response.Message = _errorMessages.ErrorAccessingDb("Recipe").ToString() + ex.Message;
+                response.Message = _errorMessages.ErrorAccessingDb("Recipe");
                 return response;
 
             } finally
@@ -140,14 +140,14 @@ namespace FamilyCookbook.Repository
                 rowsAffected = await connection.ExecuteAsync(query, new { Id = id });
 
                 response.Success = rowsAffected > 0;
-                response.Message = _successResponses.EntityUpdated().ToString();
+                response.Message = _successResponses.EntityUpdated();
 
                 return response; 
             }
             catch (Exception ex) 
             { 
                 response.Success= false;
-                response.Message = _errorMessages.NotFound(id).ToString() + ex.Message;
+                response.Message = _errorMessages.NotFound(id);
 
                 return response;
             }
@@ -228,7 +228,7 @@ namespace FamilyCookbook.Repository
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = _errorMessages.ErrorAccessingDb("Recipe").ToString() + ex.Message;
+                response.Message = _errorMessages.ErrorAccessingDb("Recipe");
                 return response;
             }
             finally 
@@ -306,7 +306,7 @@ namespace FamilyCookbook.Repository
                 if(result is null)
                 {
                     response.Success = false;
-                    response.Message = _errorMessages.NotFound(id).ToString();
+                    response.Message = _errorMessages.NotFound(id);
 
                     return response;
                 }
@@ -320,7 +320,7 @@ namespace FamilyCookbook.Repository
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = _errorMessages.ErrorAccessingDb("Recipe").ToString() + ex.Message;
+                response.Message = _errorMessages.ErrorAccessingDb("Recipe");
                 return response;
             }
             finally
@@ -354,7 +354,7 @@ namespace FamilyCookbook.Repository
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = _errorMessages.ErrorAccessingDb("Recipe").ToString() + ex.Message; 
+                response.Message = _errorMessages.ErrorAccessingDb("Recipe"); 
                 return response;
             }
             finally
@@ -421,7 +421,7 @@ namespace FamilyCookbook.Repository
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = _errorMessages.ErrorAccessingDb("Recipe").ToString() + ex.Message;
+                response.Message = _errorMessages.ErrorAccessingDb("Recipe");
                 return response;
             }
             finally

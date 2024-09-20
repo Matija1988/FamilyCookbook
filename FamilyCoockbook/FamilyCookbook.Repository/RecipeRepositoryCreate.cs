@@ -67,7 +67,7 @@ namespace FamilyCookbook.Repository
                     if (entity.MemberIds == null)
                     {
                         response.Success = false;
-                        response.Message = "No members with selected ids in database";
+                        response.Message = _errorMessages.NestedEntityWithIdFound("Recipe", "Members");
                         return response;
                     }
 
@@ -85,14 +85,14 @@ namespace FamilyCookbook.Repository
                     }
                     transaction.Commit();
                     response.Success = true;
-                    response.Message = _successResponses.EntityCreated().ToString();
+                    response.Message = _successResponses.EntityCreated();
                     return response;
                 }
                 catch (Exception ex)
                 {
                     transaction.Rollback();
                     response.Success = false;
-                    response.Message = _errorMessages.ErrorCreatingEntity(" Recipe ").ToString() + ex.Message;
+                    response.Message = _errorMessages.ErrorCreatingEntity(" Recipe ");
                     return response;
                 }
             }

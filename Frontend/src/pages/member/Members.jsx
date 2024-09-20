@@ -177,6 +177,7 @@ export default function Members() {
               label="Create new"
               variant="primary"
               onClick={() => createMember()}
+              className="create-new-btn"
             ></CustomButton>
           </Col>
           <Col>

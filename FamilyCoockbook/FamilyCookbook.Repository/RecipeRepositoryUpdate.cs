@@ -45,14 +45,14 @@ namespace FamilyCookbook.Repository
                 });
 
                 response.Success = rowAffected > 0;
-                response.Message = _successResponses.EntityUpdated().ToString();
+                response.Message = _successResponses.EntityUpdated();
 
                 return response;
             }
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = _errorMessages.ErrorAccessingDb("Recipe").ToString() + ex.Message;
+                response.Message = _errorMessages.ErrorAccessingDb("Recipe");
                 return response;
             }
             finally

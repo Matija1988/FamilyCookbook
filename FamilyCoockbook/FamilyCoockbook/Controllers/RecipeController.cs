@@ -39,7 +39,7 @@ namespace FamilyCookbook.Controllers
 
             if (response.Success == false)
             {
-                return NotFound(response.Message);
+                return NotFound(response.Message.ToString());
             }
 
             var mapper = new RecipeMapper();
@@ -58,7 +58,7 @@ namespace FamilyCookbook.Controllers
 
             if (response.Success == false)
             {
-                return NotFound(response.Message);
+                return NotFound(response.Message.ToString());
             }
             var mapper = new RecipeMapper();
 
@@ -77,7 +77,7 @@ namespace FamilyCookbook.Controllers
 
             if (response.Success == false)
             {
-                return NotFound(response.Message);
+                return NotFound(response.Message.ToString());
             }
             var mapper = new RecipeMapper();
 
@@ -105,7 +105,7 @@ namespace FamilyCookbook.Controllers
                 return Ok(response);
             }
 
-            return BadRequest();
+            return BadRequest(response.Message.ToString());
         }
 
         [HttpPost]
@@ -198,10 +198,10 @@ namespace FamilyCookbook.Controllers
 
             if (response.Success == false)
             {
-                return BadRequest(response.Message);
+                return BadRequest(response.Message.ToString());
             }
 
-            return Ok(response.Message);
+            return Ok(response.Message.ToString());
 
         }
 
@@ -218,7 +218,7 @@ namespace FamilyCookbook.Controllers
             {
                 return Ok(response);
             }
-            return BadRequest(response.Message);
+            return BadRequest(response.Message.ToString());
         }
 
         [HttpPut]
@@ -244,7 +244,7 @@ namespace FamilyCookbook.Controllers
 
             if (response.Success == false)
             {
-                return BadRequest(response.Message);
+                return BadRequest(response.Message.ToString());
             }
 
             foreach (var item in updatedRecipe.MemberIds)
@@ -270,7 +270,7 @@ namespace FamilyCookbook.Controllers
 
             if (response.Success == false)
             {
-                return BadRequest(response.Message);
+                return BadRequest(response.Message.ToString());
             }
 
             return Ok(response);
@@ -285,7 +285,7 @@ namespace FamilyCookbook.Controllers
 
             if (response.Success == false)
             {
-                return BadRequest(response.Message);
+                return BadRequest(response.Message.ToString());
             }
             return Ok(response);
         }
@@ -298,9 +298,9 @@ namespace FamilyCookbook.Controllers
 
             if (response.Success == false)
             {
-                return BadRequest(response.Message);
+                return BadRequest(response.Message.ToString());
             }
-            return Ok(response.Message);
+            return Ok(response.Message.ToString());
         }
 
     }

@@ -63,7 +63,7 @@ namespace FamilyCookbook.Repository
                 rowsAffeted = await connection.ExecuteAsync(query, entity);
 
                 response.Success = rowsAffeted > 0;
-                response.Message = _successResponses.EntityCreated().ToString();
+                response.Message = _successResponses.EntityCreated();
 
                 return response;
 
@@ -71,7 +71,7 @@ namespace FamilyCookbook.Repository
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = _errorMessages.ErrorCreatingEntity(" Member ").ToString() + ex.Message;
+                response.Message = _errorMessages.ErrorCreatingEntity(" Member ");
                 return response;
             }
             finally
@@ -99,7 +99,7 @@ namespace FamilyCookbook.Repository
                 rowAffected = await connection.ExecuteAsync(query, new { Id = id });
 
                 response.Success = rowAffected > 0;
-                response.Message = _successResponses.EntityUpdated().ToString();
+                response.Message = _successResponses.EntityUpdated();
 
                 return response;
 
@@ -107,7 +107,7 @@ namespace FamilyCookbook.Repository
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = _errorMessages.NotFound(id).ToString() + ex.Message;
+                response.Message = _errorMessages.NotFound(id);
 
                 return response;
             }
@@ -133,14 +133,14 @@ namespace FamilyCookbook.Repository
                 rowAffected = await connection.ExecuteAsync(query, new { Id = id });
 
                 response.Success = rowAffected > 0;
-                response.Message = _successResponses.EntityDeleted("Member").ToString();
+                response.Message = _successResponses.EntityDeleted("Member");
                 return response;
 
             }
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = _errorMessages.NotFound(id).ToString() + ex.Message;
+                response.Message = _errorMessages.NotFound(id);
                 return response;
             }
             finally
@@ -203,7 +203,7 @@ namespace FamilyCookbook.Repository
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = _errorMessages.ErrorAccessingDb("Member").ToString() + ex.Message;
+                response.Message = _errorMessages.ErrorAccessingDb("Member");
                 return response;
             }
             finally
@@ -258,7 +258,7 @@ namespace FamilyCookbook.Repository
                 if (result is null)
                 {
                     response.Success = false;
-                    response.Message = _errorMessages.NotFoundByGuid().ToString();
+                    response.Message = _errorMessages.NotFoundByGuid();
                     return response;
                 }
 
@@ -271,7 +271,7 @@ namespace FamilyCookbook.Repository
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = _errorMessages.ErrorAccessingDb("Member").ToString() + ex.Message;
+                response.Message = _errorMessages.ErrorAccessingDb("Member");
                 return response;
             }
             finally
@@ -325,7 +325,7 @@ namespace FamilyCookbook.Repository
                 if (result is null)
                 {
                     response.Success = false;
-                    response.Message = _errorMessages.NotFound(id).ToString();
+                    response.Message = _errorMessages.NotFound(id);
                     return response;
                 }
 
@@ -338,7 +338,7 @@ namespace FamilyCookbook.Repository
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = _errorMessages.ErrorAccessingDb("Member").ToString() + ex.Message;
+                response.Message = _errorMessages.ErrorAccessingDb("Member");
                 return response;
             }
             finally
@@ -396,7 +396,7 @@ namespace FamilyCookbook.Repository
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = _errorMessages.ErrorAccessingDb("Member").ToString() + ex.Message;
+                response.Message = _errorMessages.ErrorAccessingDb("Member");
                 return response;
             }
             finally
@@ -506,7 +506,7 @@ namespace FamilyCookbook.Repository
                 });
 
                 response.Success = rowAffected > 0;
-                response.Message = _successResponses.EntityUpdated().ToString();
+                response.Message = _successResponses.EntityUpdated();
 
                 return response;
 
@@ -514,7 +514,7 @@ namespace FamilyCookbook.Repository
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = _errorMessages.ErrorAccessingDb("Member").ToString() + ex.Message;    
+                response.Message = _errorMessages.ErrorAccessingDb("Member");    
                 return response;
             }
             finally

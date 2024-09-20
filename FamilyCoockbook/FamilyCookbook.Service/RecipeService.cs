@@ -3,6 +3,7 @@ using FamilyCookbook.Common;
 using FamilyCookbook.Model;
 using FamilyCookbook.Repository.Common;
 using FamilyCookbook.Service.Common;
+using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -25,13 +26,16 @@ namespace FamilyCookbook.Service
         {
             var chk = await _repository.GetByIdAsync(entity.RecipeId);
 
+            StringBuilder errorBuilder = new StringBuilder();
+
             if (chk.Success == false)
             {
                     var create = await _repository.AddMemberToRecipeAsync(entity);
                     if (create.Success == false)
                     {
+                        
                         create.Success = false;
-                        create.Message = "Error adding members to recipe";
+                        create.Message = errorBuilder.Append("Error adding members to recipe");
                         return create;
                     }
                     return create;
@@ -61,7 +65,7 @@ namespace FamilyCookbook.Service
             if (tempList2.Count == 0 || tempList2 is null) 
             {
                 chk.Success = false;
-                chk.Message = "Author is already added to the recipe!";
+                chk.Message = errorBuilder.Append("Author is already added to the recipe!");
                 return chk;
             }
             

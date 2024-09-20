@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import CategoriesService from "../../services/CategoriesService";
-import { Container } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 import CustomButton from "../../components/CustomButton";
 import GenericTable from "../../components/GenericTable";
 import { useNavigate } from "react-router-dom";
@@ -57,11 +57,19 @@ export default function Categories() {
     <>
       <Container className="primaryContainer">
         <h1>CATEGORIES PAGE</h1>
-        <CustomButton
-          label="Create new"
-          variant="primary"
-          onClick={() => createCategory()}
-        ></CustomButton>
+        <Row>
+          <Col>
+            <CustomButton
+              label="Create new"
+              variant="primary"
+              onClick={() => createCategory()}
+              className="create-new-btn"
+            ></CustomButton>
+          </Col>
+          <Col></Col>
+          <Col></Col>
+          <Col></Col>
+        </Row>
 
         <GenericTable
           dataArray={categories}

@@ -17,5 +17,7 @@ namespace FamilyCookbook.Common
 
         StringBuilder ErrorCreatingEntity(string entityName);
 
+        StringBuilder NestedEntityWithIdFound(string entityName, string nestedEntity);
+
     }
 }
