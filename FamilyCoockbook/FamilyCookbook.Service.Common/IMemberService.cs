@@ -1,5 +1,7 @@
 ﻿using FamilyCookbook.Common;
 using FamilyCookbook.Model;
+using Microsoft.AspNetCore.Mvc;
+using System.Text;
 
 
 namespace FamilyCookbook.Service.Common
@@ -8,7 +10,7 @@ namespace FamilyCookbook.Service.Common
     {
         Task<RepositoryResponse<Member>> CreateAsync(Member entity);
         Task<RepositoryResponse<Member>> GetByGuidAsync(Guid uniqueId);
-
+        Task<IActionResult> LogIn(string username, string password);
         Task<RepositoryResponse<Lazy<List<Member>>>> PaginateAsync(Paging paging, MemberFilter filter);
 
         Task<RepositoryResponse<List<Member>>> SearchMemberByCondition(string condition);

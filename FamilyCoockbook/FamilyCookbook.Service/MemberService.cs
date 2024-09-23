@@ -1,24 +1,30 @@
 ﻿using AngleSharp.Css.Dom;
+using BCrypt.Net;
 using FamilyCookbook.Common;
 using FamilyCookbook.Model;
 using FamilyCookbook.Repository.Common;
 using FamilyCookbook.Respository.Common;
 using FamilyCookbook.Service.Common;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace FamilyCookbook.Service
 {
     public sealed class MemberService(IMemberRepository repository, 
-        IRecipeRepository recipeRepository) : IMemberService
+        IRecipeRepository recipeRepository, IConfiguration configuration) : IMemberService
     {
         private readonly IMemberRepository _repository = repository;
         private readonly IRecipeRepository _recipeRepository = recipeRepository;
-        
+        private readonly IConfiguration _configuration = configuration;
         public async Task<RepositoryResponse<Member>> CreateAsync(Member entity)
         {
             entity.UniqueId = Guid.NewGuid();
@@ -133,6 +139,43 @@ namespace FamilyCookbook.Service
             return response;
         }
 
+        public async Task<IActionResult> LogIn(string username, string password)
+        {
+            StringBuilder errorBuilder = new StringBuilder();
+            var response = await _repository.GetAllAsync();
 
+            var validateUser = response.Items
+                .Where(member => member.Username!.EndsWith(username))
+                .FirstOrDefault();
+
+            if (validateUser == null) 
+            {
+                return new BadRequestObjectResult(errorBuilder.Append("Invalid username!"));
+            }
+
+            if (!BCrypt.Net.BCrypt.Verify(password, validateUser.Password)) 
+            {
+                return new BadRequestObjectResult(errorBuilder.Append("Invalid password!"));
+            }
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            var key = Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[] {new Claim("Id", validateUser.Username),
+                new Claim(ClaimTypes.Role, validateUser.Role.Name)}),
+
+                Expires = DateTime.UtcNow.Add(TimeSpan.FromHours(8)),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), 
+                SecurityAlgorithms.HmacSha256)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var jwt = tokenHandler.WriteToken(token);
+
+            return new OkObjectResult(jwt);
+        }
     }
 }

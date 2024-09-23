@@ -3,6 +3,7 @@ using FamilyCookbook.Mapping;
 using FamilyCookbook.Model;
 using FamilyCookbook.REST_Models.Member;
 using FamilyCookbook.Service.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FamilyCookbook.Controllers
@@ -18,6 +19,7 @@ namespace FamilyCookbook.Controllers
             _service = service;
         }
 
+        [Authorize, Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> GetAllAsync() 
         { 
