@@ -16,7 +16,7 @@ async function searchMemberByCondition(input) {
       return handleSuccess(res);
     })
     .catch((e) => {
-     return processError(e);
+      return processError(e);
     });
 }
 
@@ -27,7 +27,18 @@ async function paginate(params) {
       return handleSuccess(res);
     })
     .catch((e) => {
-     return  processError(e);
+      return processError(e);
+    });
+}
+
+async function getByUsername(username) {
+  return await httpService
+    .get("/member/findByUsername/" + username)
+    .then((res) => {
+      return handleSuccess(res);
+    })
+    .catch((e) => {
+      return processError(e);
     });
 }
 
@@ -39,4 +50,5 @@ export default {
   setNotActive,
   searchMemberByCondition,
   paginate,
+  getByUsername,
 };

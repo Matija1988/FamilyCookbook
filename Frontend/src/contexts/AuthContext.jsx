@@ -1,8 +1,10 @@
 import { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { RouteNames } from "../constants/constants";
+import AuthService from "../services/AuthService";
+import { useUser } from "./UserContext";
 
-export const authContext = createContext();
+export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -15,16 +17,16 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const token = localStorage.getItem("Bearer");
 
-    if (token) {
+    if (token && isLoggedIn) {
       setAuthToken(token);
       setIsLoggedIn(true);
     } else {
       navigate(RouteNames.HOME);
     }
-  }, []);
+  }, [isLoggedIn]);
 
   async function login(userData) {
-    const response = await logInService(userData);
+    const response = await AuthService.logInService(userData);
 
     if (response.ok) {
       localStorage.setItem("Bearer", response.data);
@@ -45,7 +47,7 @@ export function AuthProvider({ children }) {
     setIsLoggedIn(false);
     resetUser();
     setUserRole(null);
-    navigate(RoutesName.HOME);
+    navigate(RouteNames.HOME);
   }
 
   const value = {
@@ -56,9 +58,5 @@ export function AuthProvider({ children }) {
     role,
   };
 
-  return (
-    <AuthContext.AuthProvider value={value}>
-      {children}
-    </AuthContext.AuthProvider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

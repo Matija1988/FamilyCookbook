@@ -14,7 +14,7 @@ export const useUser = () => {
   return useContext(UserContext);
 };
 
-export const UserProvider = ({ Children }) => {
+export const UserProvider = ({ children }) => {
   const [userId, setUserId] = useState(null);
   const [userRole, setUserRole] = useState(null);
   const [userFirstName, setUserFirstName] = useState(null);
@@ -26,9 +26,13 @@ export const UserProvider = ({ Children }) => {
       try {
         const decodedToken = jwtDecode(token);
         const username = decodedToken.Id;
+        if (username) {
+          fetchUserId(username);
+        } else {
+          console.log("No username found in the token");
+        }
         const role = decodedToken.role;
         setUserRole(role);
-        fetchUserId(username);
       } catch (error) {
         console.log("Error in userContext", error);
       }
@@ -37,14 +41,20 @@ export const UserProvider = ({ Children }) => {
   }, []);
 
   const fetchUserId = async (username) => {
+    if (!username) {
+      console.error("Cannot fetch user");
+      return;
+    }
     try {
-      const response = await MembersService.getById(username);
+      const response = await MembersService.getByUsername(username);
       if (response.ok) {
         setUserId(response.data.id);
         setUserFirstName(response.data.firstName);
         setUserLastName(response.data.lastName);
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log("Error Usercontext", error);
+    }
   };
 
   const setUserOnLogin = async (input) => {
@@ -73,6 +83,8 @@ export const UserProvider = ({ Children }) => {
         resetUser,
         setUserOnLogin,
       }}
-    ></UserContext.Provider>
+    >
+      {children}
+    </UserContext.Provider>
   );
 };

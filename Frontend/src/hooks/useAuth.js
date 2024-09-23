@@ -1,9 +1,8 @@
 import { useContext } from "react";
-import { authContext } from "../contexts/AuthContext";
-import { PiTrademarkRegisteredLight } from "react-icons/pi";
+import { AuthContext } from "../contexts/AuthContext";
 
 export default function useAuth() {
-  const context = useContext(authContext);
+  const context = useContext(AuthContext);
   if (!context) {
     throw new Error("useAuth must be used within the AuthProvider");
   }
