@@ -1,5 +1,6 @@
 ﻿using FamilyCookbook.Common;
 using FamilyCookbook.Service.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FamilyCookbook.Controllers
@@ -16,6 +17,8 @@ namespace FamilyCookbook.Controllers
             _roleService = roleService;
         }
 
+
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         
         public async Task<IActionResult> GetAll()
@@ -31,6 +34,8 @@ namespace FamilyCookbook.Controllers
             return Ok(response.Items);
         }
 
+
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         [Route("{id:int}")]
         public async Task<IActionResult> GetById(int id)

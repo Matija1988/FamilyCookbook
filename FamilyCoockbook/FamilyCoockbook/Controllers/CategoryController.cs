@@ -4,21 +4,19 @@ using FamilyCookbook.Mapping;
 using FamilyCookbook.Model;
 using FamilyCookbook.REST_Models.Category;
 using FamilyCookbook.Service.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FamilyCookbook.Controllers
 {
     [ApiController]
     [Route("api/v0/category")]
-    public class CategoryController : ControllerBase
+    public class CategoryController(ICategoryService service) : ControllerBase
     {
-        private readonly ICategoryService _service;
+        private readonly ICategoryService _service = service;
 
-        public CategoryController(ICategoryService service)
-        {
-            _service = service;
-        }
 
+        [Authorize(Roles = "Admin, Moderator, Contributor")]
         [HttpGet]
         public async Task<IActionResult> GetAllAsync()
         {
@@ -31,6 +29,7 @@ namespace FamilyCookbook.Controllers
 
             return Ok(response);
         }
+
 
         [HttpGet]
         [Route("{id:int}")]
@@ -45,6 +44,8 @@ namespace FamilyCookbook.Controllers
             return Ok(response.Items);
         }
 
+
+        [Authorize(Roles = "Admin, Moderator")]
         [HttpPost]
         [Route("create")]
 
@@ -69,6 +70,8 @@ namespace FamilyCookbook.Controllers
             return Ok(response);
         }
 
+
+        [Authorize(Roles = "Admin, Moderator")]
         [HttpPut]
         [Route("update/{id:int}")]
 
@@ -94,6 +97,8 @@ namespace FamilyCookbook.Controllers
             return Ok(response.Message.ToString());
         }
 
+
+        [Authorize(Roles = "Admin")]
         [HttpDelete]
         [Route("delete/{id:int}")]
 
@@ -109,9 +114,9 @@ namespace FamilyCookbook.Controllers
 
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut]
         [Route("softDelete/{id:int}")]
-
         public async Task<IActionResult> SoftDeleteAsync(int id)
         {
             var response = await _service.SoftDeleteAsync(id);
@@ -121,11 +126,6 @@ namespace FamilyCookbook.Controllers
                 return BadRequest(response.Message.ToString());
             }
             return Ok(response.Message.ToString());
-
         }
-
-
-
     }
-
 }

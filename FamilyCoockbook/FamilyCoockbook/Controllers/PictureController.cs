@@ -4,6 +4,7 @@ using FamilyCookbook.Mapping;
 using FamilyCookbook.Model;
 using FamilyCookbook.REST_Models.Picture;
 using FamilyCookbook.Service.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FamilyCookbook.Controllers
@@ -24,8 +25,10 @@ namespace FamilyCookbook.Controllers
             _recipeService = recipeService;
         }
 
-        [HttpGet]
 
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
         public async Task<IActionResult> GetAllAsync()
         {
             var response = await _service.GetAllAsync();
@@ -39,7 +42,6 @@ namespace FamilyCookbook.Controllers
 
         [HttpGet]
         [Route("{id:int}")]
-
         public async Task<IActionResult> GetByIdAsync(int id)
         {
             var response = await _service.GetByIdAsync(id);
@@ -52,6 +54,8 @@ namespace FamilyCookbook.Controllers
 
         }
 
+
+        [Authorize(Roles = "Admin, Moderator, Contributor")]
         [HttpPost]
         [Route("create")]
         public async Task<IActionResult> PostAsync(IFormFile file,  string name)
@@ -104,6 +108,8 @@ namespace FamilyCookbook.Controllers
             return Ok(response);
 
         }
+
+        [Authorize(Roles = "Admin, Moderator, Contributor")]
         [HttpPut]
         [Route("update/{id:int}")]
         public async Task<IActionResult> PutAsync(int id, PictureCreate entity)
@@ -127,6 +133,8 @@ namespace FamilyCookbook.Controllers
 
         }
 
+
+        [Authorize(Roles = "Admin, Moderator")]
         [HttpDelete]
         [Route("delete/{id:int}")] 
         public async Task<IActionResult> DeleteAsync(int id)

@@ -6,6 +6,8 @@ import { Route, useNavigate } from "react-router-dom";
 import { RouteNames } from "../constants/constants";
 import { TbRouteScan } from "react-icons/tb";
 
+import "../App.css";
+
 function NavBar() {
   const navigate = useNavigate();
 
@@ -24,7 +26,7 @@ function NavBar() {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link onClick={() => navigate(RouteNames.HOME)}>HOME</Nav.Link>
-            <Nav.Link href="#link">Link</Nav.Link>
+
             <NavDropdown title="Dropdown" id="basic-nav-dropdown">
               <NavDropdown.Item onClick={() => navigate(RouteNames.MEMBERS)}>
                 Members
@@ -36,6 +38,12 @@ function NavBar() {
                 Recipes
               </NavDropdown.Item>
             </NavDropdown>
+            <Nav.Link
+              className="logIn-link"
+              onClick={() => navigate(RouteNames.LOGIN)}
+            >
+              LOGIN
+            </Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>

@@ -6,6 +6,7 @@ using FamilyCookbook.Model;
 using FamilyCookbook.REST_Models.Recipe;
 using FamilyCookbook.Service.Common;
 using Ganss.Xss;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
 
@@ -14,24 +15,17 @@ namespace FamilyCookbook.Controllers
 
     [ApiController]
     [Route("api/v0/recipe")]
-    public class RecipeController : ControllerBase
+    public class RecipeController(IWebHostEnvironment environment,
+        IRecipeService service,
+        ICategoryService categoryService,
+        IPictureService pictureService) : ControllerBase
     {
-        private readonly IRecipeService _service;
-        private readonly IWebHostEnvironment _enviroment;
-        private readonly ICategoryService _categoryService;
-        private readonly IPictureService _pictureService;
+        private readonly IRecipeService _service = service;
+        private readonly IWebHostEnvironment _enviroment = environment;
+        private readonly ICategoryService _categoryService = categoryService;
+        private readonly IPictureService _pictureService = pictureService;
 
-        public RecipeController(IWebHostEnvironment environment,
-            IRecipeService service,
-            ICategoryService categoryService,
-            IPictureService pictureService)
-        {
-            _service = service;
-            _categoryService = categoryService;
-            _enviroment = environment;
-            _pictureService = pictureService;
-        }
-
+        [Authorize, Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> GetAllAsync()
         {
@@ -93,9 +87,9 @@ namespace FamilyCookbook.Controllers
 
         }
 
+        [Authorize(Roles = "Admin, Moderator, Contributor")]
         [HttpGet]
         [Route("getRecipesWithoutAuthors")]
-
         public async Task<IActionResult> GetRecipesWithoutAuthors()
         {
             var response = await _service.GetRecipesWithoutAuthors();
@@ -108,6 +102,8 @@ namespace FamilyCookbook.Controllers
             return BadRequest(response.Message.ToString());
         }
 
+
+        [Authorize(Roles = "Admin, Moderator, Contributor")]
         [HttpPost]
         [Route("create")]
         public async Task<IActionResult> CreateAsync(RecipeCreate newRecipe)
@@ -205,8 +201,7 @@ namespace FamilyCookbook.Controllers
 
         }
 
-
-
+        [Authorize(Roles = "Admin, Moderator, Contributor")]
         [HttpPut]
         [Route("addPictureToRecipe/{recipeId:int}/{pictureId:int}")]
 
@@ -221,6 +216,7 @@ namespace FamilyCookbook.Controllers
             return BadRequest(response.Message.ToString());
         }
 
+        [Authorize(Roles = "Admin, Moderator, Contributor")]
         [HttpPut]
         [Route("update/{id:int}")]
         public async Task<IActionResult> UpdateAsync(int id, RecipeCreate updatedRecipe)
@@ -261,6 +257,8 @@ namespace FamilyCookbook.Controllers
 
         }
 
+
+        [Authorize(Roles = "Admin, Moderator")]
         [HttpPut]
         [Route("disable/{id:int}")]
 
@@ -277,6 +275,8 @@ namespace FamilyCookbook.Controllers
 
         }
 
+
+        [Authorize(Roles = "Admin, Moderator, Contributor")]
         [HttpPost]
         [Route("AddMemberToRecipe")]
         public async Task<IActionResult> AddMemberToRecipe(MemberRecipe entity)
@@ -290,6 +290,8 @@ namespace FamilyCookbook.Controllers
             return Ok(response);
         }
 
+
+        [Authorize(Roles = "Admin, Moderator")]
         [HttpDelete]
         [Route("RemoveMemberFromRecipe/{memberId:int}/{recipeId:int}")]
         public async Task<IActionResult> RemoveMemberFromRecipeAsync(int memberId, int recipeId)

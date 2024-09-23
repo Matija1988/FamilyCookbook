@@ -5,12 +5,12 @@ using static FamilyCookbook.REST_Models.Auth.AuthModels;
 namespace FamilyCookbook.Controllers
 {
     [ApiController]
-    [Route("api/v0/category")]
+    [Route("api/v0/login")]
     public class AuthController(IMemberService memberService) : ControllerBase
     {
         private readonly IMemberService _memberService = memberService;
 
-        [HttpPost("token")]
+        [HttpPost]
         public async Task<IActionResult> UserLogIn(AuthLogIn logIn)
         {
             if (!ModelState.IsValid)

@@ -99,7 +99,6 @@ export default function Members() {
   async function fetchRoles() {
     const response = await RoleService.readAll("role");
     if (!response.ok) {
-      alert("Error!");
       return;
     }
     const tempRoles = response.data;

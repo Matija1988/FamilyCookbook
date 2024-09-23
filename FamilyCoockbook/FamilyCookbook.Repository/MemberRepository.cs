@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using FamilyCookbook.Common;
+using FamilyCookbook.Common.Validations;
 using FamilyCookbook.Model;
 using FamilyCookbook.Repository.Common;
 using System;
@@ -158,6 +159,63 @@ namespace FamilyCookbook.Repository
         #endregion
 
         #region GET METHODS
+
+        public async Task<RepositoryResponse<Lazy<Member>>> FindByUsernameAsync(string username)
+        {
+            var response = new RepositoryResponse<Lazy<Member>>();
+            StringBuilder queryBuilder = new StringBuilder(); 
+
+            try
+            {
+                queryBuilder.Append(@"SELECT a.*, b.* FROM Member a JOIN Role b on a.RoleId = b.Id " +
+                    "WHERE a.IsActive = 1 AND a.Username = @username");
+
+                var entityDictionary = new Dictionary<int, Member>();
+
+                using var connection = _context.CreateConnection();
+
+                var entities = await connection.QueryAsync<Member,Role, Member>(queryBuilder.ToString(),
+                    (entity, role) =>
+                    {
+                        if(!entityDictionary.TryGetValue(entity.Id, out var existingEntity))
+                        {
+                            existingEntity = entity;
+                            existingEntity.Recipes = new List<Recipe>();
+                            entityDictionary.Add(existingEntity.Id, existingEntity);
+                        }
+
+                        if(role != null)
+                        {
+                            existingEntity.Role = role;
+
+                        }
+                        return existingEntity;
+                    }, new {Username = username},splitOn:"Id");
+
+                if (Nullchks.CheckDictionary(entityDictionary))
+                {
+                    response.Success = false;
+                    response.Message = _errorMessages.InvalidUsername();
+                    return response;
+                }
+
+                response.Success = true;
+                response.Items = new Lazy<Member>(() => entityDictionary.Values.FirstOrDefault());
+
+                return response;
+            } 
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = _errorMessages.ErrorAccessingDb("Member");
+                return response;
+            }
+            finally
+            {
+                _context.CreateConnection().Close();  
+            }
+        }
+
         public async Task<RepositoryResponse<List<Member>>> GetAllAsync()
         {
             var response = new RepositoryResponse<List<Member>>();

@@ -71,3 +71,54 @@
   border-radius: 8px;
   overflow: hidden;
 }
+
+.navbar-nav {
+  width: 100%;
+}
+
+.navbar-nav .logIn-link {
+  color: white;
+  margin-left: auto;
+}
+
+.logInContainer {
+  margin-top: 8%;
+  margin-left: 25%;
+  background-color: #f8f9fa;
+  padding: 1%;
+  border-radius: 8px;
+  box-shadow: 0% 2% 5% rgba(0, 0, 0, 0.1);
+  width: 50%;
+}
+
+.w-25 {
+  width: 100%;
+  margin-top: 8%;
+  background-color: #f8f9fa;
+  padding: 1%;
+  border-radius: 8px;
+  box-shadow: 0% 2% 5% rgba(0, 0, 0, 0.1);
+}
+
+.w-25 .logIn-text {
+  width: 100%;
+  margin-bottom: 2%;
+  border: 2% solid #ced4da;
+}
+
+.logInContainer .row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.w-25 .logIn-btn {
+  margin: auto;
+  width: 40%;
+  margin-bottom: 1%;
+}
+
+.w-25 .logIn-cancel {
+  margin: auto;
+  width: 40%;
+  margin-bottom: 1%;
+}

@@ -19,7 +19,7 @@ namespace FamilyCookbook.Controllers
             _service = service;
         }
 
-        [Authorize, Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> GetAllAsync() 
         { 
@@ -43,6 +43,7 @@ namespace FamilyCookbook.Controllers
             return Ok(finalResponse);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         [Route("{id:int}")]
 
@@ -62,6 +63,7 @@ namespace FamilyCookbook.Controllers
             return Ok(member);  
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         [Route("{uniqueId:guid}")]
 
@@ -81,10 +83,9 @@ namespace FamilyCookbook.Controllers
             return Ok(member);
 
         }
-
+        [Authorize(Roles = "Admin, Moderator, Contributor")]
         [HttpGet]
         [Route("members")]
-
         public async Task<IActionResult> PaginateAsync([FromQuery] Paging paging, [FromQuery] MemberFilter filter )
         {
             var response = await _service.PaginateAsync(paging, filter);
@@ -107,6 +108,7 @@ namespace FamilyCookbook.Controllers
             return Ok(finalResponse);
         }
 
+        [Authorize(Roles = "Admin, Moderator, Contributor")]
         [HttpGet]
         [Route("search/{condition}")]
         public async Task<IActionResult> SearchMembersAsync(string condition)
@@ -128,7 +130,7 @@ namespace FamilyCookbook.Controllers
             }
             return Ok(finalResponse);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [Route("create")] 
         public async Task<IActionResult> CreateAsync(MemberCreate memberCreate)
@@ -147,6 +149,7 @@ namespace FamilyCookbook.Controllers
             return Ok(response.Message.ToString());    
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut]
         [Route("update/{id:int}")]
         public async Task<IActionResult> UpdateAsync(int id, MemberCreate memberCreate)
@@ -163,7 +166,7 @@ namespace FamilyCookbook.Controllers
             }
             return Ok(response.Message.ToString());
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPut]
         [Route("delete/{id:int}")]
         public async Task<IActionResult> SoftDeleteAsync(int id)
@@ -177,9 +180,9 @@ namespace FamilyCookbook.Controllers
             return Ok(response.Message.ToString());
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete]
         [Route("permaDelete/{id:int}")]
-
         public async Task<IActionResult> DeleteAsync(int id)
         {
             var response = await _service.DeleteAsync(id);
@@ -191,6 +194,25 @@ namespace FamilyCookbook.Controllers
             return Ok(response.Message.ToString());
         }
 
-        
+        [Authorize(Roles = "Admin, Moderator, Contributor, Member")]
+        [HttpGet]
+        [Route("findByUsername/{username}")]
+
+        public async Task<IActionResult> FindByUsernameAsync(string username)
+        {
+            var response = await _service.GeByUsernameAsync(username);
+                
+            if( response.Success == false)
+            {
+                return BadRequest(response.Message.ToString());
+            }
+
+            var mapper = new MemberMapper();
+
+            var member = mapper.MemberToMemberRead(response.Items.Value);
+            
+            return Ok(member);
+        }
+
     }
 }

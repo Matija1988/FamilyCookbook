@@ -21,6 +21,7 @@ import RecipeDetails from "./pages/recipe/RecipeDetails";
 import useError from "./hooks/useError";
 import ErrorModal from "./components/ErrorModal";
 import LoadingSpinner from "./components/LoadingSpinner";
+import LogIn from "./pages/logIn/LogIn";
 function App() {
   const { errors, showErrorModal, hideErrorModal } = useError();
 
@@ -66,6 +67,7 @@ function App() {
           path={RouteNames.RECIPE_DETAILS}
           element={<RecipeDetails />}
         ></Route>
+        <Route path={RouteNames.LOGIN} element={<LogIn />}></Route>
       </Routes>
     </>
   );

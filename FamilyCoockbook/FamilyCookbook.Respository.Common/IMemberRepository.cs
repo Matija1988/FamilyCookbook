@@ -15,5 +15,7 @@ namespace FamilyCookbook.Repository.Common
         Task<RepositoryResponse<Member>> GetByGuidAsync(Guid uniqueId);
 
         Task<RepositoryResponse<Lazy<List<Member>>>> PaginateAsync(Paging paging, MemberFilter filter);
+
+        Task<RepositoryResponse<Lazy<Member>>> FindByUsernameAsync(string username);    
     }
 }

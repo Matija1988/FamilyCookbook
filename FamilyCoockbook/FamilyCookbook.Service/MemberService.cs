@@ -177,5 +177,12 @@ namespace FamilyCookbook.Service
 
             return new OkObjectResult(jwt);
         }
+
+        public async Task<RepositoryResponse<Lazy<Member>>> GeByUsernameAsync(string username)
+        {
+            var response = await _repository.FindByUsernameAsync(username);
+
+            return response;
+        }
     }
 }

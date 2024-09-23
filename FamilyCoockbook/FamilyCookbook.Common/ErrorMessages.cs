@@ -47,5 +47,12 @@ namespace FamilyCookbook.Common
 
             return sb.Append($"Unable create entity {entityName}. No {nestedEntity} with requested ids found.");
         }
+
+        public StringBuilder InvalidUsername()
+        {
+            StringBuilder sb = new StringBuilder();
+            return sb.Append("Invalid username!!!");
+        }
+
     }
 }
