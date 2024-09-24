@@ -23,6 +23,7 @@ import ErrorModal from "./components/ErrorModal";
 import LoadingSpinner from "./components/LoadingSpinner";
 import LogIn from "./pages/logIn/LogIn";
 import AdminPanel from "./pages/AdminPanel/AdminPanel";
+import ProtectedRoutes from "./components/ProtectedRoutes";
 function App() {
   const { errors, showErrorModal, hideErrorModal } = useError();
 
@@ -35,41 +36,58 @@ function App() {
         onHide={hideErrorModal}
         errors={errors}
       ></ErrorModal>
+
       <Routes>
         <Route path={RouteNames.HOME} element={<Home />}></Route>
-        <Route path={RouteNames.MEMBERS} element={<Members />}></Route>
+
+        <Route element={<ProtectedRoutes allowedRoles={["Admin"]} />}>
+          <Route path={RouteNames.MEMBERS} element={<Members />}></Route>
+          <Route
+            path={RouteNames.MEMBER_CREATE}
+            element={<CreateMember />}
+          ></Route>
+          <Route
+            path={RouteNames.MEMBER_UPDATE}
+            element={<UpdateMember />}
+          ></Route>
+        </Route>
         <Route
-          path={RouteNames.MEMBER_CREATE}
-          element={<CreateMember />}
-        ></Route>
+          element={<ProtectedRoutes allowedRoles={["Admin", "Moderator"]} />}
+        >
+          <Route path={RouteNames.CATEGORIES} element={<Categories />}></Route>
+          <Route
+            path={RouteNames.CATEGORIES_CREATE}
+            element={<CategoryCreate />}
+          ></Route>
+          <Route
+            path={RouteNames.CATEGORIES_UPDATE}
+            element={<CategoryUpdate />}
+          ></Route>
+        </Route>
         <Route
-          path={RouteNames.MEMBER_UPDATE}
-          element={<UpdateMember />}
-        ></Route>
-        <Route path={RouteNames.CATEGORIES} element={<Categories />}></Route>
-        <Route
-          path={RouteNames.CATEGORIES_CREATE}
-          element={<CategoryCreate />}
-        ></Route>
-        <Route
-          path={RouteNames.CATEGORIES_UPDATE}
-          element={<CategoryUpdate />}
-        ></Route>
-        <Route path={RouteNames.RECIPES} element={<Recipe />}></Route>
-        <Route
-          path={RouteNames.RECIPES_CREATE}
-          element={<CreateRecipe />}
-        ></Route>
-        <Route
-          path={RouteNames.RECIPES_UPDATE}
-          element={<UpdateRecipe />}
-        ></Route>
+          element={
+            <ProtectedRoutes
+              allowedRoles={["Admin", "Moderator", "Contributor"]}
+            />
+          }
+        >
+          <Route path={RouteNames.RECIPES} element={<Recipe />}></Route>
+          <Route
+            path={RouteNames.RECIPES_CREATE}
+            element={<CreateRecipe />}
+          ></Route>
+          <Route
+            path={RouteNames.RECIPES_UPDATE}
+            element={<UpdateRecipe />}
+          ></Route>
+          <Route path={RouteNames.ADMIN_PANEL} element={<AdminPanel />}></Route>
+        </Route>
         <Route
           path={RouteNames.RECIPE_DETAILS}
           element={<RecipeDetails />}
         ></Route>
+
         <Route path={RouteNames.LOGIN} element={<LogIn />}></Route>
-        <Route path={RouteNames.ADMIN_PANEL} element={<AdminPanel />}></Route>
       </Routes>
     </>
   );

@@ -21,7 +21,7 @@ namespace FamilyCookbook.Controllers
             _service = service;
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Moderator, Contributor")]
         [HttpGet]
         public async Task<IActionResult> GetAllAsync() 
         { 
