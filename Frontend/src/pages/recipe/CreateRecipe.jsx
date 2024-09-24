@@ -23,6 +23,7 @@ import PictureService from "../../services/PictureService";
 import { httpService } from "../../services/HttpService";
 
 import "./createForm.css";
+import Sidebar from "../AdminPanel/Sidebar";
 
 export default function CreateRecipe() {
   const [recipe, setRecipe] = useState({
@@ -187,6 +188,7 @@ export default function CreateRecipe() {
 
   return (
     <>
+      <Sidebar></Sidebar>
       <Container className="primaryContainer">
         <h1>Create recipe</h1>
         <Form onSubmit={handleSubmit} className="createForm">

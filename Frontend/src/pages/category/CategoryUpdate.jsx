@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import useLoading from "../../hooks/useLoading";
 import useError from "../../hooks/useError";
 import ErrorModal from "../../components/ErrorModal";
+import Sidebar from "../AdminPanel/Sidebar";
 
 export default function CategoryUpdate() {
   const [category, setCategory] = useState({});
@@ -71,6 +72,7 @@ export default function CategoryUpdate() {
 
   return (
     <>
+      <Sidebar></Sidebar>
       <Container className="primaryContainer">
         <h1>CATEGORY UPDATE</h1>
         <Form onSubmit={handleSubmit} className="createForm">

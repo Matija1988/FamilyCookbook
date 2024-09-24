@@ -10,6 +10,7 @@ import useLoading from "../../hooks/useLoading";
 import useError from "../../hooks/useError";
 import ErrorModal from "../../components/ErrorModal";
 import { useState } from "react";
+import Sidebar from "../AdminPanel/Sidebar";
 
 export default function CategoryCreate() {
   const initialState = {
@@ -63,6 +64,7 @@ export default function CategoryCreate() {
 
   return (
     <>
+      <Sidebar></Sidebar>
       <Container className="primaryContainer">
         <h1>CATEGORY CREATE</h1>
 

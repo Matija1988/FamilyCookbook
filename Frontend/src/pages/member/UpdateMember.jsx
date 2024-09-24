@@ -13,6 +13,7 @@ import { update } from "../../services/HttpService";
 import useLoading from "../../hooks/useLoading";
 import useError from "../../hooks/useError";
 import ErrorModal from "../../components/ErrorModal";
+import Sidebar from "../AdminPanel/Sidebar";
 
 export default function UpdateMember() {
   const [roles, setRoles] = useState();
@@ -94,6 +95,7 @@ export default function UpdateMember() {
 
   return (
     <>
+      <Sidebar></Sidebar>
       <Container className="primaryContainer">
         <Form onSubmit={handleSubmit} className="createForm">
           <Row>

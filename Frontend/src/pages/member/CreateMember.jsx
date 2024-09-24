@@ -12,6 +12,7 @@ import { RouteNames } from "../../constants/constants";
 import useLoading from "../../hooks/useLoading";
 import useError from "../../hooks/useError";
 import ErrorModal from "../../components/ErrorModal";
+import Sidebar from "../AdminPanel/Sidebar";
 
 export default function CreateMember() {
   const initialState = {
@@ -109,6 +110,7 @@ export default function CreateMember() {
 
   return (
     <>
+      <Sidebar></Sidebar>
       <Container className="primaryContainer">
         <h1>CREATE MEMBER</h1>
         {submitted ? (

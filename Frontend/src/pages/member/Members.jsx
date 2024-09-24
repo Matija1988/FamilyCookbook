@@ -23,6 +23,7 @@ import useLoading from "../../hooks/useLoading";
 import useError from "../../hooks/useError";
 import ErrorModal from "../../components/ErrorModal";
 import DeleteModal from "../../components/DeleteModal";
+import Sidebar from "../AdminPanel/Sidebar";
 
 export default function Members() {
   const [members, setMembers] = useState();
@@ -166,6 +167,7 @@ export default function Members() {
 
   return (
     <>
+      <Sidebar></Sidebar>
       <Container className="primaryContainer">
         <Row>
           <h1>MEMBERS PAGE</h1>

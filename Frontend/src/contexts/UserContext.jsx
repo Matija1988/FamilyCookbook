@@ -60,6 +60,8 @@ export const UserProvider = ({ children }) => {
     const token = localStorage.getItem("Bearer");
     const decodedToken = jwtDecode(token);
     const username = decodedToken.Id;
+    const role = decodedToken.role;
+    setUserRole(role);
     fetchUserId(username);
   };
 

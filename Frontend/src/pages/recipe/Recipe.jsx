@@ -14,6 +14,7 @@ import CategoriesService from "../../services/CategoriesService";
 import RecipeTable from "./components/RecipeTable";
 
 import "./createForm.css";
+import Sidebar from "../AdminPanel/Sidebar";
 
 export default function Recipe() {
   const recipeState = {
@@ -148,6 +149,7 @@ export default function Recipe() {
 
   return (
     <>
+      <Sidebar></Sidebar>
       <Container className="primaryContainer">
         <h1>RECIPES PAGE</h1>
         <Row>

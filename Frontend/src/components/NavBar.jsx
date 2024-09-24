@@ -15,6 +15,8 @@ function NavBar() {
 
   const { isLoggedIn, logout, role } = useAuth();
 
+  const rolesArray = ["Admin", "Moderator", "Contributor"];
+
   return (
     <Navbar
       expand="lg"
@@ -30,9 +32,11 @@ function NavBar() {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link onClick={() => navigate(RouteNames.HOME)}>HOME</Nav.Link>
-            <Nav.Link onClick={() => navigate(RouteNames.ADMIN_PANEL)}>
-              ADMIN
-            </Nav.Link>
+            {rolesArray.includes(role) && (
+              <Nav.Link onClick={() => navigate(RouteNames.ADMIN_PANEL)}>
+                ADMIN
+              </Nav.Link>
+            )}
             {role === "Admin" && (
               <NavDropdown title="Admin" id="basic-nav-dropdown">
                 <NavDropdown.Item onClick={() => navigate(RouteNames.MEMBERS)}>

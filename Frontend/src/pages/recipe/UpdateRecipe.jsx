@@ -14,6 +14,7 @@ import { TbWashDryP } from "react-icons/tb";
 import RichTextEditor from "../../components/RichTextEditor";
 import PictureService from "../../services/PictureService";
 import ImageGallery from "../../components/ImageGallery";
+import Sidebar from "../AdminPanel/Sidebar";
 
 export default function UpdateRecipe() {
   const [recipe, setRecipe] = useState({
@@ -188,6 +189,7 @@ export default function UpdateRecipe() {
 
   return (
     <>
+      <Sidebar></Sidebar>
       <Container className="primaryContainer">
         <h1>UPDATE RECIPE</h1>
         <Form onSubmit={handleSubmit}>

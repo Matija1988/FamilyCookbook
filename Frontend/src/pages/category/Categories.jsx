@@ -9,6 +9,7 @@ import useError from "../../hooks/useError";
 import useLoading from "../../hooks/useLoading";
 import DeleteModal from "../../components/DeleteModal";
 import ErrorModal from "../../components/ErrorModal";
+import Sidebar from "../AdminPanel/Sidebar";
 
 export default function Categories() {
   const [categories, setCategories] = useState();
@@ -56,6 +57,7 @@ export default function Categories() {
 
   return (
     <>
+      <Sidebar></Sidebar>
       <Container className="primaryContainer">
         <h1>CATEGORIES PAGE</h1>
         <Row>

@@ -8,6 +8,8 @@ export default function Sidebar() {
 
   const { userFirstName, userLastName, userRole } = useUser();
 
+  console.log("User role: ", userRole);
+
   return (
     <>
       <div className="sidebar">
@@ -15,16 +17,25 @@ export default function Sidebar() {
         <h4>
           Welcome <br></br> {userFirstName} {userLastName}
         </h4>
+
         <Nav className="flex-column">
-          <Nav.Link onClick={() => navigate(RouteNames.MEMBERS)}>
-            MEMBER
-          </Nav.Link>
-          <Nav.Link onClick={() => navigate(RouteNames.CATEGORIES)}>
-            CATEGORY
-          </Nav.Link>
-          <Nav.Link onClick={() => navigate(RouteNames.RECIPES)}>
-            RECIPES
-          </Nav.Link>
+          {userRole === "Admin" && (
+            <Nav.Link onClick={() => navigate(RouteNames.MEMBERS)}>
+              MEMBER
+            </Nav.Link>
+          )}
+          {(userRole === "Admin" || userRole === "Moderator") && (
+            <Nav.Link onClick={() => navigate(RouteNames.CATEGORIES)}>
+              CATEGORY
+            </Nav.Link>
+          )}
+          {(userRole === "Admin" ||
+            userRole === "Moderator" ||
+            userRole === "Contributor") && (
+            <Nav.Link onClick={() => navigate(RouteNames.RECIPES)}>
+              RECIPES
+            </Nav.Link>
+          )}
         </Nav>
       </div>
     </>
