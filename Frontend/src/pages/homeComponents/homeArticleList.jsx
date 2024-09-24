@@ -19,8 +19,8 @@ export default function HomeArticleList() {
   };
 
   const [recipes, setRecipes] = useState([]);
-  const [error, setError] = useState("");
-  const { showError } = useError();
+
+  const { showError, onHide } = useError();
   const { showLoading, hideLoading } = useLoading();
 
   const [pageNumber, setPageNumber] = useState(1);
@@ -66,8 +66,16 @@ export default function HomeArticleList() {
     <>
       <Container>
         <Row>
-          {recipes.map((recipe) => (
-            <Col className="mb-2" xs={12} sm={5} md={4} lg={3} xl={2}>
+          {recipes.map((recipe, index) => (
+            <Col
+              key={index}
+              className="mb-2"
+              xs={12}
+              sm={5}
+              md={4}
+              lg={3}
+              xl={2}
+            >
               <ArticleCard key={recipe.id} recipe={recipe}></ArticleCard>
             </Col>
           ))}

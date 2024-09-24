@@ -8,11 +8,12 @@ import { TbRouteScan } from "react-icons/tb";
 
 import "../App.css";
 import useAuth from "../hooks/useAuth";
+import { useUser } from "../contexts/UserContext";
 
 function NavBar() {
   const navigate = useNavigate();
 
-  const { isLoggedIn, logout } = useAuth();
+  const { isLoggedIn, logout, role } = useAuth();
 
   return (
     <Navbar
@@ -29,17 +30,21 @@ function NavBar() {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link onClick={() => navigate(RouteNames.HOME)}>HOME</Nav.Link>
-            <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-              <NavDropdown.Item onClick={() => navigate(RouteNames.MEMBERS)}>
-                Members
-              </NavDropdown.Item>
-              <NavDropdown.Item onClick={() => navigate(RouteNames.CATEGORIES)}>
-                Categories
-              </NavDropdown.Item>
-              <NavDropdown.Item onClick={() => navigate(RouteNames.RECIPES)}>
-                Recipes
-              </NavDropdown.Item>
-            </NavDropdown>
+            {role === "Admin" && (
+              <NavDropdown title="Admin" id="basic-nav-dropdown">
+                <NavDropdown.Item onClick={() => navigate(RouteNames.MEMBERS)}>
+                  Members
+                </NavDropdown.Item>
+                <NavDropdown.Item
+                  onClick={() => navigate(RouteNames.CATEGORIES)}
+                >
+                  Categories
+                </NavDropdown.Item>
+                <NavDropdown.Item onClick={() => navigate(RouteNames.RECIPES)}>
+                  Recipes
+                </NavDropdown.Item>
+              </NavDropdown>
+            )}
             {isLoggedIn ? (
               <Nav.Link className="logIn-link" onClick={logout}>
                 Logout

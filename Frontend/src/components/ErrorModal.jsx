@@ -29,5 +29,4 @@ export default function ErrorModal({ show, onHide, errors }) {
 ErrorModal.propTypes = {
   errors: PropTypes.array,
   show: PropTypes.bool.isRequired,
-  onHide: PropTypes.func.isRequired,
 };

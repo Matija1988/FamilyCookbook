@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { RouteNames } from "../constants/constants";
 import AuthService from "../services/AuthService";
 import { useUser } from "./UserContext";
+import { jwtDecode } from "jwt-decode";
 
 export const AuthContext = createContext();
 
@@ -35,7 +36,9 @@ export function AuthProvider({ children }) {
       setIsLoggedIn(true);
       await setUserOnLogin(token);
       console.log("Token:", token);
-      navigate(RouteNames.RECIPES);
+      const decodedToken = jwtDecode(token);
+      setRole(decodedToken.role);
+      navigate(RouteNames.HOME);
     } else {
       localStorage.setItem("Bearer", "");
       setAuthToken("");
@@ -50,6 +53,7 @@ export function AuthProvider({ children }) {
     resetUser();
     setUserRole(null);
     navigate(RouteNames.HOME);
+    location.reload();
   }
 
   const value = {
