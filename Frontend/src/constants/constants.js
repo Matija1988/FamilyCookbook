@@ -11,6 +11,7 @@ export const RouteNames = {
   RECIPES_UPDATE: "/updaterecipe/:id",
   RECIPE_DETAILS: "/recipe/:id",
   LOGIN: "/userlogin",
+  ADMIN_PANEL: "/c-admin/edit",
 };
 
 export const App = {

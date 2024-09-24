@@ -22,6 +22,7 @@ import useError from "./hooks/useError";
 import ErrorModal from "./components/ErrorModal";
 import LoadingSpinner from "./components/LoadingSpinner";
 import LogIn from "./pages/logIn/LogIn";
+import AdminPanel from "./pages/AdminPanel/AdminPanel";
 function App() {
   const { errors, showErrorModal, hideErrorModal } = useError();
 
@@ -68,6 +69,7 @@ function App() {
           element={<RecipeDetails />}
         ></Route>
         <Route path={RouteNames.LOGIN} element={<LogIn />}></Route>
+        <Route path={RouteNames.ADMIN_PANEL} element={<AdminPanel />}></Route>
       </Routes>
     </>
   );
