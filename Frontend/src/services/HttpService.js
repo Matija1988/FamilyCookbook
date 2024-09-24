@@ -9,7 +9,7 @@ export const httpService = axios.create({
 httpService.interceptors.request.use((request) => {
   // config.headers.Authorization = "Bearer " + localStorage.getItem("Bearer");
   const token = localStorage.getItem("Bearer");
-  console.log("CORS request ", request);
+
   if (token) {
     request.headers.Authorization = `Bearer ${token}`;
   }

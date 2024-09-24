@@ -122,7 +122,7 @@ namespace FamilyCookbook.Controllers
             try
             {
                 if (!string.IsNullOrEmpty(newRecipe.PictureBlob))
-                {
+                {   
                     var base64DataParts = newRecipe.PictureBlob.Split(',');
                     var mimeType = base64DataParts[0];
                     var base64Data = base64DataParts[1];

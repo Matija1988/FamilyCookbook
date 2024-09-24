@@ -9,13 +9,30 @@ import { TbRouteScan } from "react-icons/tb";
 import "../App.css";
 import useAuth from "../hooks/useAuth";
 import { useUser } from "../contexts/UserContext";
+import CategoriesService from "../services/CategoriesService";
+import useError from "../hooks/useError";
+import { useEffect, useState } from "react";
 
 function NavBar() {
+  const [categories, setCategories] = useState([]);
+  const { showError, showErrorModal, errors, hideError } = useError();
   const navigate = useNavigate();
 
   const { isLoggedIn, logout, role } = useAuth();
 
   const rolesArray = ["Admin", "Moderator", "Contributor"];
+
+  async function fetchCategories() {
+    const response = await CategoriesService.readAll("category");
+    if (!response.ok) {
+      showError(response.data);
+    }
+    setCategories(response.data.items);
+  }
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
   return (
     <Navbar
@@ -37,21 +54,15 @@ function NavBar() {
                 ADMIN
               </Nav.Link>
             )}
-            {role === "Admin" && (
-              <NavDropdown title="Admin" id="basic-nav-dropdown">
-                <NavDropdown.Item onClick={() => navigate(RouteNames.MEMBERS)}>
-                  Members
+
+            <NavDropdown title="Categories" id="basic-nav-dropdown">
+              {categories.map((category) => (
+                <NavDropdown.Item key={category.id} value={category.name}>
+                  {category.name}
                 </NavDropdown.Item>
-                <NavDropdown.Item
-                  onClick={() => navigate(RouteNames.CATEGORIES)}
-                >
-                  Categories
-                </NavDropdown.Item>
-                <NavDropdown.Item onClick={() => navigate(RouteNames.RECIPES)}>
-                  Recipes
-                </NavDropdown.Item>
-              </NavDropdown>
-            )}
+              ))}
+            </NavDropdown>
+
             {isLoggedIn ? (
               <Nav.Link className="logIn-link" onClick={logout}>
                 Logout
