@@ -16,6 +16,7 @@ function ArticleCard({ recipe }) {
       <Card.Body>
         <Card.Title>{recipe.title}</Card.Title>
         <Card.Text className="card-subtitle">{recipe.subtitle}</Card.Text>
+        <Card.Text className="card-category">{recipe.categoryName}</Card.Text>
         <div className="card-button">
           <Button
             variant="primary"
