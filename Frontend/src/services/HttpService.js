@@ -1,8 +1,6 @@
 import axios, { AxiosError } from "axios";
 import { App } from "../constants/constants";
 
-const token = localStorage.getItem("Bearer");
-
 export const httpService = axios.create({
   baseURL: App.URL + "api/v0",
   headers: { "Content-Type": "application/json" },
@@ -10,6 +8,7 @@ export const httpService = axios.create({
 
 httpService.interceptors.request.use((request) => {
   // config.headers.Authorization = "Bearer " + localStorage.getItem("Bearer");
+  const token = localStorage.getItem("Bearer");
   console.log("CORS request ", request);
   if (token) {
     request.headers.Authorization = `Bearer ${token}`;
@@ -19,6 +18,7 @@ httpService.interceptors.request.use((request) => {
 
 httpService.interceptors.response.use(
   (response) => {
+    const token = localStorage.getItem("Bearer");
     if (token) {
       response.headers.Authorization = `Bearer ${token}`;
     }

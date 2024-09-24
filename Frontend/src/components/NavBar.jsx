@@ -7,9 +7,12 @@ import { RouteNames } from "../constants/constants";
 import { TbRouteScan } from "react-icons/tb";
 
 import "../App.css";
+import useAuth from "../hooks/useAuth";
 
 function NavBar() {
   const navigate = useNavigate();
+
+  const { isLoggedIn, logout } = useAuth();
 
   return (
     <Navbar
@@ -26,7 +29,6 @@ function NavBar() {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link onClick={() => navigate(RouteNames.HOME)}>HOME</Nav.Link>
-
             <NavDropdown title="Dropdown" id="basic-nav-dropdown">
               <NavDropdown.Item onClick={() => navigate(RouteNames.MEMBERS)}>
                 Members
@@ -38,12 +40,18 @@ function NavBar() {
                 Recipes
               </NavDropdown.Item>
             </NavDropdown>
-            <Nav.Link
-              className="logIn-link"
-              onClick={() => navigate(RouteNames.LOGIN)}
-            >
-              LOGIN
-            </Nav.Link>
+            {isLoggedIn ? (
+              <Nav.Link className="logIn-link" onClick={logout}>
+                Logout
+              </Nav.Link>
+            ) : (
+              <Nav.Link
+                className="logIn-link"
+                onClick={() => navigate(RouteNames.LOGIN)}
+              >
+                LOGIN
+              </Nav.Link>
+            )}
           </Nav>
         </Navbar.Collapse>
       </Container>

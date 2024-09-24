@@ -196,7 +196,7 @@ namespace FamilyCookbook.Controllers
             return Ok(response.Message.ToString());
         }
 
-        [Authorize(Roles = "Admin, Moderator, Contributor, Member")]
+        [Authorize]
         [HttpGet]
         [Route("findByUsername/{username}")]
 
