@@ -29,7 +29,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy",
         builder =>
-        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+        builder.AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .WithExposedHeaders("Authorization"));
 });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -80,6 +83,7 @@ builder.Services.AddAuthentication(x =>
     x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(x =>
 {
+    x.RequireHttpsMetadata = false;
     x.TokenValidationParameters = new TokenValidationParameters
     {
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
@@ -99,6 +103,24 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
+app.UseCors("CorsPolicy");
+
+app.Use(async (context, next) =>
+{
+    if (context.Request.Method == "OPTIONS")
+    {
+        context.Response.StatusCode = 200;
+        return;
+    }
+    await next.Invoke();
+});
+
+app.Use(async (context, next) =>
+{
+    var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+    await next.Invoke();
+});
+
 app.UseSwagger();
 app.UseSwaggerUI();
     
@@ -110,6 +132,5 @@ app.UseAuthorization();
 app.MapControllers();
 app.UseStaticFiles();
 
-app.UseCors("CorsPolicy");
 
 app.Run();

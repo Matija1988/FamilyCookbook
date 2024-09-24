@@ -4,12 +4,14 @@ using FamilyCookbook.Model;
 using FamilyCookbook.REST_Models.Member;
 using FamilyCookbook.Service.Common;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FamilyCookbook.Controllers
 {
     [ApiController]
     [Route("api/v0/member")]
+    [EnableCors("CorsPolicy")]
     public class MemberController : ControllerBase
     {
         private readonly  IMemberService _service;

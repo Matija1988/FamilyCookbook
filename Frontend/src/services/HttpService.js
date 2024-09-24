@@ -1,10 +1,36 @@
 import axios, { AxiosError } from "axios";
 import { App } from "../constants/constants";
 
+const token = localStorage.getItem("Bearer");
+
 export const httpService = axios.create({
   baseURL: App.URL + "api/v0",
   headers: { "Content-Type": "application/json" },
 });
+
+httpService.interceptors.request.use((request) => {
+  // config.headers.Authorization = "Bearer " + localStorage.getItem("Bearer");
+  console.log("CORS request ", request);
+  if (token) {
+    request.headers.Authorization = `Bearer ${token}`;
+  }
+  return request;
+});
+
+httpService.interceptors.response.use(
+  (response) => {
+    if (token) {
+      response.headers.Authorization = `Bearer ${token}`;
+    }
+    return response;
+  },
+  (error) => {
+    if (error.response.status === 401) {
+      localStorage.setItem("Bearer", "");
+    }
+    return Promise.reject(error);
+  }
+);
 
 export async function readAll(name) {
   return await httpService

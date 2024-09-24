@@ -29,11 +29,13 @@ export function AuthProvider({ children }) {
     const response = await AuthService.logInService(userData);
 
     if (response.ok) {
-      localStorage.setItem("Bearer", response.data);
-      setAuthToken(response.data);
+      const token = response.data.value;
+      localStorage.setItem("Bearer", token);
+      setAuthToken(token);
       setIsLoggedIn(true);
-      await setUserOnLogin(response.data.id);
-      navigate(RouteNames.HOME);
+      await setUserOnLogin(token);
+      console.log("Token:", token);
+      navigate(RouteNames.RECIPES);
     } else {
       localStorage.setItem("Bearer", "");
       setAuthToken("");

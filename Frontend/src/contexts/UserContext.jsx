@@ -36,7 +36,6 @@ export const UserProvider = ({ children }) => {
       } catch (error) {
         console.log("Error in userContext", error);
       }
-    } else {
     }
   }, []);
 

@@ -21,10 +21,12 @@ namespace FamilyCookbook.Controllers
             var response = await _memberService.LogIn(logIn.username, logIn.password);
 
             if (response is not OkObjectResult) {
-                return BadRequest(response.ToString());
+                return BadRequest(response);
             }
 
-            return Ok(response);
+            var data = new JsonResult(response);
+
+            return Ok(data.Value);
         }
 
 
