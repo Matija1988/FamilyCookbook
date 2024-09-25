@@ -14,10 +14,10 @@ namespace FamilyCookbook.Model
         public int Id { get; set; }
 
         [ForeignKey("MemberId")]
-        public Member Member { get; set; }
+        public int Member { get; set; }
 
         [ForeignKey("RecipeId")]
-        public Recipe Recipe { get; set; }
+        public int Recipe { get; set; }
 
         public string Text { get; set; }
 

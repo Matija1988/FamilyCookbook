@@ -284,3 +284,13 @@ insert into MemberRecipe(MemberId, RecipeId) values (1,1),(1,2);
 
 select * from Member;
 
+select * from Recipe;
+
+insert into Comment(MemberId, RecipeId, Text, Rating,IsActive) 
+Values
+(1,1, 'Not bad, not terrible', 3, 1),
+(2,2, 'Can pass', 2, 1),
+(1,69, 'Childhood memories', 5,1);
+
+
+
