@@ -73,7 +73,7 @@ MemberId int,
 RecipeId int,
 Text varchar(1200),
 Rating int,
-IsActive bit
+IsActive bit,
 );
 
 ----------------------------------- ALTERS --------------------------
@@ -292,5 +292,9 @@ Values
 (2,2, 'Can pass', 2, 1),
 (1,69, 'Childhood memories', 5,1);
 
+Update Comment set DateCreated = '11-09-2023' where Id = 9;
 
+select * from Comment;
+
+select a.*, b.FirstName, b.LastName from Comment a join Member b on b.Id = a.MemberId; 
 

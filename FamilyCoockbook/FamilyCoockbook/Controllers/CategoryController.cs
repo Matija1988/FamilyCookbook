@@ -15,7 +15,7 @@ namespace FamilyCookbook.Controllers
     {
         private readonly ICategoryService _service = service;
 
-
+            
         [HttpGet]
         public async Task<IActionResult> GetAllAsync()
         {

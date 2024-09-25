@@ -23,6 +23,8 @@ namespace FamilyCookbook.Service
 
             builder.RegisterType<RecipeService>().As<IRecipeService>().InstancePerDependency();
 
+            builder.RegisterType<CommentService>().As<ICommentService>().InstancePerDependency();
+
 
         }
 

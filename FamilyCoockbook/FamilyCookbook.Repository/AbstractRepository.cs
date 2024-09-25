@@ -35,7 +35,7 @@ namespace FamilyCookbook.Repository
             try
             {
                 string tableName = GetTableName();
-                string query = $"SELECT * FROM {tableName} WHERE IsActive = 1;";
+                string query = BuildQuery().ToString();
 
                 using var connection = _context.CreateConnection();
 
@@ -367,6 +367,17 @@ namespace FamilyCookbook.Repository
         }
 
         #endregion
+
+        protected virtual StringBuilder BuildQuery() 
+        { 
+            StringBuilder query = new StringBuilder();
+            var tableName = GetTableName();
+
+            query.Append($"SELECT * FROM {tableName} WHERE IsActive = 1");
+
+            return query;
+
+        }
 
     }
 }
