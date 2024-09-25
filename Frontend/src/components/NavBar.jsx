@@ -57,7 +57,18 @@ function NavBar() {
 
             <NavDropdown title="Categories" id="basic-nav-dropdown">
               {categories.map((category) => (
-                <NavDropdown.Item key={category.id} value={category.name}>
+                <NavDropdown.Item
+                  key={category.id}
+                  value={category.name}
+                  onClick={() =>
+                    navigate(
+                      RouteNames.ARTICLES_BY_CATEGORY.replace(
+                        ":id",
+                        category.id
+                      )
+                    )
+                  }
+                >
                   {category.name}
                 </NavDropdown.Item>
               ))}

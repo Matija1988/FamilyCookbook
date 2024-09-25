@@ -24,6 +24,7 @@ import LoadingSpinner from "./components/LoadingSpinner";
 import LogIn from "./pages/logIn/LogIn";
 import AdminPanel from "./pages/AdminPanel/AdminPanel";
 import ProtectedRoutes from "./components/ProtectedRoutes";
+import ArticlesByCategory from "./pages/ArticlePages/ArticlesByCategory";
 function App() {
   const { errors, showErrorModal, hideErrorModal } = useError();
 
@@ -88,6 +89,11 @@ function App() {
         ></Route>
 
         <Route path={RouteNames.LOGIN} element={<LogIn />}></Route>
+
+        <Route
+          path={RouteNames.ARTICLES_BY_CATEGORY}
+          element={<ArticlesByCategory />}
+        ></Route>
       </Routes>
     </>
   );

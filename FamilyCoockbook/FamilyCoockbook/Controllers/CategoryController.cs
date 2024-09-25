@@ -16,7 +16,6 @@ namespace FamilyCookbook.Controllers
         private readonly ICategoryService _service = service;
 
 
-        [Authorize(Roles = "Admin, Moderator, Contributor")]
         [HttpGet]
         public async Task<IActionResult> GetAllAsync()
         {
