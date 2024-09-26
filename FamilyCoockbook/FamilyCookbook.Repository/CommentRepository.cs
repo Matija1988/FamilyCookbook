@@ -18,13 +18,20 @@ namespace FamilyCookbook.Repository
         private readonly IErrorMessages _errorMessages;
         private readonly ISuccessResponses _successResponses;
 
-        protected override StringBuilder BuildQuery()
+        protected override StringBuilder BuildQueryReadAll()
         {
             StringBuilder query = new StringBuilder();
 
-            query.Append("SELECT a.*, b.FirstName, b.LastName FROM Comment a JOIN Member b on b.Id = a.MemberId;");
+            return query.Append("SELECT a.*, b.FirstName, b.LastName FROM Comment a JOIN " +
+                "Member b on b.Id = a.MemberId ORDER BY a.DateCreated DESC;");
+        }
 
-            return query;
+        protected override StringBuilder BuildQueryReadSingle(int id)
+        {
+            StringBuilder query = new StringBuilder();
+
+            return query.Append("SELECT a.*, b.FirstName, b.LastName FROM Comment a JOIN " +
+                "Member b on b.Id = a.MemberId WHERE a.Id = @id");
         }
     }
 }

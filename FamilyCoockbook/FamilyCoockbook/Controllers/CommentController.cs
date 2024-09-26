@@ -1,4 +1,5 @@
-﻿using FamilyCookbook.Service.Common;
+﻿using FamilyCookbook.Mapping;
+using FamilyCookbook.Service.Common;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FamilyCookbook.Controllers
@@ -15,12 +16,36 @@ namespace FamilyCookbook.Controllers
         {
             var response = await _commentService.GetAllAsync();
 
-            if (response.Success)
+            if (!response.Success)
             {
-                return Ok(response);
+                return BadRequest(response);
             }
-            
-            return BadRequest(response);
+
+            var mapper = new CommentMapper();
+
+            var comments = mapper.CommentsReadList(response.Items);
+
+            return Ok(comments);
+
+        }
+
+        [HttpGet]
+        [Route("[controller]/{id:int}")]
+
+        public async Task<IActionResult> GetById(int id)
+        {
+            var response = await _commentService.GetByIdAsync(id);
+
+            if(!response.Success)
+            {
+                return NotFound(response.Message.ToString());
+            }
+
+            var mapper = new CommentMapper();
+
+            var comment = mapper.CommentRead(response.Items);
+
+            return Ok(comment);
         }
     }
 }

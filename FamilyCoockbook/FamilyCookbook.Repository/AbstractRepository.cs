@@ -34,8 +34,7 @@ namespace FamilyCookbook.Repository
 
             try
             {
-                string tableName = GetTableName();
-                string query = BuildQuery().ToString();
+                string query = BuildQueryReadAll().ToString();
 
                 using var connection = _context.CreateConnection();
 
@@ -67,9 +66,8 @@ namespace FamilyCookbook.Repository
 
             try
             {
-                string tableName = GetTableName();
-
-                string query = $"SELECT * FROM {tableName} WHERE Id = {id};";
+                
+                string query = BuildQueryReadSingle(id).ToString();
 
                 using var connection = _context.CreateConnection();
 
@@ -368,14 +366,22 @@ namespace FamilyCookbook.Repository
 
         #endregion
 
-        protected virtual StringBuilder BuildQuery() 
+        protected virtual StringBuilder BuildQueryReadAll() 
         { 
             StringBuilder query = new StringBuilder();
             var tableName = GetTableName();
 
-            query.Append($"SELECT * FROM {tableName} WHERE IsActive = 1");
+            return query.Append($"SELECT * FROM {tableName} WHERE IsActive = 1");
 
-            return query;
+        }
+
+        protected virtual StringBuilder BuildQueryReadSingle(int id) 
+        {
+            StringBuilder query = new StringBuilder();
+
+            var tableName = GetTableName();
+
+            return query.Append($"SELECT * FROM {tableName} WHERE Id = @id");  
 
         }
 

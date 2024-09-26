@@ -30,9 +30,11 @@ namespace FamilyCookbook.Service
             return response;
         }
 
-        public Task<RepositoryResponse<Comment>> GetByIdAsync(int id)
+        public async Task<RepositoryResponse<Comment>> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var response = await _commentRepository.GetByIdAsync(id);
+
+            return response;
         }
 
         public Task<RepositoryResponse<Comment>> SoftDeleteAsync(int id)
