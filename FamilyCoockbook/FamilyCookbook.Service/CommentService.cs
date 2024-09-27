@@ -43,9 +43,11 @@ namespace FamilyCookbook.Service
             return response;
         }
 
-        public Task<RepositoryResponse<Comment>> SoftDeleteAsync(int id)
+        public async Task<RepositoryResponse<Comment>> SoftDeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var response = await _commentRepository.SoftDeleteAsync(id);
+
+            return response;
         }
 
         public async Task<RepositoryResponse<Comment>> UpdateAsync(int id, Comment entity)

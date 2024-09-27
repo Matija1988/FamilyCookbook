@@ -110,5 +110,19 @@ namespace FamilyCookbook.Controllers
             return Ok(response.Message.ToString());
 
         }
+
+        [HttpPut]
+        [Route("softDelete/{id:int}")]
+        public async Task<IActionResult> SoftDeleteAsync(int id)
+        {
+            var response = await _commentService.SoftDeleteAsync(id);
+
+            if (response.Success == false) 
+            {
+                return BadRequest(response.Message.ToString());
+            }
+
+            return new JsonResult(StatusCode(StatusCodes.Status200OK, response.Message.ToString()));
+        }
     }
 }

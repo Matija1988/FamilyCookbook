@@ -162,8 +162,8 @@ namespace FamilyCookbook.Repository
 
                 using var connection = _context.CreateConnection();
 
-                rowsAffected = connection.Execute(query.ToString(), parameters);
-
+                rowsAffected = await BuildUpdateCommand(query.ToString(), connection, parameters);
+                  
                 response.Success = rowsAffected > 0;
                 response.Message = _successResponses.EntityUpdated();
 
@@ -174,7 +174,7 @@ namespace FamilyCookbook.Repository
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = _errorMessages.NotFound(id, ex);
+                response.Message = _errorMessages.NotFound(id);
                 return response;
             }
             finally
@@ -182,28 +182,6 @@ namespace FamilyCookbook.Repository
                 _context.CreateConnection().Close();
             }
 
-        }
-
-        protected virtual StringBuilder BuildUpdateQuery(string tableName, string keyColumn, string keyProperty)
-        {
-            StringBuilder query = new();
-
-            query.Append($"UPDATE {tableName} SET ");
-
-            foreach (var property in GetProperties(true))
-            {
-                var columnAttr = property.GetCustomAttribute<ColumnAttribute>();
-
-                string columnName = columnAttr?.Name ?? property.Name;
-                string propertyName = property.Name;
-
-                query.Append($"{columnName} = @{propertyName},");
-            }
-            query.Remove(query.Length - 1, 1);
-
-            query.Append($" WHERE {keyColumn} = @{keyProperty};");
-
-            return query;
         }
 
         public async Task<RepositoryResponse<T>> DeleteAsync(int id)
@@ -250,18 +228,18 @@ namespace FamilyCookbook.Repository
             try
             {
                 string tableName = GetTableName();
-                string query = $"UPDATE {tableName} SET IsActive = 0 WHERE Id = {id};";
-
+                var query = BuildSoftDeleteQuery(tableName, id);
+                    
                 using var connection = _context.CreateConnection();
 
-                rowsAffected = await connection.ExecuteAsync(query, new { id });
+                rowsAffected = await connection.ExecuteAsync(query.ToString(), new { id });
 
-                if(rowsAffected == 0)
-                {
-                    response.Success = false;
-                    response.Message = _errorMessages.NotFound(id);
-                    return response;
-                }
+                //if(rowsAffected == 0)
+                //{
+                //    response.Success = false;
+                //    response.Message = _errorMessages.NotFound(id);
+                //    return response;
+                //}
 
                 response.Success = rowsAffected > 0;
                 response.Message = _successResponses.EntityDeleted(tableName);
@@ -271,7 +249,7 @@ namespace FamilyCookbook.Repository
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = _errorMessages.NotFound(id);
+                response.Message = _errorMessages.NotFound(id, ex);
                 return response;
             }
             finally
@@ -280,6 +258,7 @@ namespace FamilyCookbook.Repository
             }
 
         }
+
 
         #region PRIVATE METHODS
 
@@ -380,6 +359,43 @@ namespace FamilyCookbook.Repository
 
 
         #region PROTECTED VIRTUAL METHODS
+
+        protected virtual StringBuilder BuildSoftDeleteQuery(string tableName, int id)
+        {
+            StringBuilder query = new();
+
+            query.Append($"UPDATE {tableName} SET IsActive = 0 WHERE Id = @id;");
+
+            return query;
+        }
+
+        protected virtual async Task<int> BuildUpdateCommand(string query, System.Data.IDbConnection connection, DynamicParameters parameters)
+        {
+            return connection.Execute(query, parameters);
+        }
+
+        protected virtual StringBuilder BuildUpdateQuery(string tableName, string keyColumn, string keyProperty)
+        {
+            StringBuilder query = new();
+
+            query.Append($"UPDATE {tableName} SET ");
+
+            foreach (var property in GetProperties(true))
+            {
+                var columnAttr = property.GetCustomAttribute<ColumnAttribute>();
+
+                string columnName = columnAttr?.Name ?? property.Name;
+                string propertyName = property.Name;
+
+                query.Append($"{columnName} = @{propertyName},");
+            }
+            query.Remove(query.Length - 1, 1);
+
+            query.Append($" WHERE {keyColumn} = @{keyProperty};");
+
+            return query;
+        }
+
 
         protected virtual StringBuilder BuildQueryReadAll() 
         { 

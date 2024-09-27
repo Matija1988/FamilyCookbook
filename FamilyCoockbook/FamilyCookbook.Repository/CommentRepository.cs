@@ -41,7 +41,7 @@ namespace FamilyCookbook.Repository
             StringBuilder query = new();
 
             return query.Append("SELECT a.*, b.Id, b.FirstName, b.LastName FROM Comment a JOIN " +
-                "Member b on b.Id = a.MemberId ORDER BY a.DateCreated DESC;");
+                "Member b on b.Id = a.MemberId WHERE a.IsActive = 1 ORDER BY a.DateCreated DESC;");
         }
 
         protected override async Task<List<Comment>> BuildQueryCommand(string query, IDbConnection connection)
