@@ -13,11 +13,11 @@ using System.Threading.Tasks;
 
 namespace FamilyCookbook.Service
 {
-    public sealed class RecipeService : IRecipeService
+    public sealed class RecipeService : AbstractService<Recipe>, IRecipeService
     {
         private readonly IRecipeRepository _repository;
 
-        public RecipeService(IRecipeRepository repository)
+        public RecipeService(IRecipeRepository repository) : base(repository)
         {
             _repository = repository;
         }
@@ -78,34 +78,12 @@ namespace FamilyCookbook.Service
             return chk;
         }
 
-        public async Task<RepositoryResponse<Recipe>> DeleteAsync(int id)
-        {
-            var response = await _repository.DeleteAsync(id);
-
-            return response;
-        }
-
-        public async Task<RepositoryResponse<List<Recipe>>> GetAllAsync()
-        {
-            var response = await _repository.GetAllAsync();
-
-            return response;
-        }
-
-        public async Task<RepositoryResponse<Recipe>> GetByIdAsync(int id)
-        {
-            var response = await _repository.GetByIdAsync(id);
-
-            return response;
-        }
-
         public async Task<RepositoryResponse<List<Recipe>>> GetRecipesWithoutAuthors()
         {
             var resposne = await _repository.GetRecipesWithoutAuthors();
 
             return resposne;
         }
-
 
         public async Task<RepositoryResponse<List<Recipe>>> PaginateAsync(Paging paging, RecipeFilter filter)
         {
@@ -121,11 +99,6 @@ namespace FamilyCookbook.Service
             var response = _repository.RemoveMemberFromRecipeAsync(memberId, recipeId);
 
             return response;
-        }
-
-        public Task<RepositoryResponse<Recipe>> SoftDeleteAsync(int id)
-        {
-            return _repository.SoftDeleteAsync(id);
         }
 
         public async Task<RepositoryResponse<Recipe>> UpdateAsync(int id, Recipe entity)

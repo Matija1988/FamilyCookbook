@@ -29,41 +29,5 @@ namespace FamilyCookbook.Service
             return response;
         }
 
-        //public async Task<RepositoryResponse<Comment>> DeleteAsync(int id)
-        //{
-        //    var response = await _commentRepository.DeleteAsync(id);
-
-        //    return response;
-        //}
-
-        //public async Task<RepositoryResponse<List<Comment>>> GetAllAsync()
-        //{
-        //    var response = await _commentRepository.GetAllAsync();
-
-        //    return response;
-        //}
-
-        //public async Task<RepositoryResponse<Comment>> GetByIdAsync(int id)
-        //{
-        //    var response = await _commentRepository.GetByIdAsync(id);
-
-        //    return response;
-        //}
-
-        //public async Task<RepositoryResponse<Comment>> SoftDeleteAsync(int id)
-        //{
-        //    var response = await _commentRepository.SoftDeleteAsync(id);
-
-        //    return response;
-        //}
-
-        //public async Task<RepositoryResponse<Comment>> UpdateAsync(int id, Comment entity)
-        //{
-        //    entity.DateUpdated = DateTime.Now;
-
-        //    var resposne = await _commentRepository.UpdateAsync(id, entity);
-
-        //    return resposne;
-        //}
     }
 }

@@ -11,11 +11,17 @@ using System.Threading.Tasks;
 
 namespace FamilyCookbook.Service
 {
-    public sealed class CategoryService(ICategoryRepository repository, 
-        IRecipeRepository recipeRepository) : ICategoryService
+    public sealed class CategoryService : AbstractService<Category>, ICategoryService
     {
-        private readonly ICategoryRepository _repository = repository;
-        private readonly IRecipeRepository _recipeRepository = recipeRepository;
+        private readonly ICategoryRepository _repository;
+        private readonly IRecipeRepository _recipeRepository;
+
+        public CategoryService(ICategoryRepository repository,
+            IRecipeRepository recipeRepository) : base(repository)
+        {
+            _repository = repository;
+            _recipeRepository = recipeRepository;
+        }
 
         public async Task<RepositoryResponse<Category>> CreateAsync(Category entity)
         {
@@ -28,22 +34,22 @@ namespace FamilyCookbook.Service
             return await _repository.DeleteAsync(id);
         }
 
-        public async Task<RepositoryResponse<List<Category>>> GetAllAsync()
-        {
-           return await _repository.GetAllAsync();
-        }
+        //public async Task<RepositoryResponse<List<Category>>> GetAllAsync()
+        //{
+        //   return await _repository.GetAllAsync();
+        //}
 
-        public async Task<RepositoryResponse<Category>> GetByIdAsync(int id)
-        {           
-            return await _repository.GetByIdAsync(id);
-        }
+        //public async Task<RepositoryResponse<Category>> GetByIdAsync(int id)
+        //{           
+        //    return await _repository.GetByIdAsync(id);
+        //}
 
         public async Task<RepositoryResponse<Category>> UpdateAsync(int id, Category entity)
         {
             entity.IsActive = true;
             var response = await _repository.UpdateAsync(id, entity);
 
-            if(response.Success == false)
+            if (response.Success == false)
             {
                 return response;
             }
@@ -59,16 +65,16 @@ namespace FamilyCookbook.Service
 
             StringBuilder errorBuilder = new StringBuilder();
 
-            if (recipeResponse == null || recipeResponse.Items.Count == 0)
+            if (recipeResponse.Success == false)
             {
                 response.Success = false;
-                response.Message = errorBuilder.Append("Error parsing recipes!");
+                response.Message = recipeResponse.Message;
                 return response;
             }
 
             bool chk = recipeResponse.Items.Any(r => r.CategoryId == id);
 
-            if (chk) 
+            if (chk)
             {
                 response.Success = false;
                 response.Message = errorBuilder.Append("The category you are trying to delete has active recipes." +
@@ -77,7 +83,8 @@ namespace FamilyCookbook.Service
                 return response;
             }
 
-            return response;   
+            return await _repository.SoftDeleteAsync(id);
         }
+
     }
 }

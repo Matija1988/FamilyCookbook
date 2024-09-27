@@ -57,7 +57,8 @@ IsActive bit not null,
 DateCreated datetime not null, 
 DateUpdated datetime not null,
 CategoryId int not null,
-PictureId int
+PictureId int,
+Rating decimal
 );
 
 create table MemberRecipe(
@@ -74,6 +75,8 @@ RecipeId int,
 Text varchar(1200),
 Rating int,
 IsActive bit,
+DateCreated datetime,
+DateUpdated datetime
 );
 
 ----------------------------------- ALTERS --------------------------
@@ -86,6 +89,14 @@ alter table MemberRecipe add foreign key (MemberId) references Member(Id);
 alter table MemberRecipe add foreign key (RecipeId) references Recipe(Id);
 alter table Comment add foreign key(MemberId) references Member(Id);
 alter table Comment add foreign key(RecipeId) references Recipe(Id);
+
+----------------------------- CONSTRAINTS ------------------------------
+
+ALTER table Recipe add constraint Rating check (Rating >= 0.0 And Rating <= 5.0);
+
+ALTER table Comment add constraint Comment_Rating check (Rating >= 0 and Rating <= 5);
+
+
 
 ------------------------------ INSERTS ----------------------------------
 
@@ -131,6 +142,10 @@ values('d7b19efe-39aa-4d25-b802-21ac8fa0b0f4',
 'iPhone14',
 '1');
 
+
+insert into Picture(Name, Location,IsActive) VALUES 
+('Test', 'Test', 1);
+
 insert into Recipe 
 (Title, 
 Subtitle,
@@ -138,7 +153,8 @@ Text,
 IsActive,
 DateCreated,
 DateUpdated,
-CategoryId) 
+CategoryId,
+PictureId) 
 values 
 ('Cheesy Baked Burritos',
 'Quick and delicious',
@@ -171,6 +187,7 @@ Garnish with cilantro and serve with sour cream and hot sauce, if desired.',
 1,
 '11-07-2024',
 '11-07-2024',
+1, 
 1),
 ('Stuffed Peppers',
 'Peppers to lick your fingers',
@@ -277,24 +294,26 @@ When you’re ready to bake, you can either pull them out to defrost the night bef
 1,
 '11-07-2024',
 '11-07-2024',
+1, 
 1);
 
 insert into MemberRecipe(MemberId, RecipeId) values (1,1),(1,2);
 
-
-select * from Member;
-
-select * from Recipe;
-
-insert into Comment(MemberId, RecipeId, Text, Rating,IsActive) 
+insert into Comment(MemberId, RecipeId, Text, DateCreated, DateUpdated, Rating,IsActive) 
 Values
-(1,1, 'Not bad, not terrible', 3, 1),
-(2,2, 'Can pass', 2, 1),
-(1,69, 'Childhood memories', 5,1);
-
-Update Comment set DateCreated = '11-09-2023' where Id = 9;
+(1,1, 'Not bad, not terrible', '11-09-2023', '11-09-2023', 3, 1),
+(2,2, 'Can pass', '11-10-2023','11-10-2023', 2, 1),
+(1,2, 'Childhood memories', '11-11-2023','11-11-2023', 5,1),
+(2,2, 'Zer gutt', '11-11-2023','11-11-2023', 4,1);
 
 select * from Comment;
 
-select a.*, b.FirstName, b.LastName from Comment a join Member b on b.Id = a.MemberId; 
+select a.*, b.FirstName, b.LastName from Comment a join Member b on b.Id = a.MemberId ORDER BY a.DateCreated DESC; 
 
+select * from Category;
+
+select * from Recipe;
+
+select * from Picture;
+
+Update Category SET IsActive = 1 WHERE Id = 1;
