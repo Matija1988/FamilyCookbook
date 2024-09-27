@@ -24,9 +24,11 @@ namespace FamilyCookbook.Service
             return response;
         }
 
-        public Task<RepositoryResponse<Comment>> DeleteAsync(int id)
+        public async Task<RepositoryResponse<Comment>> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var response = await _commentRepository.DeleteAsync(id);
+
+            return response;
         }
 
         public async Task<RepositoryResponse<List<Comment>>> GetAllAsync()

@@ -124,5 +124,20 @@ namespace FamilyCookbook.Controllers
 
             return new JsonResult(StatusCode(StatusCodes.Status200OK, response.Message.ToString()));
         }
+
+        [HttpDelete]
+        [Route("delete/{id:int}")]
+        public async Task<IActionResult> PermaDeleteAsync(int id)
+        {
+            var response = await _commentService.DeleteAsync(id);
+
+            if (response.Success == false)
+            {
+                return new 
+                    JsonResult(StatusCode(StatusCodes.Status404NotFound, response.Message.ToString()));
+            }
+            return new JsonResult(StatusCode(StatusCodes.Status200OK, response.Message.ToString()));
+
+        }
     }
 }

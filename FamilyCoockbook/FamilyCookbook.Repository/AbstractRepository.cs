@@ -195,11 +195,12 @@ namespace FamilyCookbook.Repository
                 string tableName = GetTableName();
                 string keyColumn = GetKeyColumnName();
                 string keyProperty = GetKeyPropertyName();
-                string query = $"DELETE FROM {tableName} WHERE {keyColumn} = @{keyProperty};";
+                var query = BuildPermaDeleteQuery(tableName, keyColumn, id);
+                  //  $"DELETE FROM {tableName} WHERE {keyColumn} = @{keyProperty};";
 
                 using var connection =  _context.CreateConnection();
 
-                rowsAffected = await connection.ExecuteAsync(query, new { id });
+                rowsAffected = await connection.ExecuteAsync(query.ToString(), new { id });
 
                 response.Success = rowsAffected > 0;
                 response.Message = _successResponses.EntityDeleted(tableName);
@@ -209,7 +210,7 @@ namespace FamilyCookbook.Repository
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = _errorMessages.NotFound(id);
+                response.Message = _errorMessages.NotFound(id, ex);
                 return response;
             }
             finally
@@ -219,27 +220,36 @@ namespace FamilyCookbook.Repository
 
         }
 
+        protected virtual StringBuilder BuildPermaDeleteQuery(string tableName, string keyColumn, int id)
+        {
+            StringBuilder query = new();
+
+            return query.Append($"DELETE FROM {tableName} WHERE {keyColumn} = @id;");
+
+        }
+
         public async Task<RepositoryResponse<T>> SoftDeleteAsync(int id)
         {
             var response = new RepositoryResponse<T>();
 
             int rowsAffected = 0;
 
+            string tableName = GetTableName();
+            
             try
             {
-                string tableName = GetTableName();
                 var query = BuildSoftDeleteQuery(tableName, id);
                     
                 using var connection = _context.CreateConnection();
 
                 rowsAffected = await connection.ExecuteAsync(query.ToString(), new { id });
 
-                //if(rowsAffected == 0)
-                //{
-                //    response.Success = false;
-                //    response.Message = _errorMessages.NotFound(id);
-                //    return response;
-                //}
+                if (rowsAffected == 0)
+                {
+                    response.Success = false;
+                    response.Message = _errorMessages.NotFound(id);
+                    return response;
+                }
 
                 response.Success = rowsAffected > 0;
                 response.Message = _successResponses.EntityDeleted(tableName);
@@ -249,7 +259,7 @@ namespace FamilyCookbook.Repository
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = _errorMessages.NotFound(id, ex);
+                response.Message = _errorMessages.ErrorAccessingDb(tableName, ex);
                 return response;
             }
             finally
