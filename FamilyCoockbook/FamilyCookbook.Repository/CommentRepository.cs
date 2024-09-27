@@ -36,6 +36,35 @@ namespace FamilyCookbook.Repository
                 $"Member b on b.Id = a.MemberId WHERE a.Id = {id}");
         }
 
+        protected override StringBuilder BuildCreateQuery(string tableName, string columns, string properties, Comment entity)
+        {
+            StringBuilder query = new();
+
+            query.Append("INSERT INTO Comment (MemberId, RecipeId, Text, DateCreated, DateUpdated, Rating, IsActive) " +
+                          "VALUES (@MemberId, @RecipeId, @Text, @DateCreated, @DateUpdated, @Rating, @IsActive)");
+
+            return query;
+        }
+
+        protected override async Task<int> BuildCreateQueryCommand(string query, IDbConnection connection, Comment entity)
+        {
+            var parameters = new
+            {
+                MemberId = entity.MemberId,
+                RecipeId = entity.RecipeId,
+                Text = entity.Text,
+                DateCreated = entity.DateCreated,
+                DateUpdated = entity.DateUpdated,
+                Rating = entity.Rating,
+                IsActive = entity.IsActive,
+            };
+
+            int rowsAffected = await connection.ExecuteAsync(query, parameters);
+
+            return rowsAffected;
+        }
+
+
         protected override async Task<List<Comment>> BuildQueryCommand(string query, IDbConnection connection)
         {
             var entityDictionary = new Dictionary<int, Comment>();

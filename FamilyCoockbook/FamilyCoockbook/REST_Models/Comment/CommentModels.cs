@@ -1,4 +1,6 @@
-﻿namespace FamilyCookbook.REST_Models.Comment
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace FamilyCookbook.REST_Models.Comment
 {
     public class CommentModels
     {
@@ -10,6 +12,10 @@
                                           int rating,
                                           DateTime dateCreated);
 
-        public sealed record CommentCreate(int memberId, int recipeId, int? rating, string text);
+        public sealed record CommentCreate(int memberId,
+            int recipeId,
+            [Range(0,5)]
+            int? rating, 
+            string text);
     }
 }

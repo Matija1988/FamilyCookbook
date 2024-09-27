@@ -1,4 +1,5 @@
 ﻿using FamilyCookbook.Mapping;
+using FamilyCookbook.Model;
 using FamilyCookbook.Service.Common;
 using Microsoft.AspNetCore.Mvc;
 using static FamilyCookbook.REST_Models.Comment.CommentModels;
@@ -62,6 +63,11 @@ namespace FamilyCookbook.Controllers
             var mapper = new CommentMapper();
 
             var comment = mapper.CommentCreate(newComment);
+
+            comment.MemberId = newComment.memberId;
+            comment.RecipeId = newComment.recipeId; 
+            comment.Text = newComment.text;
+            comment.Rating = newComment.rating;
 
             var response = await _commentService.CreateAsync(comment);
 

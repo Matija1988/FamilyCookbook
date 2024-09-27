@@ -13,13 +13,18 @@ namespace FamilyCookbook.Model
         [Key]
         public int Id { get; set; }
 
-        public Member Member { get; set; } 
+        [ForeignKey("MemberId")]
+        public int MemberId { get; set; }
+        public Member Member { get; set; }
 
+        [ForeignKey("RecipeId")]
         public int RecipeId { get; set; }
+
+        public Recipe Recipe { get; set; }
 
         public string Text { get; set; }
 
-        public int Rating { get; set; }
+        public int? Rating { get; set; }
 
         public bool IsActive { get; set; }
 

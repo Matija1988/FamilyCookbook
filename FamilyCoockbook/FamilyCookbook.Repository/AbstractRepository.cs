@@ -28,6 +28,8 @@ namespace FamilyCookbook.Repository
             _successResponses = successResponses;
         }
 
+        #region GET 
+
         public async Task<RepositoryResponse<List<T>>> GetAllAsync()
         {
             var response = new RepositoryResponse<List<T>>();
@@ -100,7 +102,8 @@ namespace FamilyCookbook.Repository
 
         }
 
-        
+        #endregion
+
         public async Task<RepositoryResponse<T>> CreateAsync(T entity)
         {
             var response = new RepositoryResponse<T>();
@@ -113,12 +116,12 @@ namespace FamilyCookbook.Repository
                 string columns = GetColumns(excludeKey: true);
                 string properties = GetPropertyNames(excludeKey: true);
 
-                string query = $"INSERT INTO {tableName} ({columns}) VALUES ({properties});";
-                
+                string query = BuildCreateQuery(tableName, columns, properties, entity).ToString();
+                            
                 using var connection = _context.CreateConnection();
 
-                rowsAffected = await connection.ExecuteAsync(query, entity);
-
+                rowsAffected = await BuildCreateQueryCommand(query, connection, entity);
+                    
                 response.Success = rowsAffected > 0;
                 response.Message = _successResponses.EntityCreated();
 
@@ -386,6 +389,14 @@ namespace FamilyCookbook.Repository
             return query.Append($"SELECT * FROM {tableName} WHERE Id = @id");  
 
         }
+
+        protected virtual StringBuilder BuildCreateQuery(string tableName, string columns, string properties, T entity)
+        {
+            StringBuilder queryBuilder = new();
+
+            return queryBuilder.Append($"INSERT INTO {tableName} ({columns}) VALUES ({properties});");
+        }
+
         protected virtual async Task<List<T>> BuildQueryCommand(string query, System.Data.IDbConnection connection)
         {
             var entity = await connection.QueryAsync<T>(query);
@@ -398,6 +409,11 @@ namespace FamilyCookbook.Repository
             var entity = await connection.QueryFirstOrDefaultAsync<T>(query, new { id });
 
             return entity;
+        }
+
+        protected virtual async Task<int> BuildCreateQueryCommand(string query, System.Data.IDbConnection connection, T entity)
+        {
+            return await connection.ExecuteAsync(query, entity);
         }
 
 
