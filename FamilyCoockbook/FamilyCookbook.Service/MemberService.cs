@@ -19,12 +19,20 @@ using System.Threading.Tasks;
 
 namespace FamilyCookbook.Service
 {
-    public sealed class MemberService(IMemberRepository repository, 
-        IRecipeRepository recipeRepository, IConfiguration configuration) : IMemberService
+    public sealed class MemberService : AbstractService<Member>, IMemberService
     {
-        private readonly IMemberRepository _repository = repository;
-        private readonly IRecipeRepository _recipeRepository = recipeRepository;
-        private readonly IConfiguration _configuration = configuration;
+        private readonly IMemberRepository _repository;
+        private readonly IRecipeRepository _recipeRepository;
+        private readonly IConfiguration _configuration;
+
+        public MemberService(IMemberRepository repository, 
+            IRecipeRepository recipeRepository, IConfiguration configuration) : base(repository) 
+        {
+            _repository = repository;
+            _recipeRepository = recipeRepository;
+            _configuration = configuration;
+        }
+
         public async Task<RepositoryResponse<Member>> CreateAsync(Member entity)
         {
             entity.UniqueId = Guid.NewGuid();
@@ -32,6 +40,9 @@ namespace FamilyCookbook.Service
             entity.DateCreated = DateTime.Now;
             entity.DateUpdated = DateTime.Now;
 
+            var passwordHash = BCrypt.Net.BCrypt.HashPassword(entity.Password, 12);
+
+            entity.Password = passwordHash;
 
             var response = await _repository.CreateAsync(entity);
 
@@ -69,21 +80,6 @@ namespace FamilyCookbook.Service
 
         }
 
-        public async Task<RepositoryResponse<List<Member>>> GetAllAsync()
-        {
-
-            var response = await _repository.GetAllAsync();
-
-            return response;
-        }
-
-        public async Task<RepositoryResponse<Member>> GetByIdAsync(int id)
-        {
-            var response = await _repository.GetByIdAsync(id);
-
-            return response;
-        }
-
         public async Task<RepositoryResponse<Member>> UpdateAsync(int id, Member entity)
         {
             entity.DateUpdated = DateTime.Now;
@@ -93,14 +89,6 @@ namespace FamilyCookbook.Service
             return response;
 
         }
-
-        public async Task<RepositoryResponse<Member>> DeleteAsync(int id)
-        {
-            var response = await _repository.DeleteAsync(id);
-
-            return response;
-        }
-
         public async Task<RepositoryResponse<Member>> GetByGuidAsync(Guid uniqueId)
         {
             var response = await _repository.GetByGuidAsync(uniqueId);

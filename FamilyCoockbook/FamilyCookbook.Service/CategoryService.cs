@@ -34,16 +34,6 @@ namespace FamilyCookbook.Service
             return await _repository.DeleteAsync(id);
         }
 
-        //public async Task<RepositoryResponse<List<Category>>> GetAllAsync()
-        //{
-        //   return await _repository.GetAllAsync();
-        //}
-
-        //public async Task<RepositoryResponse<Category>> GetByIdAsync(int id)
-        //{           
-        //    return await _repository.GetByIdAsync(id);
-        //}
-
         public async Task<RepositoryResponse<Category>> UpdateAsync(int id, Category entity)
         {
             entity.IsActive = true;
