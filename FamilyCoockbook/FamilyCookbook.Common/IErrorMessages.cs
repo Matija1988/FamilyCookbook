@@ -15,7 +15,12 @@ namespace FamilyCookbook.Common
 
         StringBuilder ErrorAccessingDb(string entityName);
 
+
+        StringBuilder ErrorAccessingDb(string entityName, Exception ex);
+
         StringBuilder ErrorCreatingEntity(string entityName);
+
+        StringBuilder ErrorCreatingEntity(string entityName, Exception ex);
 
         StringBuilder NestedEntityWithIdFound(string entityName, string nestedEntity);
 

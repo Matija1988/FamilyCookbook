@@ -27,11 +27,28 @@ namespace FamilyCookbook.Common
             return sb.Append("Error accessing database!!! Unable to get " + entityName + "! ");
         }
 
-        public  StringBuilder ErrorCreatingEntity(string entityName)
+        public StringBuilder ErrorAccessingDb(string entityName, Exception e)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            return sb.Append("Error accessing database!!! Unable to get " + entityName + "! " + e);
+        }
+
+
+
+        public StringBuilder ErrorCreatingEntity(string entityName)
         {
             StringBuilder sb = new StringBuilder();
 
             return sb.Append("Error inserting entity into database!!! Unable to create " + entityName + "! ");
+        }
+
+        public StringBuilder ErrorCreatingEntity(string entityName, Exception ex)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            return sb.Append("Error inserting entity into database!!! Unable to create " + entityName + "! " +
+                "EXCEPTION DATA: " + ex);
         }
 
         public StringBuilder NotFoundByGuid()

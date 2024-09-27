@@ -38,11 +38,11 @@ namespace FamilyCookbook.Repository
 
                 using var connection = _context.CreateConnection();
 
-                var list = await connection.QueryAsync<T>(query);
-
-                response.Items = (List<T>)list;
+                var list = BuildQueryCommand(query, connection);
+                    
+                response.Items = await list;
                 response.Success = true;
-                response.TotalCount = list.Count();
+                response.TotalCount = response.Items.Count();
 
                 return response;
             }
@@ -60,6 +60,7 @@ namespace FamilyCookbook.Repository
 
         }
 
+        
         public async Task<RepositoryResponse<T>> GetByIdAsync(int id)
         {
             var response = new RepositoryResponse<T>();
@@ -71,8 +72,8 @@ namespace FamilyCookbook.Repository
 
                 using var connection = _context.CreateConnection();
 
-                var entity = await connection.QueryFirstOrDefaultAsync<T>(query, new { id });
-
+                var entity = await BuildQueryCommand(query, connection, id);                    
+                
                 response.Items = entity;
 
                 if(entity == null)
@@ -99,6 +100,7 @@ namespace FamilyCookbook.Repository
 
         }
 
+        
         public async Task<RepositoryResponse<T>> CreateAsync(T entity)
         {
             var response = new RepositoryResponse<T>();
@@ -126,7 +128,7 @@ namespace FamilyCookbook.Repository
             catch (Exception ex) 
             {
                 response.Success = false;
-                response.Message = _errorMessages.ErrorCreatingEntity(tableName);
+                response.Message = _errorMessages.ErrorCreatingEntity(tableName, ex);
                 return response;
             }
             finally 
@@ -384,6 +386,20 @@ namespace FamilyCookbook.Repository
             return query.Append($"SELECT * FROM {tableName} WHERE Id = @id");  
 
         }
+        protected virtual async Task<List<T>> BuildQueryCommand(string query, System.Data.IDbConnection connection)
+        {
+            var entity = await connection.QueryAsync<T>(query);
+
+            return entity.ToList();
+        }
+
+        protected virtual async Task<T> BuildQueryCommand(string query, System.Data.IDbConnection connection, int id)
+        {
+            var entity = await connection.QueryFirstOrDefaultAsync<T>(query, new { id });
+
+            return entity;
+        }
+
 
     }
 }

@@ -1,6 +1,7 @@
 ﻿using FamilyCookbook.Mapping;
 using FamilyCookbook.Service.Common;
 using Microsoft.AspNetCore.Mvc;
+using static FamilyCookbook.REST_Models.Comment.CommentModels;
 
 namespace FamilyCookbook.Controllers
 {
@@ -18,7 +19,7 @@ namespace FamilyCookbook.Controllers
 
             if (!response.Success)
             {
-                return BadRequest(response);
+                return BadRequest(response.Message.ToString());
             }
 
             var mapper = new CommentMapper();
@@ -30,7 +31,7 @@ namespace FamilyCookbook.Controllers
         }
 
         [HttpGet]
-        [Route("[controller]/{id:int}")]
+        [Route("{id:int}")]
 
         public async Task<IActionResult> GetById(int id)
         {
@@ -46,6 +47,32 @@ namespace FamilyCookbook.Controllers
             var comment = mapper.CommentRead(response.Items);
 
             return Ok(comment);
+        }
+
+        [HttpPost]
+        [Route("create")]
+
+        public async Task<IActionResult> CreateAsync(CommentCreate newComment)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var mapper = new CommentMapper();
+
+            var comment = mapper.CommentCreate(newComment);
+
+            var response = await _commentService.CreateAsync(comment);
+
+            if (response.Success == false) 
+            { 
+                return BadRequest(response.Message.ToString());
+            }
+
+            return Ok(response.Message.ToString());
+
+
         }
     }
 }

@@ -10,5 +10,7 @@ namespace FamilyCookbook.Mapping
         public partial List<CommentRead> CommentsReadList(List<Comment> comment);
 
         public partial CommentRead CommentRead (Comment comment);
+
+        public partial Comment CommentCreate(CommentCreate newComment);
     }
 }

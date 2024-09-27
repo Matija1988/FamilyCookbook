@@ -13,15 +13,15 @@ namespace FamilyCookbook.Model
         [Key]
         public int Id { get; set; }
 
-        public string FirstName { get; set; }
-
-        public string LastName { get; set; }
+        public Member Member { get; set; } 
 
         public int RecipeId { get; set; }
 
         public string Text { get; set; }
 
         public int Rating { get; set; }
+
+        public bool IsActive { get; set; }
 
         public DateTime DateCreated { get; set; }
 

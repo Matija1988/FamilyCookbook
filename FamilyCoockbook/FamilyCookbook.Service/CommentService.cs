@@ -13,9 +13,15 @@ namespace FamilyCookbook.Service
     {
         private readonly ICommentRepository _commentRepository = commentRepository;
 
-        public Task<RepositoryResponse<Comment>> CreateAsync(Comment comment)
+        public async Task<RepositoryResponse<Comment>> CreateAsync(Comment comment)
         {
-            throw new NotImplementedException();
+            comment.IsActive = true;
+            comment.DateCreated = DateTime.Now;
+            comment.DateUpdated = DateTime.Now;
+
+            var response = await _commentRepository.CreateAsync(comment);
+
+            return response;
         }
 
         public Task<RepositoryResponse<Comment>> DeleteAsync(int id)
