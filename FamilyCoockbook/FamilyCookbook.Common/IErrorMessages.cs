@@ -10,6 +10,8 @@ namespace FamilyCookbook.Common
     {
         StringBuilder NotFound(int id);
 
+        StringBuilder NotFound(int id, Exception ex);
+
         StringBuilder NotFoundByGuid();
 
 

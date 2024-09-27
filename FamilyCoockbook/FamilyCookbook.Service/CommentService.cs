@@ -48,9 +48,13 @@ namespace FamilyCookbook.Service
             throw new NotImplementedException();
         }
 
-        public Task<RepositoryResponse<Comment>> UpdateAsync(int id, Comment entity)
+        public async Task<RepositoryResponse<Comment>> UpdateAsync(int id, Comment entity)
         {
-            throw new NotImplementedException();
+            entity.DateUpdated = DateTime.Now;
+
+            var resposne = await _commentRepository.UpdateAsync(id, entity);
+
+            return resposne;
         }
     }
 }

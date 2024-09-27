@@ -78,6 +78,36 @@ namespace FamilyCookbook.Controllers
 
             return Ok(response.Message.ToString());
 
+        }
+
+
+        [HttpPut]
+        [Route("update/{id:int}")]
+
+        public async Task<IActionResult> UpdateAsync(CommentCreate newComment, int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var mapper = new CommentMapper();
+
+            var comment = mapper.CommentCreate(newComment);
+
+            comment.MemberId = newComment.memberId;
+            comment.RecipeId = newComment.recipeId;
+            comment.Text = newComment.text;
+            comment.Rating = newComment.rating;
+
+            var response = await _commentService.UpdateAsync(id, comment);
+
+            if (response.Success == false)
+            {
+                return BadRequest(response.Message.ToString());
+            }
+
+            return Ok(response.Message.ToString());
 
         }
     }

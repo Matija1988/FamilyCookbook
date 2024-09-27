@@ -20,6 +20,22 @@ namespace FamilyCookbook.Repository
         private readonly IErrorMessages _errorMessages;
         private readonly ISuccessResponses _successResponses;
 
+
+        #region OVEERIDE UPDATE
+
+        protected override StringBuilder BuildUpdateQuery(string tableName, string keyColumn, string keyProperty)
+        {
+            StringBuilder query = new();
+
+            query.Append("UPDATE Comment SET MemberId = @MemberId, RecipeId = @RecipeId, Text = @Text," +
+                " DateUpdated = @DateUpdated WHERE Id = @Id");
+            return query;
+        }
+
+        #endregion
+
+        #region OVERRIDE READ ALL
+
         protected override StringBuilder BuildQueryReadAll()
         {
             StringBuilder query = new();
@@ -27,6 +43,32 @@ namespace FamilyCookbook.Repository
             return query.Append("SELECT a.*, b.Id, b.FirstName, b.LastName FROM Comment a JOIN " +
                 "Member b on b.Id = a.MemberId ORDER BY a.DateCreated DESC;");
         }
+
+        protected override async Task<List<Comment>> BuildQueryCommand(string query, IDbConnection connection)
+        {
+            var entityDictionary = new Dictionary<int, Comment>();
+
+            using var multipleQuery = await connection.QueryMultipleAsync(query);
+
+            IEnumerable<Comment> member = multipleQuery.Read<Comment, Member, Comment>((comment, member) =>
+            {
+                if (!entityDictionary.TryGetValue(comment.Id, out var existingEntity))
+                {
+                    existingEntity = comment;
+                    existingEntity.Member = member;
+                    entityDictionary.Add(existingEntity.Id, existingEntity);
+                }
+
+                return existingEntity;
+            }, splitOn: "Id");
+
+            return member.ToList();
+        }
+
+
+        #endregion
+
+        #region OVERRIDE GETbyID
 
         protected override StringBuilder BuildQueryReadSingle(int id)
         {
@@ -36,7 +78,32 @@ namespace FamilyCookbook.Repository
                 $"Member b on b.Id = a.MemberId WHERE a.Id = {id}");
         }
 
-        protected override StringBuilder BuildCreateQuery(string tableName, string columns, string properties, Comment entity)
+
+        protected override async Task<Comment> BuildQueryCommand(string query, IDbConnection connection, int id)
+        {
+            var entityDictionary = new Dictionary<int, Comment>();
+
+            var entity = await connection.QueryAsync<Comment, Member, Comment>(query,
+                (comment, member) =>
+                {
+                    if(!entityDictionary.TryGetValue(comment.Id, out var exitingEntity))
+                    {
+                        exitingEntity = comment;
+                        exitingEntity.Member = member;
+                        entityDictionary.Add(comment.Id, exitingEntity);
+                    }
+
+                    return exitingEntity;
+                }, new {id});
+
+            return entityDictionary.Values.FirstOrDefault();
+
+        }
+#endregion
+
+        #region CREATE OVERRIDE
+
+        protected override StringBuilder BuildCreateQuery(string tableName, string columns, string properties)
         {
             StringBuilder query = new();
 
@@ -63,49 +130,8 @@ namespace FamilyCookbook.Repository
 
             return rowsAffected;
         }
+        #endregion
 
-
-        protected override async Task<List<Comment>> BuildQueryCommand(string query, IDbConnection connection)
-        {
-            var entityDictionary = new Dictionary<int, Comment>();
-
-            using var multipleQuery = await connection.QueryMultipleAsync(query);
-
-            IEnumerable<Comment> member = multipleQuery.Read<Comment, Member,Comment>((comment, member) =>
-            {
-                if (!entityDictionary.TryGetValue(comment.Id, out var existingEntity))
-                {
-                    existingEntity = comment;
-                    existingEntity.Member = member;
-                    entityDictionary.Add(existingEntity.Id, existingEntity);
-                }
-
-                return existingEntity;
-            }, splitOn: "Id");
-
-            return member.ToList();
-        }
-
-        protected override async Task<Comment> BuildQueryCommand(string query, IDbConnection connection, int id)
-        {
-            var entityDictionary = new Dictionary<int, Comment>();
-
-            var entity = await connection.QueryAsync<Comment, Member, Comment>(query,
-                (comment, member) =>
-                {
-                    if(!entityDictionary.TryGetValue(comment.Id, out var exitingEntity))
-                    {
-                        exitingEntity = comment;
-                        exitingEntity.Member = member;
-                        entityDictionary.Add(comment.Id, exitingEntity);
-                    }
-
-                    return exitingEntity;
-                }, new {id});
-
-            return entityDictionary.Values.FirstOrDefault();
-
-        }
     }
 }
 

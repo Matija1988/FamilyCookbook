@@ -20,6 +20,13 @@ namespace FamilyCookbook.Common
             return sb.Append("Entity with id: " + id + " not found!");
         }
 
+        public StringBuilder NotFound(int id, Exception ex)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            return sb.Append("Entity with id: " + id + " not found! " + ex);
+        }
+
         public  StringBuilder ErrorAccessingDb(string entityName) 
         {
             StringBuilder sb = new StringBuilder();

@@ -3,6 +3,7 @@ using FamilyCookbook.Common;
 using FamilyCookbook.Model;
 using FamilyCookbook.Respository.Common;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -11,6 +12,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using static Dapper.SqlMapper;
 
 namespace FamilyCookbook.Repository
 {
@@ -116,11 +118,11 @@ namespace FamilyCookbook.Repository
                 string columns = GetColumns(excludeKey: true);
                 string properties = GetPropertyNames(excludeKey: true);
 
-                string query = BuildCreateQuery(tableName, columns, properties, entity).ToString();
+                var query = BuildCreateQuery(tableName, columns, properties);
                             
                 using var connection = _context.CreateConnection();
 
-                rowsAffected = await BuildCreateQueryCommand(query, connection, entity);
+                rowsAffected = await BuildCreateQueryCommand(query.ToString(), connection, entity);
                     
                 response.Success = rowsAffected > 0;
                 response.Message = _successResponses.EntityCreated();
@@ -153,24 +155,7 @@ namespace FamilyCookbook.Repository
                 string keyColumn = GetKeyColumnName();
                 string keyProperty = GetKeyPropertyName();
 
-                StringBuilder query = new StringBuilder();
-
-                query.Append($"UPDATE {tableName} SET ");
-
-                foreach (var property in GetProperties(true))
-                {
-                    var columnAttr = property.GetCustomAttribute<ColumnAttribute>();
-
-                    string columnName = columnAttr?.Name ?? property.Name;
-
-                    string propertyName = property.Name;
-
-                    query.Append($"{columnName} = @{propertyName},");
-                }
-
-                query.Remove(query.Length - 1, 1);
-
-                query.Append($" WHERE {keyColumn} = @{keyProperty};");
+                var query = BuildUpdateQuery(tableName, keyColumn, keyProperty);
 
                 var parameters = new DynamicParameters(entity);
                 parameters.Add(keyProperty, id);
@@ -189,7 +174,7 @@ namespace FamilyCookbook.Repository
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = _errorMessages.NotFound(id);
+                response.Message = _errorMessages.NotFound(id, ex);
                 return response;
             }
             finally
@@ -197,6 +182,28 @@ namespace FamilyCookbook.Repository
                 _context.CreateConnection().Close();
             }
 
+        }
+
+        protected virtual StringBuilder BuildUpdateQuery(string tableName, string keyColumn, string keyProperty)
+        {
+            StringBuilder query = new();
+
+            query.Append($"UPDATE {tableName} SET ");
+
+            foreach (var property in GetProperties(true))
+            {
+                var columnAttr = property.GetCustomAttribute<ColumnAttribute>();
+
+                string columnName = columnAttr?.Name ?? property.Name;
+                string propertyName = property.Name;
+
+                query.Append($"{columnName} = @{propertyName},");
+            }
+            query.Remove(query.Length - 1, 1);
+
+            query.Append($" WHERE {keyColumn} = @{keyProperty};");
+
+            return query;
         }
 
         public async Task<RepositoryResponse<T>> DeleteAsync(int id)
@@ -371,6 +378,9 @@ namespace FamilyCookbook.Repository
 
         #endregion
 
+
+        #region PROTECTED VIRTUAL METHODS
+
         protected virtual StringBuilder BuildQueryReadAll() 
         { 
             StringBuilder query = new StringBuilder();
@@ -390,7 +400,7 @@ namespace FamilyCookbook.Repository
 
         }
 
-        protected virtual StringBuilder BuildCreateQuery(string tableName, string columns, string properties, T entity)
+        protected virtual StringBuilder BuildCreateQuery(string tableName, string columns, string properties)
         {
             StringBuilder queryBuilder = new();
 
@@ -416,6 +426,6 @@ namespace FamilyCookbook.Repository
             return await connection.ExecuteAsync(query, entity);
         }
 
-
+        #endregion
     }
 }
