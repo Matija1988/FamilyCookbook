@@ -1,4 +1,5 @@
-﻿using FamilyCookbook.Mapping;
+﻿using Autofac.Core;
+using FamilyCookbook.Mapping;
 using FamilyCookbook.Model;
 using FamilyCookbook.Service.Common;
 using Microsoft.AspNetCore.Mvc;
@@ -8,47 +9,37 @@ namespace FamilyCookbook.Controllers
 {
     [ApiController]
     [Route("api/v0/comment")]
-    public sealed class CommentController(ICommentService commentService) : ControllerBase
+    public sealed class CommentController : AbstractController<Comment, CommentRead, CommentCreate>
     {
-        private readonly ICommentService _commentService = commentService;
+        private readonly ICommentService _commentService;
+        private readonly IMapper<Comment, CommentRead, CommentCreate> _mapper;
 
-        [HttpGet]
-
-        public async Task<IActionResult> GetAllAsync()
+        public CommentController(
+            ICommentService service, IMapper<Comment, CommentRead, CommentCreate> mapper) 
+            : base (service, mapper)
         {
-            var response = await _commentService.GetAllAsync();
-
-            if (!response.Success)
-            {
-                return BadRequest(response.Message.ToString());
-            }
-
-            var mapper = new CommentMapper();
-
-            var comments = mapper.CommentsReadList(response.Items);
-
-            return Ok(comments);
-
+            
         }
 
-        [HttpGet]
-        [Route("{id:int}")]
 
-        public async Task<IActionResult> GetById(int id)
-        {
-            var response = await _commentService.GetByIdAsync(id);
+        //[HttpGet]
+        //[Route("{id:int}")]
 
-            if(!response.Success)
-            {
-                return NotFound(response.Message.ToString());
-            }
+        //public async Task<IActionResult> GetById(int id)
+        //{
+        //    var response = await _commentService.GetByIdAsync(id);
 
-            var mapper = new CommentMapper();
+        //    if(!response.Success)
+        //    {
+        //        return NotFound(response.Message.ToString());
+        //    }
 
-            var comment = mapper.CommentRead(response.Items);
+        //    var mapper = new CommentMapper();
 
-            return Ok(comment);
-        }
+        //    var comment = mapper.CommentRead(response.Items);
+
+        //    return Ok(comment);
+        //}
 
         [HttpPost]
         [Route("create")]
@@ -122,7 +113,7 @@ namespace FamilyCookbook.Controllers
                 return BadRequest(response.Message.ToString());
             }
 
-            return new JsonResult(StatusCode(StatusCodes.Status200OK, response.Message.ToString()));
+            return Ok(response.Message.ToString());
         }
 
         [HttpDelete]
@@ -133,11 +124,10 @@ namespace FamilyCookbook.Controllers
 
             if (response.Success == false)
             {
-                return new 
-                    JsonResult(StatusCode(StatusCodes.Status404NotFound, response.Message.ToString()));
+                return BadRequest(response.Message.ToString());
             }
-            return new JsonResult(StatusCode(StatusCodes.Status200OK, response.Message.ToString()));
-
+            return Ok(response.Message.ToString());
+            
         }
     }
 }

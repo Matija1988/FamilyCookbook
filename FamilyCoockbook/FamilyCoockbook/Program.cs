@@ -21,6 +21,7 @@ builder.Host.ConfigureContainer<ContainerBuilder>(builder => {
     builder.RegisterModule(new AutofacRepositoryModule());
     builder.RegisterModule(new AutofacServiceModule());
     builder.RegisterModule(new AutofacCommonModule());
+    builder.RegisterModule(new AutofacControllerModule());
 });
 
 builder.Services.AddControllers();
