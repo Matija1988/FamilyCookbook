@@ -11,39 +11,18 @@ namespace FamilyCookbook.Controllers
 {
     [ApiController]
     [Route("api/v0/category")]
-    public class CategoryController(ICategoryService service) : ControllerBase
+    public sealed class CategoryController : AbstractController<Category, CategoryRead, CategoryCreate>
     {
-        private readonly ICategoryService _service = service;
+        private readonly ICategoryService _service;
+        private readonly IMapper<Category, CategoryRead, CategoryCreate> _mapper;
 
-            
-        [HttpGet]
-        public async Task<IActionResult> GetAllAsync()
+        public CategoryController(ICategoryService service, 
+            IMapper<Category, CategoryRead, CategoryCreate> mapper) 
+            : base(service, mapper)
         {
-            var response = await _service.GetAllAsync();
-
-            if (response.Success == false)
-            {
-                return NotFound(response.Message.ToString());
-            }
-
-            return Ok(response);
+            _service = service;
+            _mapper = mapper;
         }
-
-
-        [HttpGet]
-        [Route("{id:int}")]
-        public async Task<IActionResult> GetByIdAsync(int id) 
-        { 
-            var response = await _service.GetByIdAsync(id);
-
-            if (response.Success == false) 
-            {
-                return NotFound(response.Message.ToString());            
-            }
-            return Ok(response.Items);
-        }
-
-
         [Authorize(Roles = "Admin, Moderator")]
         [HttpPost]
         [Route("create")]

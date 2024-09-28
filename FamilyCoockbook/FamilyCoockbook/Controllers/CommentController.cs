@@ -46,33 +46,5 @@ namespace FamilyCookbook.Controllers
 
         }
 
-
-        [HttpPut]
-        [Route("softDelete/{id:int}")]
-        public async Task<IActionResult> SoftDeleteAsync(int id)
-        {
-            var response = await _commentService.SoftDeleteAsync(id);
-
-            if (response.Success == false) 
-            {
-                return BadRequest(response.Message.ToString());
-            }
-
-            return Ok(response.Message.ToString());
-        }
-
-        [HttpDelete]
-        [Route("delete/{id:int}")]
-        public async Task<IActionResult> PermaDeleteAsync(int id)
-        {
-            var response = await _commentService.DeleteAsync(id);
-
-            if (response.Success == false)
-            {
-                return BadRequest(response.Message.ToString());
-            }
-            return Ok(response.Message.ToString());
-            
-        }
     }
 }

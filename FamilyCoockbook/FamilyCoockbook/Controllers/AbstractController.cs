@@ -82,20 +82,34 @@ namespace FamilyCookbook.Controllers
             
         }
 
-        //[HttpPost]
-        //[Route("create")]
+        [HttpPut]
+        [Route("softDelete/{id:int}")]
 
-        //public async Task<IActionResult> PostAsync(TDI dto)
-        //{
-        //    if(!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
+        public async Task<IActionResult> SoftDeleteAsync(int id)
+        {
+            var response = await _service.SoftDeleteAsync(id);
 
-        //    var comment = _mapper.MapToEntity(dto);
+            if (response.Success == false)
+            {
+                return BadRequest(response.Message.ToString());
+            }
 
-        //    var response = await _service.
-        //}
-       
+            return Ok(response.Message.ToString());
+        }
+
+        [HttpDelete]
+        [Route("delete/{id:int}")]
+        public async Task<IActionResult> DeleteAsync(int id)
+        {
+            var response = await _service.DeleteAsync(id);
+
+            if(response.Success == false)
+            {
+                return BadRequest(response.Message.ToString());
+            }
+
+            return Ok(response.Message.ToString());
+        }
+
     }
 }
