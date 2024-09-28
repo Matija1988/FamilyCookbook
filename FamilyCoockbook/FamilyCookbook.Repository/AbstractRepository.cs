@@ -155,7 +155,7 @@ namespace FamilyCookbook.Repository
                 string keyColumn = GetKeyColumnName();
                 string keyProperty = GetKeyPropertyName();
 
-                var query = BuildUpdateQuery(tableName, keyColumn, keyProperty);
+                var query = BuildUpdateQuery(tableName, keyColumn, keyProperty, id);
 
                 var parameters = new DynamicParameters(entity);
                 parameters.Add(keyProperty, id);
@@ -174,7 +174,7 @@ namespace FamilyCookbook.Repository
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = _errorMessages.NotFound(id);
+                response.Message = _errorMessages.NotFound(id, ex);
                 return response;
             }
             finally
@@ -384,7 +384,7 @@ namespace FamilyCookbook.Repository
             return connection.Execute(query, parameters);
         }
 
-        protected virtual StringBuilder BuildUpdateQuery(string tableName, string keyColumn, string keyProperty)
+        protected virtual StringBuilder BuildUpdateQuery(string tableName, string keyColumn, string keyProperty, int id)
         {
             StringBuilder query = new();
 

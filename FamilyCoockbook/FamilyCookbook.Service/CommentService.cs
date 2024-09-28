@@ -29,5 +29,15 @@ namespace FamilyCookbook.Service
             return response;
         }
 
+        public new async Task<RepositoryResponse<Comment>> UpdateAsync(int id, Comment comment)
+        {
+            comment.DateUpdated = DateTime.Now;
+
+            var response = await _commentRepository.UpdateAsync(id, comment);
+
+            return response;    
+
+        }
+
     }
 }

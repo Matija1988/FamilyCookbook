@@ -12,10 +12,10 @@ namespace FamilyCookbook.REST_Models.Comment
                                           int rating,
                                           DateTime dateCreated);
 
-        public sealed record CommentCreate(int memberId,
-            int recipeId,
+        public sealed record CommentCreate(int MemberId,
+            int RecipeId,
             [Range(0,5)]
-            int? rating, 
-            string text);
+            int? Rating, 
+            string Text);
     }
 }

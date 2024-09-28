@@ -18,64 +18,13 @@ namespace FamilyCookbook.Controllers
             ICommentService service, IMapper<Comment, CommentRead, CommentCreate> mapper) 
             : base (service, mapper)
         {
-            
+            _commentService = service;   
         }
-
-
-        //[HttpGet]
-        //[Route("{id:int}")]
-
-        //public async Task<IActionResult> GetById(int id)
-        //{
-        //    var response = await _commentService.GetByIdAsync(id);
-
-        //    if(!response.Success)
-        //    {
-        //        return NotFound(response.Message.ToString());
-        //    }
-
-        //    var mapper = new CommentMapper();
-
-        //    var comment = mapper.CommentRead(response.Items);
-
-        //    return Ok(comment);
-        //}
 
         [HttpPost]
         [Route("create")]
 
         public async Task<IActionResult> CreateAsync(CommentCreate newComment)
-        {
-            if(!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var mapper = new CommentMapper();
-
-            var comment = mapper.CommentCreate(newComment);
-
-            comment.MemberId = newComment.memberId;
-            comment.RecipeId = newComment.recipeId; 
-            comment.Text = newComment.text;
-            comment.Rating = newComment.rating;
-
-            var response = await _commentService.CreateAsync(comment);
-
-            if (response.Success == false) 
-            { 
-                return BadRequest(response.Message.ToString());
-            }
-
-            return Ok(response.Message.ToString());
-
-        }
-
-
-        [HttpPut]
-        [Route("update/{id:int}")]
-
-        public async Task<IActionResult> UpdateAsync(CommentCreate newComment, int id)
         {
             if (!ModelState.IsValid)
             {
@@ -86,12 +35,7 @@ namespace FamilyCookbook.Controllers
 
             var comment = mapper.CommentCreate(newComment);
 
-            comment.MemberId = newComment.memberId;
-            comment.RecipeId = newComment.recipeId;
-            comment.Text = newComment.text;
-            comment.Rating = newComment.rating;
-
-            var response = await _commentService.UpdateAsync(id, comment);
+            var response = await _commentService.CreateAsync(comment);
 
             if (response.Success == false)
             {
@@ -101,6 +45,7 @@ namespace FamilyCookbook.Controllers
             return Ok(response.Message.ToString());
 
         }
+
 
         [HttpPut]
         [Route("softDelete/{id:int}")]

@@ -23,12 +23,12 @@ namespace FamilyCookbook.Repository
 
         #region OVEERIDE UPDATE
 
-        protected override StringBuilder BuildUpdateQuery(string tableName, string keyColumn, string keyProperty)
+        protected override StringBuilder BuildUpdateQuery(string tableName, string keyColumn, string keyProperty, int id)
         {
             StringBuilder query = new();
 
             query.Append("UPDATE Comment SET MemberId = @MemberId, RecipeId = @RecipeId, Text = @Text," +
-                " DateUpdated = @DateUpdated WHERE Id = @Id");
+                " DateUpdated = @DateUpdated WHERE Id = @id");
             return query;
         }
 

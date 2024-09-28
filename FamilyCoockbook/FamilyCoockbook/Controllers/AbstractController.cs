@@ -59,6 +59,43 @@ namespace FamilyCookbook.Controllers
 
         }
 
+        [HttpPut]
+        [Route("update/{id:int}")]
+
+        public async Task<IActionResult> PutAsync(TDI dto, int id)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var entity = _mapper.MapToEntity(dto);
+
+            var response = await _service.UpdateAsync(id, entity);
+
+            if (response.Success == false) 
+            {
+                return BadRequest(response.Message.ToString());
+            }
+
+            return Ok(response.Message.ToString());
+            
+        }
+
+        //[HttpPost]
+        //[Route("create")]
+
+        //public async Task<IActionResult> PostAsync(TDI dto)
+        //{
+        //    if(!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
+
+        //    var comment = _mapper.MapToEntity(dto);
+
+        //    var response = await _service.
+        //}
        
     }
 }

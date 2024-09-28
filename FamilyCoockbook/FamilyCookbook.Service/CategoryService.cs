@@ -13,7 +13,7 @@ namespace FamilyCookbook.Service
 {
     public sealed class CategoryService : AbstractService<Category>, ICategoryService
     {
-        private readonly ICategoryRepository _repository;
+        private new readonly ICategoryRepository _repository;
         private readonly IRecipeRepository _recipeRepository;
 
         public CategoryService(ICategoryRepository repository,
