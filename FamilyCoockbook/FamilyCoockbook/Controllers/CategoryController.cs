@@ -23,6 +23,7 @@ namespace FamilyCookbook.Controllers
             _service = service;
             _mapper = mapper;
         }
+
         [Authorize(Roles = "Admin, Moderator")]
         [HttpPost]
         [Route("create")]
@@ -45,65 +46,8 @@ namespace FamilyCookbook.Controllers
             {
                 return BadRequest(response.Message.ToString());     
             }
-            return Ok(response);
-        }
-
-
-        [Authorize(Roles = "Admin, Moderator")]
-        [HttpPut]
-        [Route("update/{id:int}")]
-
-        public async Task<IActionResult> UpdateAsync(int id, CategoryCreate entity)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var category = new Category();
-
-            var mapper = new CategoryMapper();
-            category = mapper.CategoryCreateToCategory(entity);
-
-
-            var response = await _service.UpdateAsync(id, category);
-
-            if(response.Success == false)
-            {
-                return BadRequest(response.Message.ToString());
-            }
             return Ok(response.Message.ToString());
         }
 
-
-        [Authorize(Roles = "Admin")]
-        [HttpDelete]
-        [Route("delete/{id:int}")]
-
-        public async Task<IActionResult> DeleteAsync(int id)
-        {
-            var response = await _service.DeleteAsync(id);
-
-            if(response.Success==false)
-            {
-                return BadRequest(response.Message.ToString());
-            }
-            return Ok(response.Message.ToString());
-
-        }
-
-        [Authorize(Roles = "Admin")]
-        [HttpPut]
-        [Route("softDelete/{id:int}")]
-        public async Task<IActionResult> SoftDeleteAsync(int id)
-        {
-            var response = await _service.SoftDeleteAsync(id);
-
-            if(response.Success == false)
-            {
-                return BadRequest(response.Message.ToString());
-            }
-            return Ok(response.Message.ToString());
-        }
     }
 }
