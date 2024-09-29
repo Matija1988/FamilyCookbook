@@ -50,7 +50,7 @@ namespace FamilyCookbook.Repository
 
             using var multipleQuery = await connection.QueryMultipleAsync(query);
 
-            IEnumerable<Comment> member = multipleQuery.Read<Comment, Member, Comment>((comment, member) =>
+            IEnumerable<Comment> comments = multipleQuery.Read<Comment, Member, Comment>((comment, member) =>
             {
                 if (!entityDictionary.TryGetValue(comment.Id, out var existingEntity))
                 {
@@ -62,7 +62,7 @@ namespace FamilyCookbook.Repository
                 return existingEntity;
             }, splitOn: "Id");
 
-            return member.ToList();
+            return comments.ToList();
         }
 
 

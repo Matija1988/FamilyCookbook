@@ -6,6 +6,7 @@ using FamilyCookbook.Repository.Common;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,13 +14,16 @@ using static Dapper.SqlMapper;
 
 namespace FamilyCookbook.Repository
 {
-    public sealed class MemberRepository : IMemberRepository
+    public sealed class MemberRepository : AbstractRepository<Member>, IMemberRepository
     {
         private readonly DapperDBContext _context;
         private readonly IErrorMessages _errorMessages;
         private readonly ISuccessResponses _successResponses;
-        public MemberRepository
-            (DapperDBContext context, IErrorMessages errorMessages, ISuccessResponses successResponses)
+
+        public MemberRepository(DapperDBContext context, 
+            IErrorMessages errorMessages, 
+            ISuccessResponses successResponses) 
+            : base(context, errorMessages, successResponses)
         {
             _context = context;
             _errorMessages = errorMessages;
@@ -216,67 +220,49 @@ namespace FamilyCookbook.Repository
             }
         }
 
-        public async Task<RepositoryResponse<List<Member>>> GetAllAsync()
+        #region GET ALL
+        protected override StringBuilder BuildQueryReadAll()
         {
-            var response = new RepositoryResponse<List<Member>>();
+            StringBuilder query = new();
 
-            try
-            {
-
-                var query = "SELECT  a.*, " +
-                    "b.Id AS RoleRoleId, " +
-                    "b.* " +
-                    "FROM Member a " +
-                    "LEFT JOIN Role b on a.RoleId = b.Id " +
-                    "WHERE a.IsActive = 1;" +
-                    "" +
-                    "SELECT COUNT(*) FROM Member WHERE IsActive = 1;";
-
-                var entityDictionary = new Dictionary<int, Member>();
-
-                using var connection = _context.CreateConnection();
-
-                using var multipleQuery = await connection.QueryMultipleAsync(query);
-
-                IEnumerable<Member> members = multipleQuery.Read<Member, Role, Member>(
-                    (entity, role ) =>
-                {
-                    if (!entityDictionary.TryGetValue(entity.Id, out var existingEntity))
-                    {
-                        existingEntity = entity;
-                        existingEntity.Recipes = new List<Recipe>();
-                        entityDictionary.Add(existingEntity.Id, existingEntity);
-                    }
-                    if (role != null)
-                    {
-
-                        existingEntity.Role = role;
-                    }
-
-                    return existingEntity;
-                },
-                splitOn: "RoleRoleId");
-
-                response.TotalCount = multipleQuery.ReadSingle<int>();
-
-                response.Success = true;
-                response.Items = entityDictionary.Values.ToList();
-
-                return response;
-
-            }
-            catch (Exception ex)
-            {
-                response.Success = false;
-                response.Message = _errorMessages.ErrorAccessingDb("Member");
-                return response;
-            }
-            finally
-            {
-                _context.CreateConnection().Close();
-            }
-
+            return query.Append("SELECT a.*, b.Id AS RoleRoleId, b.* FROM Member a LEFT JOIN" +
+                " Role b on a.RoleId = b.Id " +
+                " WHERE a.IsActive = 1;" +
+                " " +
+                "SELECT COUNT (*) FROM Member WHERE IsActive = 1;");
         }
+
+
+        protected override async Task<List<Member>> BuildQueryCommand(string query, IDbConnection connection)
+        {
+            var entityDictionary = new Dictionary<int, Member>();
+
+            using var multipleQuery = await connection.QueryMultipleAsync(query);
+
+            IEnumerable<Member> member = multipleQuery.Read<Member, Role, Member>((member, role) =>
+            {
+                if (!entityDictionary.TryGetValue(member.Id, out var existingEntity))
+                {
+                    existingEntity = member;
+                    existingEntity.Recipes = new List<Recipe>();
+                    entityDictionary.Add(existingEntity.Id, existingEntity);
+
+                }
+
+                if (role != null)
+                {
+                    existingEntity.Role = role;
+                }
+
+                return existingEntity;
+            }, splitOn: "RoleRoleId");
+
+            return member.ToList();
+        }
+
+        #endregion
+
+        
 
         public async Task<RepositoryResponse<Member>> GetByGuidAsync(Guid uniqueId)
         {
