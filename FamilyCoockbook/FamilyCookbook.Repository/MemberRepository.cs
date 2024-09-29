@@ -262,7 +262,45 @@ namespace FamilyCookbook.Repository
 
         #endregion
 
-        
+        #region GET BY ID
+
+        protected override StringBuilder BuildQueryReadSingle(int id)
+        {
+            StringBuilder query = new StringBuilder();
+
+
+            return query.Append("SELECT a.Id as MemberId, a.*, b.Id AS RoleId, b.* FROM Member a" +
+                " LEFT JOIN Role b on a.RoleId = b.Id " +
+                " WHERE a.Id = @id;");
+        }
+
+        protected override async Task<Member> BuildQueryCommand(string query, IDbConnection connection, int id)
+        {
+            var entityDictionary = new Dictionary<int, Member>();
+
+            var entities = await connection.QueryAsync<Member, Role, Member>(query, (member, role) =>
+            {
+                if(!entityDictionary.TryGetValue(member.Id, out var existingEntity))
+                {
+                    existingEntity = member;
+                    existingEntity.Recipes = new List<Recipe>();
+                    entityDictionary.Add(existingEntity.Id, existingEntity);
+                }
+
+                if (role != null) 
+                {
+                    existingEntity.Role = role;
+                }
+
+                return existingEntity;
+            }, new { Id = id},
+            splitOn: "RoleId");
+
+            return entityDictionary.Values.FirstOrDefault();
+        }
+
+        #endregion
+
 
         public async Task<RepositoryResponse<Member>> GetByGuidAsync(Guid uniqueId)
         {
@@ -331,72 +369,7 @@ namespace FamilyCookbook.Repository
             }
         }
 
-        public async Task<RepositoryResponse<Member>> GetByIdAsync(int id)
-        {
-            var response = new RepositoryResponse<Member>();
-
-            try
-            {
-
-                var query = "SELECT a.Id as MemberId," +
-                    "a.*, " +
-                    "b.Id AS RoleId, " +
-                    "b.* " +
-                    "FROM Member a " +
-                    "LEFT JOIN Role b on a.RoleId = b.Id " +
-                    "WHERE a.Id = @Id;";
-
-                var entityDictionary = new Dictionary<int, Member>();
-
-                using var connection = _context.CreateConnection();
-
-                var entities = await connection.QueryAsync<Member, Role, Member>
-                    (query,
-                    (entity, role) =>
-                    {
-                        if (!entityDictionary.TryGetValue(entity.Id, out var existingEntity))
-                        {
-                            existingEntity = entity;
-                            existingEntity.Recipes = new List<Recipe>();
-                            entityDictionary.Add(existingEntity.Id, existingEntity);
-                        }
-                        if (role != null)
-                        {
-
-                            existingEntity.Role = role;
-                        }
- 
-                        return existingEntity;
-                    },
-                    new { Id = id },
-                splitOn: "RoleId");
-
-                var result = entityDictionary.Values.FirstOrDefault();
-
-                if (result is null)
-                {
-                    response.Success = false;
-                    response.Message = _errorMessages.NotFound(id);
-                    return response;
-                }
-
-                response.Success = true;
-                response.Items = result;
-
-                return response;
-
-            }
-            catch (Exception ex)
-            {
-                response.Success = false;
-                response.Message = _errorMessages.ErrorAccessingDb("Member");
-                return response;
-            }
-            finally
-            {
-                _context.CreateConnection().Close();
-            }
-        }
+        
 
         public async Task<RepositoryResponse<Lazy<List<Member>>>> PaginateAsync(Paging paging, MemberFilter filter)
         {
