@@ -30,136 +30,16 @@ namespace FamilyCookbook.Repository
             _successResponses = successResponses;
         }
 
-        public async Task<RepositoryResponse<Member>> CreateAsync(Member entity)
+        #region Create 
+        protected override StringBuilder BuildCreateQuery(string tableName, string columns, string properties)
         {
-            var response = new RepositoryResponse<Member>();
-
-            int rowsAffeted = 0;
-
-            try
-            {
-                var query = "INSERT INTO Member " +
-                    "(UniqueId, " +
-                    "FirstName, " +
-                    "LastName, " +
-                    "DateOfBirth, " +
-                    "Bio, " +
-                    "IsActive, " +
-                    "DateCreated, " +
-                    "DateUpdated, " +
-                    "Username, " +
-                    "Password, " +
-                    "RoleId) " +
-                    "VALUES " +
-                    "(@UniqueId, " +
-                    "@FirstName, " +
-                    "@LastName, " +
-                    "@DateOfBirth, " +
-                    "@Bio, " +
-                    "@IsActive, " +
-                    "@DateCreated, " +
-                    "@DateUpdated," +
-                    "@Username," +
-                    "@Password," +
-                    "@RoleId)";
-
-                using var connection = _context.CreateConnection();
-
-                rowsAffeted = await connection.ExecuteAsync(query, entity);
-
-                response.Success = rowsAffeted > 0;
-                response.Message = _successResponses.EntityCreated();
-
-                return response;
-
-            }
-            catch (Exception ex)
-            {
-                response.Success = false;
-                response.Message = _errorMessages.ErrorCreatingEntity(" Member ");
-                return response;
-            }
-            finally
-            {
-                _context.CreateConnection().Close();
-            }
-
+            StringBuilder query = new StringBuilder();
+            return query.Append("INSERT INTO Member (UniqueId, FirstName, LastName, DateOfBirth, " +
+                "Bio, IsActive, DateCreated, DateUpdated, Username, Password, RoleId) VALUES (@UniqueId," +
+                " @FirstName, @LastName, @DateOfBirth, @Bio, @IsActive, @DateCreated, @DateUpdated, @Username," +
+                " @Password, @RoleId);");
         }
 
-        #region DELETE METHODS
-        public async Task<RepositoryResponse<Member>> SoftDeleteAsync(int id)
-        {
-            var response = new RepositoryResponse<Member>();
-
-            int rowAffected = 0;
-
-            try
-            {
-                var query = "UPDATE Member " +
-                    "SET IsActive = 0 " +
-                    "WHERE Id = @Id";
-
-                using var connection = _context.CreateConnection();
-
-                rowAffected = await connection.ExecuteAsync(query, new { Id = id });
-
-                if(rowAffected == 0)
-                {
-                    response.Success = false;
-                    response.Message = _errorMessages.NotFound(id);
-                    return response;
-                }
-
-                response.Success = rowAffected > 0;
-                response.Message = _successResponses.EntityUpdated();
-
-                return response;
-
-            }
-            catch (Exception ex)
-            {
-                response.Success = false;
-                response.Message = _errorMessages.NotFound(id);
-
-                return response;
-            }
-            finally
-            {
-                _context.CreateConnection().Close();
-            }
-        }
-
-
-        public async Task<RepositoryResponse<Member>> DeleteAsync(int id)
-        {
-            var response = new RepositoryResponse<Member>();
-
-            int rowAffected = 0;
-
-            try
-            {
-                string query = "DELETE FROM Member WHERE Id = @Id;";
-
-                using var connection = _context.CreateConnection();
-
-                rowAffected = await connection.ExecuteAsync(query, new { Id = id });
-
-                response.Success = rowAffected > 0;
-                response.Message = _successResponses.EntityDeleted("Member");
-                return response;
-
-            }
-            catch (Exception ex)
-            {
-                response.Success = false;
-                response.Message = _errorMessages.NotFound(id);
-                return response;
-            }
-            finally
-            {
-                _context.CreateConnection().Close();
-            }
-        }
         #endregion
 
         #region GET METHODS
@@ -494,58 +374,15 @@ namespace FamilyCookbook.Repository
 
         #endregion
 
-
-        public async Task<RepositoryResponse<Member>> UpdateAsync(int id, Member entity)
+        #region UPDATE
+        protected override StringBuilder BuildUpdateQuery(string tableName, string keyColumn, string keyProperty, int id)
         {
-            var response = new RepositoryResponse<Member>();
-
-            int rowAffected = 0;
-
-            try
-            {
-                var query = "UPDATE Member " +
-                    "SET FirstName = @FirstName, " +
-                    "LastName = @LastName, " +
-                    "DateOfBirth = @DateOfBirth, " +
-                    "Bio = @Bio, " +
-                    "DateUpdated = @DateUpdated, " +
-                    "Username = @Username, " +
-                    "Password = @Password, " +
-                    "RoleId = @RoleId " +
-                    "WHERE Id = @Id;";
-
-                using var connection  = _context.CreateConnection();
-
-                rowAffected = await connection.ExecuteAsync(query, new
-                {
-                    entity.FirstName,
-                    entity.LastName,
-                    entity.DateOfBirth,
-                    entity.Bio,
-                    entity.DateUpdated,
-                    entity.Username,
-                    entity.Password,
-                    entity.RoleId,
-                    Id = id
-                });
-
-                response.Success = rowAffected > 0;
-                response.Message = _successResponses.EntityUpdated();
-
-                return response;
-
-            }
-            catch (Exception ex)
-            {
-                response.Success = false;
-                response.Message = _errorMessages.ErrorAccessingDb("Member");    
-                return response;
-            }
-            finally
-            {
-                _context.CreateConnection().Close();
-            }
-
+            StringBuilder query = new();
+            return query.Append("UPDATE Member SET FirstName = @FirstName, LastName = @LastName, " +
+                "DateOfBirth = @DateOfBirth, Bio = @Bio, DateUpdated = @DateUpdated, " +
+                "Username = @Username, Password = @Password, RoleId = @RoleId WHERE Id = @id");
         }
+
+        #endregion
     }
 }
