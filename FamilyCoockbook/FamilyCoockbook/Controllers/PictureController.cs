@@ -16,13 +16,16 @@ namespace FamilyCookbook.Controllers
         private readonly IWebHostEnvironment _environment;
         private readonly IPictureService _service;
         private readonly IRecipeService _recipeService;
+        private readonly IMapper<Picture, PictureRead, PictureCreate> _mapper;
         public PictureController(IWebHostEnvironment environment,
             IPictureService service, 
-            IRecipeService recipeService)
+            IRecipeService recipeService,
+            IMapper<Picture, PictureRead, PictureCreate> mapper)
         {
             _service = service;
             _environment = environment; 
             _recipeService = recipeService;
+            _mapper = mapper;
         }
 
 
@@ -37,7 +40,10 @@ namespace FamilyCookbook.Controllers
             {
                 return NotFound(response.Message.ToString());
             }
-            return Ok(response);
+
+            var entity = _mapper.MapToReadList(response.Items);
+
+            return Ok(entity);
         }
 
         [HttpGet]

@@ -4,6 +4,7 @@ using FamilyCookbook.Mapping;
 using FamilyCookbook.Model;
 using FamilyCookbook.REST_Models.Category;
 using FamilyCookbook.REST_Models.Member;
+using FamilyCookbook.REST_Models.Picture;
 using static FamilyCookbook.REST_Models.Comment.CommentModels;
 
 namespace FamilyCookbook
@@ -20,6 +21,9 @@ namespace FamilyCookbook
 
             builder.RegisterType<CategoryMapperWrapper>()
                 .As<IMapper<Category,CategoryRead, CategoryCreate>>().InstancePerDependency(); 
+
+            builder.RegisterType<PictureMapperWrapper>()
+                .As<IMapper<Picture, PictureRead, PictureCreate>>().InstancePerDependency();
         }
     }
 }
