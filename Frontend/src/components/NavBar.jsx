@@ -56,22 +56,26 @@ function NavBar() {
             )}
 
             <NavDropdown title="Categories" id="basic-nav-dropdown">
-              {categories.map((category) => (
-                <NavDropdown.Item
-                  key={category.id}
-                  value={category.name}
-                  onClick={() =>
-                    navigate(
-                      RouteNames.ARTICLES_BY_CATEGORY.replace(
-                        ":id",
-                        category.id
+              {categories && categories.lenght > 0 ? (
+                categories.map((category) => (
+                  <NavDropdown.Item
+                    key={category.id}
+                    value={category.name}
+                    onClick={() =>
+                      navigate(
+                        RouteNames.ARTICLES_BY_CATEGORY.replace(
+                          ":id",
+                          category.id
+                        )
                       )
-                    )
-                  }
-                >
-                  {category.name}
-                </NavDropdown.Item>
-              ))}
+                    }
+                  >
+                    {category.name}
+                  </NavDropdown.Item>
+                ))
+              ) : (
+                <NavDropdown.Item>No categories to load</NavDropdown.Item>
+              )}
             </NavDropdown>
 
             {isLoggedIn ? (

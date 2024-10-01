@@ -316,4 +316,6 @@ select * from Recipe;
 
 select * from Picture;
 
+select * from Member;
+
 Update Category SET IsActive = 1 WHERE Id = 1;

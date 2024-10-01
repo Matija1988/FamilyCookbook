@@ -11,6 +11,7 @@ function ArticleCard({ recipe }) {
   const navigate = useNavigate();
 
   return (
+    
     <Card key={recipe.id} className="article-card">
       <Card.Img variant="top" src={URL + recipe.pictureLocation} />
       <Card.Body>

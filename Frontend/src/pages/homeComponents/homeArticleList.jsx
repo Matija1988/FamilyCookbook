@@ -66,19 +66,27 @@ export default function HomeArticleList() {
     <>
       <Container>
         <Row>
-          {recipes.map((recipe, index) => (
-            <Col
-              key={index}
-              className="mb-2"
-              xs={12}
-              sm={5}
-              md={4}
-              lg={3}
-              xl={2}
-            >
-              <ArticleCard key={recipe.id} recipe={recipe}></ArticleCard>
+          {recipes && recipes.lenght > 0 ? (
+            recipes.map((recipe, index) => (
+              <Col
+                key={index}
+                className="mb-2"
+                xs={12}
+                sm={5}
+                md={4}
+                lg={3}
+                xl={2}
+              >
+                <ArticleCard key={recipe.id} recipe={recipe}></ArticleCard>
+              </Col>
+            ))
+          ) : (
+            <Col>
+              <h2 className="warning-header">
+                No recipes found. Please try again later!
+              </h2>
             </Col>
-          ))}
+          )}
         </Row>
         <CustomPagination
           pageNumber={pageNumber}

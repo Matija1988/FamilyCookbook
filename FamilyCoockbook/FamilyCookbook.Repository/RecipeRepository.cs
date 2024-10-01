@@ -241,7 +241,7 @@ namespace FamilyCookbook.Repository
             
         }
 
-       public async Task<RepositoryResponse<List<Recipe>>> GetRecipesWithoutAuthors()
+        public async Task<RepositoryResponse<List<Recipe>>> GetRecipesWithoutAuthors()
         {
             var response = new RepositoryResponse<List<Recipe>>();
 

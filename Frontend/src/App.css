@@ -163,3 +163,8 @@
 .cat-cont {
   margin-top: 5%;
 }
+
+.warning-header {
+  margin-top: 10%;
+  color: red;
+}
