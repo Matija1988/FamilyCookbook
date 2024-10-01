@@ -66,7 +66,7 @@ export default function HomeArticleList() {
     <>
       <Container>
         <Row>
-          {recipes && recipes.lenght > 0 ? (
+          {recipes ? (
             recipes.map((recipe, index) => (
               <Col
                 key={index}
