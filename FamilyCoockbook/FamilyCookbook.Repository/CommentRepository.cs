@@ -11,14 +11,22 @@ using System.Threading.Tasks;
 
 namespace FamilyCookbook.Repository
 {
-    public sealed class CommentRepository(DapperDBContext context, 
-        IErrorMessages errorMessages, 
-        ISuccessResponses successResponses) 
-        : AbstractRepository<Comment>(context, errorMessages, successResponses), ICommentRepository
+    public sealed class CommentRepository : AbstractRepository<Comment>, ICommentRepository
     {
         private readonly DapperDBContext _context;
         private readonly IErrorMessages _errorMessages;
         private readonly ISuccessResponses _successResponses;
+
+        public CommentRepository(DapperDBContext context, 
+            IErrorMessages errorMessages, 
+            ISuccessResponses successResponses) : base(context, errorMessages, successResponses)
+        {
+            _context = context;
+            _errorMessages = errorMessages;
+            _successResponses = successResponses;
+        }
+
+
 
 
         #region OVEERIDE UPDATE
@@ -132,7 +140,56 @@ namespace FamilyCookbook.Repository
         }
         #endregion
 
+        #region UniqueMethods
 
+        public async Task<RepositoryResponse<List<Comment>>> GetRecipeCommentsAsync(int id)
+        {
+            var response = new RepositoryResponse<List<Comment>>();
+
+            try
+            {
+                StringBuilder query = new("SELECT a.*, b.Id, b.FirstName, b.LastName" +
+                    " FROM Comment a " +
+                    " JOIN Member b on b.Id = a.MemberId " +
+                    $" WHERE RecipeId = {id}");
+
+                var entityDictionary = new Dictionary<int, Comment>();
+
+                using var connection = _context.CreateConnection();
+
+                IEnumerable<Comment> comments = await connection
+                    .QueryAsync<Comment, Member, Comment>(query.ToString(), (comment, member) =>
+                    {
+                        if(!entityDictionary.TryGetValue(comment.Id, out var exitingEntity))
+                        {
+                            exitingEntity = comment;
+                            exitingEntity.Member = member;
+                            entityDictionary.Add(comment.Id, exitingEntity);
+                        }
+
+                        return exitingEntity;
+                    }, new {id}, splitOn: "Id");
+                   
+                response.Success = true;
+                response.Items = comments.ToList();
+
+                return response;
+            }
+            catch (Exception ex) 
+            {
+                response.Success = false;
+                response.Message = _errorMessages.ErrorAccessingDb("Comment", ex);
+                return response;
+            }
+            finally
+            {
+                _context.CreateConnection().Close();
+            }
+
+        }
+
+
+        #endregion
     }
 }
 

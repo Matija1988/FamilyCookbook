@@ -18,6 +18,7 @@ namespace FamilyCookbook.Controllers
             ICommentService service, IMapper<Comment, CommentRead, CommentCreate> mapper) 
             : base (service, mapper)
         {
+            _mapper = mapper;
             _commentService = service;   
         }
 
@@ -31,9 +32,7 @@ namespace FamilyCookbook.Controllers
                 return BadRequest(ModelState);
             }
 
-            var mapper = new CommentMapper();
-
-            var comment = mapper.CommentCreate(newComment);
+            var comment = _mapper.MapToEntity(newComment);
 
             var response = await _commentService.CreateAsync(comment);
 
@@ -43,6 +42,24 @@ namespace FamilyCookbook.Controllers
             }
 
             return Ok(response.Message.ToString());
+
+        }
+
+        [HttpGet]
+        [Route("recipeComments/{recipeId:int}")]
+
+        public async Task<IActionResult> GetRecipeComments(int recipeId)
+        {
+            var response = await _commentService.GetRecipeCommentsAsync(recipeId);
+
+            if (response.Success == false) 
+            {
+                return BadRequest(response.Message.ToString());
+            }
+
+            var comments = _mapper.MapToReadList(response.Items);
+
+            return Ok(comments);
 
         }
 

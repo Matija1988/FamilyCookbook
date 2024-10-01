@@ -39,5 +39,13 @@ namespace FamilyCookbook.Service
 
         }
 
+        public async Task<RepositoryResponse<List<Comment>>> GetRecipeCommentsAsync(int recipeId)
+        {
+            var response = await _commentRepository.GetRecipeCommentsAsync(recipeId);
+
+            return response;
+        }
+
+
     }
 }

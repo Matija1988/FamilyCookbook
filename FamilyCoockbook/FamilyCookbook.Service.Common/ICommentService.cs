@@ -11,5 +11,6 @@ namespace FamilyCookbook.Service.Common
     {
         Task<RepositoryResponse<Comment>> CreateAsync(Comment comment);
 
+        Task<RepositoryResponse<List<Comment>>> GetRecipeCommentsAsync(int recipeId);
     }
 }
