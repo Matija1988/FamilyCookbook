@@ -95,6 +95,11 @@ namespace FamilyCookbook.Service
 
             response.PageCount = (int)Math.Ceiling(response.TotalCount / (double)paging.PageSize);
 
+            foreach(var item in response.Items)
+            {
+                item.AverageRating = await CalculateAverageRating(item.Id);
+            }
+
             return response;
         }
 
@@ -142,6 +147,23 @@ namespace FamilyCookbook.Service
             response.Items.AverageRating = await CalculateAverageRating(id);
 
             return response; 
+        }
+
+
+        protected override async Task<RepositoryResponse<List<Recipe>>> ReturnEntities()
+        {
+            var recipeResponse = await _repository.GetAllAsync();
+
+            double averageRatting = 0.0;
+
+            foreach (var recipe in recipeResponse.Items) 
+            {
+                averageRatting = await CalculateAverageRating(recipe.Id);
+
+                recipe.AverageRating = averageRatting;
+            }
+
+            return recipeResponse;
         }
 
         private async Task<double> CalculateAverageRating(int recipeId)

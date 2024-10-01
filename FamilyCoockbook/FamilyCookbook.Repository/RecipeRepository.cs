@@ -1,4 +1,5 @@
-﻿using Azure.Core;
+﻿using Azure;
+using Azure.Core;
 using Dapper;
 using FamilyCookbook.Common;
 using FamilyCookbook.Model;
@@ -7,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Text;
@@ -130,176 +132,113 @@ namespace FamilyCookbook.Repository
 
 
         #region GET METHODS
-        public async Task<RepositoryResponse<List<Recipe>>> GetAllAsync()
-        {
-            var response = new RepositoryResponse<List<Recipe>>();
 
-            try
-            {
-                string query = "SELECT " +
-                    "a.Id, " +
-                    "a.Title, " +
-                    "a.Subtitle, " +
-                    "a.Text," +
-                    "a.CategoryId, " +
-                    "c.Id, " +
-                    "c.FirstName, " +
-                    "c.LastName, " +
-                    "c.Bio, " +
-                    "d.Id, " +
-                    "d.Name, " +
-                    "e.* " +
+        protected override StringBuilder BuildQueryReadAll()
+        {
+            StringBuilder query = new();
+
+            return query.Append("SELECT a.Id, a.Title, a.Subtitle, a.Text, a.CategoryId, " +
+                    "c.Id, c.FirstName, c.LastName, c.Bio, " +
+                    "d.Id, d.Name, e.* " +
                     "FROM Recipe a " +
                     "JOIN MemberRecipe b on a.Id = b.RecipeId " +
                     "JOIN Member c on b.MemberId = c.Id " +
                     "LEFT JOIN Category d on d.Id = a.CategoryId " +
                     "JOIN Picture e on e.Id = a.PictureId " +
                     "WHERE a.IsActive = 1 " +
-                    "order by a.DateCreated;";
+                    "order by a.DateCreated;");
+        }
 
-                var entityDictionary = new Dictionary<int, Recipe>();
+        protected override async Task<List<Recipe>> BuildQueryCommand(string query, IDbConnection connection)
+        {
+            var entityDictionary = new Dictionary<int, Recipe>();
 
-                using var connection = _context.CreateConnection();
-
-                IEnumerable<Recipe> entities = await connection.QueryAsync<Recipe, Member, Category, Picture, Recipe>
-                    (query,
-                    (recipe, member, category, picture) =>
+            IEnumerable<Recipe> entities = await connection.QueryAsync<Recipe, Member, Category, Picture, Recipe>
+                (query,
+                (recipe, member, category, picture) =>
+                {
+                    if (!entityDictionary.TryGetValue(recipe.Id, out var existingEntity))
                     {
-                        if (!entityDictionary.TryGetValue(recipe.Id, out var existingEntity))
-                        {
-                            existingEntity = recipe;
-                            existingEntity.Members = new List<Member>();
-                            entityDictionary.Add(existingEntity.Id, existingEntity);
-                        }
+                        existingEntity = recipe;
+                        existingEntity.Members = new List<Member>();
+                        entityDictionary.Add(existingEntity.Id, existingEntity);
+                    }
 
-                        if (member != null)
-                        {
-                            existingEntity.Members.Add(member);
-                        }
+                    if (member != null)
+                    {
+                        existingEntity.Members.Add(member);
+                    }
 
-                        if (category != null)
-                        {
-                            existingEntity.Category = category;
-                        }
-                        if (picture != null)
-                        {
-                            existingEntity.Picture = picture;
-                        }
+                    if (category != null)
+                    {
+                        existingEntity.Category = category;
+                    }
+                    if (picture != null)
+                    {
+                        existingEntity.Picture = picture;
+                    }
 
-                        return existingEntity;
-                    },
-                    splitOn: "Id");
+                    return existingEntity;
+                },
+                splitOn: "Id");
 
-                response.Success = true;
-                response.Items = entityDictionary.Values.ToList();
-
-                return response;
-
-            }
-            catch (Exception ex)
-            {
-                response.Success = false;
-                response.Message = _errorMessages.ErrorAccessingDb("Recipe");
-                return response;
-            }
-            finally
-            {
-                _context.CreateConnection().Close();
-            }
+            return entities.ToList();
 
         }
 
-
-        public async Task<RepositoryResponse<Recipe>> GetByIdAsync(int id)
+        protected override StringBuilder BuildQueryReadSingle(int id)
         {
-            var response = new RepositoryResponse<Recipe>();
+            StringBuilder query = new();
 
-            try
-            {
-                string query = "SELECT " +
-                    "a.Id, " +
-                    "a.Title, " +
-                    "a.Subtitle, " +
-                    "a.Text, " +
-                    "a.CategoryId, " +
-                    "c.Id, " +
-                    "c.FirstName, " +
-                    "c.LastName, " +
-                    "c.Bio, " +
-                    "d.Id," +
-                    "d.Name, " +
-                    "d.Description, " +
+            return query.Append("SELECT a.Id, a.Title, a.Subtitle, a.Text, a.CategoryId, " +
+                    "c.Id, c.FirstName, c.LastName, c.Bio, " +
+                    "d.Id, d.Name, d.Description, " +
                     "e.* " +
                     "FROM Recipe a " +
                     "JOIN MemberRecipe b on a.Id = b.RecipeId " +
                     "JOIN Member c on b.MemberId = c.Id " +
                     "LEFT JOIN Category d on d.Id = a.CategoryId " +
                     "JOIN Picture e on e.Id = a.PictureId " +
-                    "WHERE a.Id = @Id ";
-                    
+                    "WHERE a.Id = @Id ");
+        }
 
-                var entityDictionary = new Dictionary<int, Recipe>();
+        protected override async Task<Recipe> BuildQueryCommand(string query, IDbConnection connection, int id)
+        {
+            var entityDictionary = new Dictionary<int, Recipe>();
 
-                using var connection = _context.CreateConnection();
-
-                var entities = await connection.QueryAsync<Recipe, Member, Category, Picture, Recipe>
-                    (query,
-                    (recipe, member, category, picture) =>
-                    {
-                        if (!entityDictionary.TryGetValue(recipe.Id, out var existingEntity))
-                        {
-                            existingEntity = recipe;
-                            existingEntity.Members = new List<Member>();
-                            entityDictionary.Add(existingEntity.Id, existingEntity);
-                        }
-
-                        if (member != null)
-                        {
-                            existingEntity.Members.Add(member);
-                        }
-
-                        if (category != null)
-                        {
-                            existingEntity.Category = category;
-                        }
-
-                        if(picture != null)
-                        {
-                            existingEntity.Picture = picture;
-                        }
-
-                        return existingEntity;
-                    },
-                    new {Id = id },
-                    splitOn: "Id");
-
-                var result = entityDictionary.Values.FirstOrDefault();
-
-                if(result is null)
+            var entities = await connection.QueryAsync<Recipe, Member, Category, Picture, Recipe>
+                (query,
+                (recipe, member, category, picture) =>
                 {
-                    response.Success = false;
-                    response.Message = _errorMessages.NotFound(id);
+                    if (!entityDictionary.TryGetValue(recipe.Id, out var existingEntity))
+                    {
+                        existingEntity = recipe;
+                        existingEntity.Members = new List<Member>();
+                        entityDictionary.Add(existingEntity.Id, existingEntity);
+                    }
 
-                    return response;
-                }
+                    if (member != null)
+                    {
+                        existingEntity.Members.Add(member);
+                    }
 
-                response.Success = true;
-                response.Items = result;
+                    if (category != null)
+                    {
+                        existingEntity.Category = category;
+                    }
 
-                return response;
+                    if (picture != null)
+                    {
+                        existingEntity.Picture = picture;
+                    }
 
-            }
-            catch (Exception ex)
-            {
-                response.Success = false;
-                response.Message = _errorMessages.ErrorAccessingDb("Recipe");
-                return response;
-            }
-            finally
-            {
-                _context.CreateConnection().Close();
-            }
+                    return existingEntity;
+                },
+                new { Id = id },
+                splitOn: "Id");
 
+            return entityDictionary.Values.FirstOrDefault();
+            
         }
 
        public async Task<RepositoryResponse<List<Recipe>>> GetRecipesWithoutAuthors()
