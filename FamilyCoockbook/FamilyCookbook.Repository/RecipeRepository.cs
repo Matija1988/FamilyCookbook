@@ -10,18 +10,22 @@ using System.Collections.Immutable;
 using System.Data.Common;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static Dapper.SqlMapper;
 
 namespace FamilyCookbook.Repository
 {
-    public sealed partial class RecipeRepository : IRecipeRepository
+    public sealed partial class RecipeRepository : AbstractRepository<Recipe>, IRecipeRepository
     {
         private readonly DapperDBContext _context;
         private readonly IErrorMessages _errorMessages;
         private readonly ISuccessResponses _successResponses;
 
-        public RecipeRepository(DapperDBContext context, IErrorMessages errorMessages, ISuccessResponses successResponses)
+        public RecipeRepository
+            (DapperDBContext context, 
+            IErrorMessages errorMessages, 
+            ISuccessResponses successResponses) : base(context, errorMessages, successResponses)
         {
             _context = context;
             _errorMessages = errorMessages;
@@ -123,40 +127,7 @@ namespace FamilyCookbook.Repository
             }
         }
 
-        public async Task<RepositoryResponse<Recipe>> SoftDeleteAsync(int id)
-        {
-            var response = new RepositoryResponse<Recipe>();
 
-            int rowsAffected = 0;
-
-            try
-            {
-                string query = "UPDATE Recipe " +
-                    "SET IsActive = 0 " +
-                    "Where Id = @Id";
-
-                using var connection = _context.CreateConnection();
-
-                rowsAffected = await connection.ExecuteAsync(query, new { Id = id });
-
-                response.Success = rowsAffected > 0;
-                response.Message = _successResponses.EntityUpdated();
-
-                return response; 
-            }
-            catch (Exception ex) 
-            { 
-                response.Success= false;
-                response.Message = _errorMessages.NotFound(id);
-
-                return response;
-            }
-            finally
-            {
-                _context.CreateConnection().Close();
-            }
-
-        }
 
         #region GET METHODS
         public async Task<RepositoryResponse<List<Recipe>>> GetAllAsync()
@@ -188,7 +159,7 @@ namespace FamilyCookbook.Repository
 
                 var entityDictionary = new Dictionary<int, Recipe>();
 
-                using var connection =  _context.CreateConnection();
+                using var connection = _context.CreateConnection();
 
                 IEnumerable<Recipe> entities = await connection.QueryAsync<Recipe, Member, Category, Picture, Recipe>
                     (query,
@@ -200,8 +171,8 @@ namespace FamilyCookbook.Repository
                             existingEntity.Members = new List<Member>();
                             entityDictionary.Add(existingEntity.Id, existingEntity);
                         }
-                      
-                        if(member != null)
+
+                        if (member != null)
                         {
                             existingEntity.Members.Add(member);
                         }
@@ -210,11 +181,11 @@ namespace FamilyCookbook.Repository
                         {
                             existingEntity.Category = category;
                         }
-                        if(picture != null)
+                        if (picture != null)
                         {
-                            existingEntity.Picture = picture; 
+                            existingEntity.Picture = picture;
                         }
-                    
+
                         return existingEntity;
                     },
                     splitOn: "Id");
@@ -231,14 +202,15 @@ namespace FamilyCookbook.Repository
                 response.Message = _errorMessages.ErrorAccessingDb("Recipe");
                 return response;
             }
-            finally 
-            { 
-                _context.CreateConnection().Close();    
+            finally
+            {
+                _context.CreateConnection().Close();
             }
 
         }
 
-        public  async Task<RepositoryResponse<Recipe>> GetByIdAsync(int id)
+
+        public async Task<RepositoryResponse<Recipe>> GetByIdAsync(int id)
         {
             var response = new RepositoryResponse<Recipe>();
 
@@ -520,10 +492,6 @@ namespace FamilyCookbook.Repository
         }
         #endregion
 
-        public Task<RepositoryResponse<Recipe>> DeleteAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
+        
     }
 }

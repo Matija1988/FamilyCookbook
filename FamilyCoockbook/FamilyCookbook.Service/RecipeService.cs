@@ -16,10 +16,13 @@ namespace FamilyCookbook.Service
     public sealed class RecipeService : AbstractService<Recipe>, IRecipeService
     {
         private readonly IRecipeRepository _repository;
+        private readonly ICommentRepository _commentRepository;
 
-        public RecipeService(IRecipeRepository repository) : base(repository)
+        public RecipeService(IRecipeRepository repository, 
+            ICommentRepository commentRepository) : base(repository)
         {
             _repository = repository;
+            _commentRepository = commentRepository;
         }
 
         public async Task<RepositoryResponse<Recipe>> AddMemberToRecipe(MemberRecipe entity)
@@ -82,6 +85,7 @@ namespace FamilyCookbook.Service
         {
             var resposne = await _repository.GetRecipesWithoutAuthors();
 
+
             return resposne;
         }
 
@@ -130,5 +134,35 @@ namespace FamilyCookbook.Service
 
             return response;
         }
+
+        protected override async Task<RepositoryResponse<Recipe>> ReturnEntity(int id)
+        {
+            var response = await _repository.GetByIdAsync(id);
+
+            response.Items.AverageRating = await CalculateAverageRating(id);
+
+            return response; 
+        }
+
+        private async Task<double> CalculateAverageRating(int recipeId)
+        {
+            var commentResponse = await _commentRepository.GetAllAsync();
+
+            double averageRating = 0.0;
+
+            var recipeComments = commentResponse.Items
+                .Where(c => c.RecipeId == recipeId && c.IsActive).ToList();
+
+            if(recipeComments.Count != 0)
+            {
+                averageRating = recipeComments.Average(c => c.Rating) ?? 0;
+
+                return averageRating;
+                
+            }
+            return averageRating;
+
+        }
+
     }
 }

@@ -2,7 +2,7 @@
 
 namespace FamilyCookbook.REST_Models.Recipe
 {
-    public class RecipeRead
+    public sealed class RecipeRead
     {
         public int Id { get; set; }
 
@@ -25,6 +25,8 @@ namespace FamilyCookbook.REST_Models.Recipe
         public string PictureLocation { get; set; }
 
         public string PictureId { get; set; }
+
+        public decimal AverageRating { get; set; }
 
     }
 }

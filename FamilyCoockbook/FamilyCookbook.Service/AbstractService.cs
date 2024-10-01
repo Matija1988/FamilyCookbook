@@ -28,10 +28,19 @@ namespace FamilyCookbook.Service
             return await _repository.GetAllAsync();
         }
 
+        #region Get By Id
+
         public async Task<RepositoryResponse<T>> GetByIdAsync(int id)
+        {
+            return await ReturnEntity(id);
+        }
+
+        protected virtual async Task<RepositoryResponse<T>> ReturnEntity(int id)
         {
             return await _repository.GetByIdAsync(id);
         }
+
+        #endregion
 
         public async Task<RepositoryResponse<T>> SoftDeleteAsync(int id)
         {

@@ -9,6 +9,7 @@ namespace FamilyCookbook.Service.Common
 {
     public interface ICommentService : IService<Comment>
     {
-        Task<RepositoryResponse<Comment>> CreateAsync(Comment comment); 
+        Task<RepositoryResponse<Comment>> CreateAsync(Comment comment);
+
     }
 }
