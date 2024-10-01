@@ -124,6 +124,11 @@ export default function CreateRecipe() {
 
     const authorIds = recipe.memberIds.map((id) => id);
 
+    if (authorIds.length == 0) {
+      alert("Plsease select a member as the author");
+      return;
+    }
+
     postRecipe({
       title: e.target.Title.value,
       subtitle: e.target.Subtitle.value,
@@ -227,7 +232,7 @@ export default function CreateRecipe() {
           </Row>
           <Row>
             <Col>
-              <InputText atribute="Title" value=""></InputText>
+              <InputText atribute="Title" value="" required={true}></InputText>
             </Col>
             <Col>
               <h5 className="mt-3">Selected Members:</h5>
@@ -248,7 +253,11 @@ export default function CreateRecipe() {
           </Row>
           <Row>
             <Col>
-              <InputText atribute="Subtitle" value=""></InputText>
+              <InputText
+                atribute="Subtitle"
+                value=""
+                required={true}
+              ></InputText>
             </Col>
             <Col></Col>
           </Row>
