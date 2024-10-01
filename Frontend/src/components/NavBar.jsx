@@ -56,7 +56,7 @@ function NavBar() {
             )}
 
             <NavDropdown title="Categories" id="basic-nav-dropdown">
-              {categories && categories.lenght > 0 ? (
+              {categories ? (
                 categories.map((category) => (
                   <NavDropdown.Item
                     key={category.id}
