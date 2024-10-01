@@ -97,7 +97,6 @@ ALTER table Recipe add constraint Rating check (Rating >= 0.0 And Rating <= 5.0)
 ALTER table Comment add constraint Comment_Rating check (Rating >= 0 and Rating <= 5);
 
 
-
 ------------------------------ INSERTS ----------------------------------
 
 insert into Role (Name, IsActive) values ('Member', 1), ('Contributor', 1), ('Moderator', 1), ('Admin', 1);
@@ -128,7 +127,7 @@ values('d7b19efe-39aa-4d25-b802-21ac8fa0b0f4',
 '08-07-2024',
 '08-07-2024',
 'samsung',
-'galaxyA52',
+'$2a$12$LfIczJbu.Akfa0/Pkt1ANe42gSguBgvcoqVIFJ0UUJ5P6WphzQv1a',
 '4'),
 ('a86823ad-f120-4a8c-94ff-d3d37330653a',
 'Test',

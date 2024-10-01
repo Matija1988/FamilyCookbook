@@ -1,7 +1,13 @@
 import { Form } from "react-bootstrap";
 import PropTypes from "prop-types";
 
-export default function InputText({ atribute, value, required, className }) {
+export default function InputText({
+  atribute,
+  value,
+  required,
+  className,
+  type,
+}) {
   return (
     <Form.Group>
       <Form.Label className="labelAtribute">{atribute}</Form.Label>
@@ -10,6 +16,7 @@ export default function InputText({ atribute, value, required, className }) {
         defaultValue={value}
         required={required}
         className={className}
+        type={type}
       />
     </Form.Group>
   );

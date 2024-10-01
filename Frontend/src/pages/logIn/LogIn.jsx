@@ -32,6 +32,7 @@ export default function LogIn() {
           className="logIn-text"
           atribute="password"
           required={true}
+          type="password"
         ></InputText>
         <Row className="row">
           <CustomButton className="logIn-btn" label="Login"></CustomButton>

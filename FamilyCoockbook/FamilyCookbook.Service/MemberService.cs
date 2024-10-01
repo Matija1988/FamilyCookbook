@@ -82,9 +82,25 @@ namespace FamilyCookbook.Service
 
         public async Task<RepositoryResponse<Member>> UpdateAsync(int id, Member entity)
         {
+            var chkMember = await _repository.GetByIdAsync(id);
+
             entity.DateUpdated = DateTime.Now;
 
+            if (chkMember.Success == false) 
+            {
+                return chkMember;
+            }
+
             var response = await _repository.UpdateAsync(id, entity);
+
+            if (chkMember.Items.Password == entity.Password) 
+            { 
+                return response;
+            }
+
+            var passwordHash = BCrypt.Net.BCrypt.HashPassword(entity.Password, 12);
+            
+            response.Items.Password = passwordHash;
 
             return response;
 
