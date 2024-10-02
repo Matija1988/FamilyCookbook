@@ -8,8 +8,6 @@ export default function Sidebar() {
 
   const { userFirstName, userLastName, userRole } = useUser();
 
-  console.log("User role: ", userRole);
-
   return (
     <>
       <div className="sidebar">

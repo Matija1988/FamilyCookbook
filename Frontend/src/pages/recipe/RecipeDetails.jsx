@@ -12,6 +12,10 @@ import RecipeService from "../../services/RecipeService";
 
 import "./recipeDetails.css";
 import CommentList from "../../components/CommentList";
+import CommentCreate from "../../components/CommentCreate";
+import ErrorModal from "../../components/ErrorModal";
+import useError from "../../hooks/useError";
+import useLoading from "../../hooks/useLoading";
 
 export default function RecipeDetails() {
   const recipeState = {
@@ -27,23 +31,25 @@ export default function RecipeDetails() {
   const [recipe, setRecipe] = useState(recipeState);
   const [members, setMembers] = useState([]);
   const [category, setCategory] = useState("");
-
+  const { showError, showErrorModal, errors, hideError } = useError();
+  const { showLoading, hideLoading } = useLoading();
   const [openMemberId, setOpenMemberId] = useState(null);
-  const [error, setError] = useState([]);
+
   const routeParams = useParams();
   const navigate = useNavigate();
 
   async function fetchRecipe() {
-    try {
-      const response = await RecipeService.getById("recipe", routeParams.id);
-      if (response.ok) {
-        setRecipe(response.data);
-        setMembers(response.data.members);
-        setCategory(response.data.categoryName);
-      }
-    } catch (error) {
-      alert(error.message);
+    showLoading();
+    const response = await RecipeService.getById("recipe", routeParams.id);
+    if (!response.ok) {
+      hideLoading();
+      showError(response.data);
+      return;
     }
+    setRecipe(response.data);
+    setMembers(response.data.members);
+    setCategory(response.data.categoryName);
+    s;
   }
 
   useEffect(() => {
@@ -88,8 +94,14 @@ export default function RecipeDetails() {
             </ListGroup.Item>
           ))}
         </ListGroup>
+
         <CommentList recipeId={routeParams.id}></CommentList>
       </Container>
+      <ErrorModal
+        show={showErrorModal}
+        onHide={hideError}
+        errors={errors}
+      ></ErrorModal>
     </>
   );
 }

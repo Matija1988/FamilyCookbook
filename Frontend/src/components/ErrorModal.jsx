@@ -2,6 +2,9 @@ import { Button, Modal } from "react-bootstrap";
 import PropTypes from "prop-types";
 
 export default function ErrorModal({ show, onHide, errors }) {
+
+  
+
   return (
     <>
       <Modal show={show} onHide={onHide}>

@@ -3,6 +3,8 @@ import CommentService from "../services/CommentService";
 import useLoading from "../hooks/useLoading";
 import useError from "../hooks/useError";
 import { Button, Collapse, Container, ListGroup } from "react-bootstrap";
+import CommentCreate from "./CommentCreate";
+import { useParams } from "react-router-dom";
 
 export default function CommentList({ recipeId }) {
   const [comments, setComments] = useState([]);
@@ -10,6 +12,8 @@ export default function CommentList({ recipeId }) {
 
   const { showLoading, hideLoading } = useLoading();
   const { showError, showErrormodal, errors, hideError } = useError();
+
+  const routeParams = useParams();
 
   async function fetchComments() {
     showLoading();
@@ -59,6 +63,10 @@ export default function CommentList({ recipeId }) {
   return (
     <Container>
       <h4>COMMENTS</h4>
+      <CommentCreate
+        recipeId={routeParams.id}
+        fetchComments={fetchComments}
+      ></CommentCreate>
       <ListGroup>
         {comments ? (
           comments.map((comment) => (
