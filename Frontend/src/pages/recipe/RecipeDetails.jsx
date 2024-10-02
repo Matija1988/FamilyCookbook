@@ -11,6 +11,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import RecipeService from "../../services/RecipeService";
 
 import "./recipeDetails.css";
+import CommentList from "../../components/CommentList";
 
 export default function RecipeDetails() {
   const recipeState = {
@@ -87,6 +88,7 @@ export default function RecipeDetails() {
             </ListGroup.Item>
           ))}
         </ListGroup>
+        <CommentList recipeId={routeParams.id}></CommentList>
       </Container>
     </>
   );

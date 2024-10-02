@@ -26,4 +26,5 @@ export default {
   getById,
   update,
   setNotActive,
+  getRecipeComments,
 };
