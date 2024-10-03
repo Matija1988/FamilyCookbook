@@ -31,6 +31,9 @@ namespace FamilyCookbook.Repository
             builder.RegisterType<CommentRepository>().As<ICommentRepository>()
                 .InstancePerLifetimeScope();
 
+            builder.RegisterType<TagsRepository>().As<ITagRepository>()
+                .InstancePerLifetimeScope();
+
 
         }
     }
