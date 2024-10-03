@@ -151,7 +151,8 @@ namespace FamilyCookbook.Repository
                 StringBuilder query = new("SELECT a.*, b.Id, b.FirstName, b.LastName" +
                     " FROM Comment a " +
                     " JOIN Member b on b.Id = a.MemberId " +
-                    $" WHERE RecipeId = {id} " +
+                    $" WHERE a.RecipeId = {id} " +
+                    $" AND a.IsActive = 1 " +
                     $" ORDER BY a.DateCreated DESC");
 
                 var entityDictionary = new Dictionary<int, Comment>();

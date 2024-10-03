@@ -6,16 +6,23 @@ import { Button, Collapse, Container, ListGroup } from "react-bootstrap";
 import CommentCreate from "./CommentCreate";
 import { useParams } from "react-router-dom";
 import { useUser } from "../contexts/UserContext";
-import { FaEdit, FaTrashAlt } from "react-icons/fa";
+import { FaEdit, FaSave, FaTrashAlt } from "react-icons/fa";
 
 export default function CommentList({ recipeId }) {
+  const commentInitialState = {
+    memberId: 0,
+    recipeId: 0,
+    text: "",
+    rating: 0,
+  };
   const [comments, setComments] = useState([]);
   const [openComentId, setOpenComentId] = useState(null);
-
+  const [editCommentId, setEditCommentId] = useState(null);
+  const [editedText, setEditedText] = useState({});
   const { showLoading, hideLoading } = useLoading();
   const { showError, showErrormodal, errors, hideError } = useError();
 
-  const { userFirstName, userLastName } = useUser();
+  const { userId, userFirstName, userLastName } = useUser();
 
   const routeParams = useParams();
 
@@ -27,6 +34,26 @@ export default function CommentList({ recipeId }) {
       showError(response.data);
     }
     setComments(response.data);
+    hideLoading();
+  }
+
+  async function deleteComment(id) {
+    const response = await CommentService.setNotActive(
+      "comment/softDelete/" + id
+    );
+    if (!response.ok) {
+      hideLoading();
+      showError(response.data);
+    }
+  }
+
+  async function updateComment(id, entity) {
+    showLoading();
+    const response = await CommentService.update("comment/update", id, entity);
+    if (!response.ok) {
+      hideLoading();
+      showError(response.data);
+    }
     hideLoading();
   }
 
@@ -64,9 +91,35 @@ export default function CommentList({ recipeId }) {
     setOpenComentId(openComentId === id ? null : id);
   };
 
-  const handleEdit = (id) => {};
+  const handleEdit = (id) => {
+    setEditCommentId(id);
+  };
 
-  const handleDelete = (id) => {};
+  const handleDelete = (id) => {
+    deleteComment(id);
+    setComments((commentList) =>
+      commentList.filter((comment) => comment.id !== id)
+    );
+  };
+
+  const handleSave = (comment) => {
+    const updatedText = editedText[comment.id];
+
+    let entity = {
+      memberId: userId,
+      recipeId: routeParams.id,
+      text: updatedText,
+      rating: comment.rating,
+    };
+
+    updateComment(comment.id, entity);
+    console.log("Saving comment:", entity);
+    setEditCommentId(null);
+  };
+
+  const handleTextChange = (id, value) => {
+    setEditedText((commentList) => ({ ...commentList, [id]: value }));
+  };
 
   return (
     <Container>
@@ -102,14 +155,33 @@ export default function CommentList({ recipeId }) {
 
               <Collapse in={openComentId === comment.id}>
                 <div id={`Comment${comment.id}`} style={{ marginTop: "1 %" }}>
-                  <p>{comment.text}</p>
+                  <textarea
+                    className="comment-textarea"
+                    value={
+                      editCommentId === comment.id
+                        ? editedText[comment.id]
+                        : comment.text
+                    }
+                    readOnly={editCommentId !== comment.id}
+                    onChange={(e) =>
+                      handleTextChange(comment.id, e.target.value)
+                    }
+                  ></textarea>
+
                   {comment.memberFirstName === userFirstName &&
                     comment.memberLastName === userLastName && (
                       <div className="comment-icons">
-                        <FaEdit
-                          className="comment-icon cmt-edit-icon"
-                          onClick={() => handleEdit(comment.id)}
-                        />
+                        {editCommentId === comment.id ? (
+                          <FaSave
+                            className="comment-icon cmt-save-icon"
+                            onClick={() => handleSave(comment)}
+                          />
+                        ) : (
+                          <FaEdit
+                            className="comment-icon cmt-edit-icon"
+                            onClick={() => handleEdit(comment.id)}
+                          />
+                        )}
                         <FaTrashAlt
                           className="comment-icon cmt-delete-icon"
                           onClick={() => handleDelete(comment.id)}

@@ -217,7 +217,32 @@
   background-color: #007bff;
   margin-top: 1%;
   margin-bottom: 2%;
-    
+}
+
+.comment-textarea {
+  width: 100%;
+  padding: 1%;
+  border: 1px solid #ccc;
+  border-radius: 1%;
+  border-color: transparent;
+  background-color: transparent;
+  resize: none;
+  margin-bottom: 1%;
+  font-weight: bold;
+  color: #e1dfdf;
+}
+
+.comment-textarea[readonly] {
+  background-color: transparent;
+  border: 1px solid transparent;
+  color: #e1dfdf;
+  outline: none;
+}
+
+.comment-textarea:focus {
+  background-color: transparent;
+  border: none;
+  outline: none;
 }
 
 .cmt-create-div button:hover {
