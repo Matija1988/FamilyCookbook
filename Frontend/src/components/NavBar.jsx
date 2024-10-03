@@ -12,6 +12,8 @@ import { useUser } from "../contexts/UserContext";
 import CategoriesService from "../services/CategoriesService";
 import useError from "../hooks/useError";
 import { useEffect, useState } from "react";
+import InputText from "./InputText";
+import { Form } from "react-bootstrap";
 
 function NavBar() {
   const [categories, setCategories] = useState([]);
@@ -77,7 +79,9 @@ function NavBar() {
                 <NavDropdown.Item>No categories to load</NavDropdown.Item>
               )}
             </NavDropdown>
-
+            <Form>
+              <Form.Control type="input" placeholder="search..."></Form.Control>
+            </Form>
             {isLoggedIn ? (
               <Nav.Link className="logIn-link" onClick={logout}>
                 Logout

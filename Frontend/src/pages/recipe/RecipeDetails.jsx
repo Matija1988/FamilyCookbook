@@ -49,7 +49,7 @@ export default function RecipeDetails() {
     setRecipe(response.data);
     setMembers(response.data.members);
     setCategory(response.data.categoryName);
-    s;
+    hideLoading();
   }
 
   useEffect(() => {
@@ -73,7 +73,7 @@ export default function RecipeDetails() {
           {members.map((member) => (
             <ListGroup.Item className="lg-item" key={member.id}>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <div>{member.firstName + " " + member.lastName}</div>
+                <div>Author: {member.firstName + " " + member.lastName}</div>
 
                 <Button
                   variant="link"

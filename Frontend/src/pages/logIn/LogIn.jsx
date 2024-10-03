@@ -4,7 +4,8 @@ import CustomButton from "../../components/CustomButton";
 
 import "../../App.css";
 import useAuth from "../../hooks/useAuth";
-import { useNavigate } from "react-router-dom";
+import { Routes, useNavigate } from "react-router-dom";
+import { RouteNames } from "../../constants/constants";
 
 export default function LogIn() {
   const { login } = useAuth();
@@ -38,7 +39,11 @@ export default function LogIn() {
           <CustomButton className="logIn-btn" label="Login"></CustomButton>
         </Row>
         <Row>
-          <CustomButton className="logIn-cancel" label="Cancel"></CustomButton>
+          <CustomButton
+            className="logIn-cancel"
+            label="Cancel"
+            onClick={() => navigate(RouteNames.HOME)}
+          ></CustomButton>
         </Row>
       </Form>
     </Container>

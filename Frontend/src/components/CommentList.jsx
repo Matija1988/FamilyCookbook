@@ -5,6 +5,8 @@ import useError from "../hooks/useError";
 import { Button, Collapse, Container, ListGroup } from "react-bootstrap";
 import CommentCreate from "./CommentCreate";
 import { useParams } from "react-router-dom";
+import { useUser } from "../contexts/UserContext";
+import { FaEdit, FaTrashAlt } from "react-icons/fa";
 
 export default function CommentList({ recipeId }) {
   const [comments, setComments] = useState([]);
@@ -12,6 +14,8 @@ export default function CommentList({ recipeId }) {
 
   const { showLoading, hideLoading } = useLoading();
   const { showError, showErrormodal, errors, hideError } = useError();
+
+  const { userFirstName, userLastName } = useUser();
 
   const routeParams = useParams();
 
@@ -60,6 +64,10 @@ export default function CommentList({ recipeId }) {
     setOpenComentId(openComentId === id ? null : id);
   };
 
+  const handleEdit = (id) => {};
+
+  const handleDelete = (id) => {};
+
   return (
     <Container>
       <h4>COMMENTS</h4>
@@ -74,7 +82,7 @@ export default function CommentList({ recipeId }) {
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <div>
                   <strong>
-                    Created by {comment.memberFirstName}{" "}
+                    Comment by {comment.memberFirstName}{" "}
                     {comment.memberLastName}
                   </strong>
                 </div>
@@ -94,8 +102,20 @@ export default function CommentList({ recipeId }) {
 
               <Collapse in={openComentId === comment.id}>
                 <div id={`Comment${comment.id}`} style={{ marginTop: "1 %" }}>
-                  <strong>Comment</strong>
                   <p>{comment.text}</p>
+                  {comment.memberFirstName === userFirstName &&
+                    comment.memberLastName === userLastName && (
+                      <div className="comment-icons">
+                        <FaEdit
+                          className="comment-icon cmt-edit-icon"
+                          onClick={() => handleEdit(comment.id)}
+                        />
+                        <FaTrashAlt
+                          className="comment-icon cmt-delete-icon"
+                          onClick={() => handleDelete(comment.id)}
+                        />
+                      </div>
+                    )}
                 </div>
               </Collapse>
             </ListGroup.Item>

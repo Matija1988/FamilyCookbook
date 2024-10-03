@@ -168,3 +168,80 @@
   margin-top: 10%;
   color: red;
 }
+
+.comment-icons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1%;
+  margin-top: 1%;
+}
+
+.comment-icons .comment-icon {
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.comment-icons .cmt-edit-icon {
+  color: yellow;
+  margin-right: 3%;
+  font-size: 130%;
+}
+
+.comment-icons .cmt-delete-icon {
+  color: black;
+}
+
+.cmt-create-div {
+  background-color: transparent;
+  margin-bottom: 2%;
+  border-bottom: 5% solid white;
+  padding: 5%;
+}
+
+.cmt-create-div h6 {
+  margin-bottom: 1%;
+}
+
+.cmt-create-div .list-group-item {
+  background-color: transparent;
+  border: none;
+}
+
+.cmt-create-div .list-group-item:focus-within {
+  background-color: transparent;
+  outline: none;
+  box-shadow: none;
+}
+
+.cmt-create-div button {
+  background-color: #007bff;
+  margin-top: 1%;
+  margin-bottom: 2%;
+    
+}
+
+.cmt-create-div button:hover {
+  color: #0056b3;
+}
+
+.cmt-create-div .cmt-create-link {
+  background-color: #721c24;
+  margin-bottom: 1%;
+  font-size: 20rcap;
+  color: white;
+  padding: 2% 5%;
+}
+
+.cmt-create-div .cmt-create-link:hover,
+.cmt-create-div .cmt-create-link:focus,
+.cmt-create-div .cmt-create-link:active {
+  background-color: #721c24;
+  color: white;
+  outline: none;
+  box-shadow: none;
+  text-decoration: none;
+}
+
+.cmt-create-div {
+  background-color: transparent;
+}

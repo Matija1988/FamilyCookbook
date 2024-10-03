@@ -73,10 +73,14 @@ export default function CommentCreate({ recipeId, fetchComments }) {
   };
 
   return (
-    <div>
+    <div className="cmt-create-div">
       <h6>Create new comment</h6>
       <ListGroup>
-        <Button variant="link" onClick={() => toggleCommentCreate()}>
+        <Button
+          variant="link"
+          onClick={() => toggleCommentCreate()}
+          className="cmt-create-link"
+        >
           {openCommentCreate ? "Cancel" : "Create comment"}
         </Button>
         {userId ? (

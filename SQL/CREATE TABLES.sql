@@ -1,12 +1,12 @@
-use master;
-go
-drop database if exists "FamilyCookbook";
-go
-create database "FamilyCookbook";
-go
-alter database "FamilyCookbook" collate CROATIAN_CI_AS;
-go
-use "FamilyCookbook";
+--use master;
+--go
+--drop database if exists "FamilyCookbook";
+--go
+--create database "FamilyCookbook";
+--go
+--alter database "FamilyCookbook" collate CROATIAN_CI_AS;
+--go
+--use "FamilyCookbook";
 
 
 ------------------------- TABLES --------------------------
@@ -118,17 +118,18 @@ insert into Member(
 					Username, 
 					Password, 
 					RoleId) 
-values('d7b19efe-39aa-4d25-b802-21ac8fa0b0f4',
-'Izmisljeni',
-'Korisnik',
-'10-05-1999',
-'Temp bio',
-'1',
-'08-07-2024',
-'08-07-2024',
-'samsung',
-'$2a$12$LfIczJbu.Akfa0/Pkt1ANe42gSguBgvcoqVIFJ0UUJ5P6WphzQv1a',
-'4'),
+values
+--('d7b19efe-39aa-4d25-b802-21ac8fa0b0f4',
+--'Izmisljeni',
+--'Korisnik',
+--'10-05-1999',
+--'Temp bio',
+--'1',
+--'08-07-2024',
+--'08-07-2024',
+--'samsung',
+--'$2a$12$LfIczJbu.Akfa0/Pkt1ANe42gSguBgvcoqVIFJ0UUJ5P6WphzQv1a',
+--'4'),
 ('a86823ad-f120-4a8c-94ff-d3d37330653a',
 'Test',
 'Tester',
@@ -301,20 +302,11 @@ insert into MemberRecipe(MemberId, RecipeId) values (1,1),(1,2);
 insert into Comment(MemberId, RecipeId, Text, DateCreated, DateUpdated, Rating,IsActive) 
 Values
 (1,1, 'Not bad, not terrible', '11-09-2023', '11-09-2023', 3, 1),
-(2,2, 'Can pass', '11-10-2023','11-10-2023', 2, 1),
+(2,1, 'Can pass', '11-10-2023','11-10-2023', 2, 1),
 (1,2, 'Childhood memories', '11-11-2023','11-11-2023', 5,1),
 (2,2, 'Zer gutt', '11-11-2023','11-11-2023', 4,1);
 
+
+select * from recipe;
+
 select * from Comment;
-
-select a.*, b.FirstName, b.LastName from Comment a join Member b on b.Id = a.MemberId ORDER BY a.DateCreated DESC; 
-
-select * from Category;
-
-select * from Recipe;
-
-select * from Picture;
-
-select * from Member;
-
-Update Category SET IsActive = 1 WHERE Id = 1;
