@@ -23,5 +23,17 @@ namespace FamilyCookbook.Service
 
             return response;
         }
+
+        public async Task<RepositoryResponse<Tag>> CreateAsync(List<Tag> entity)
+        {
+            var response = new RepositoryResponse<Tag>();
+
+            foreach (var item in entity) 
+            { 
+                response = await _tagRepository.CreateAsync(item);
+            }
+
+            return response;
+        }
     }
 }

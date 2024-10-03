@@ -10,5 +10,7 @@ namespace FamilyCookbook.Service.Common
     public interface ITagService
     {
         Task<RepositoryResponse<List<Tag>>> GetAllAsync();
+
+        Task<RepositoryResponse<Tag>> CreateAsync(List<Tag> entities);
     }
 }

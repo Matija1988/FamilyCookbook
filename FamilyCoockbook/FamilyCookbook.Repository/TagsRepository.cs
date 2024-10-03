@@ -47,9 +47,46 @@ namespace FamilyCookbook.Repository
                 response.Message = _errorMessages.ErrorAccessingDb("Tags", ex);
                 response.Success = false;
                 return response;
+            } finally
+            {
+                _context.CreateConnection().Close();
             }
         }
 
         #endregion
+
+        public async Task<RepositoryResponse<Tag>> CreateAsync(Tag entity)
+        {
+            var response = new RepositoryResponse<Tag>();
+
+            int rowsAffected = 0;
+
+            try
+            {
+                StringBuilder query = new();
+                query.Append("INSERT INTO Tags (Text) VALUES (@Text);");
+
+                using var connection = _context.CreateConnection();
+
+                var entites = await connection.ExecuteAsync(query.ToString(), entity);
+
+                response.Success = rowsAffected > 0;
+                response.Message = _successResponses.EntityCreated();
+
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = _errorMessages.ErrorCreatingEntity("Tag");
+                return response;
+            }
+            finally
+            {
+                _context.CreateConnection().Close();
+            }
+
+        }
     }
 }
