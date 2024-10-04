@@ -44,5 +44,18 @@ namespace FamilyCookbook.Service
             return response;
         }
 
+        public async Task<CreateResponse> ConnectRecipeAndTag(RecipeTagArray dto)
+        {
+            var response = new CreateResponse();
+
+            for (int j = 0; j < dto.tagId.Length; j++)
+            {
+                var recipeTag = new RecipeTag(recipeId: dto.recipeId, tagId: dto.tagId[j]);
+                response = await _tagRepository.ConnectRecipeAndTag(recipeTag);
+
+            }
+
+            return response;
+        }
     }
 }

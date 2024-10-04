@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace FamilyCookbook.Repository
 {
-    public class TagsRepository : ITagRepository
+    public sealed class TagsRepository : ITagRepository
     {
         IErrorMessages _errorMessages;
         ISuccessResponses _successResponses;
@@ -100,7 +100,7 @@ namespace FamilyCookbook.Repository
 
                 using var connection = _context.CreateConnection();
 
-                var entites = await connection.ExecuteAsync(query.ToString(), entity);
+                rowsAffected = await connection.ExecuteAsync(query.ToString(), entity);
 
                 response.Success = rowsAffected > 0;
                 response.Message = _successResponses.EntityCreated();
@@ -119,6 +119,40 @@ namespace FamilyCookbook.Repository
                 _context.CreateConnection().Close();
             }
 
+        }
+
+        public async Task<CreateResponse> ConnectRecipeAndTag(RecipeTag dto)
+        {
+            var response = new CreateResponse();
+            int rowsAffected = 0;
+
+            try
+            {
+                StringBuilder query = new();
+                query.Append("INSERT INTO RecipeTags(TagId, RecipeId) VALUES (@RecipeId, @TagId);");
+
+                using var connection = _context.CreateConnection();
+
+
+                rowsAffected = await connection.ExecuteAsync(query.ToString(), dto);
+
+                response.IsSuccess = rowsAffected > 0;
+                response.Message = _successResponses.EntityCreated();
+
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                response.IsSuccess = false;
+                response.Message = _errorMessages.ErrorAccessingDb("Tags", ex);
+
+                return response;
+            }
+            finally 
+            {
+                _context.CreateConnection().Close();
+            }
         }
     }
 }

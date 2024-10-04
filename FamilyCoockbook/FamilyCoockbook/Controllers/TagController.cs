@@ -49,6 +49,21 @@ namespace FamilyCookbook.Controllers
             
         }
 
+        [HttpPost]
+        [Route("connectRecipeAndTags")]
+
+        public async Task<IActionResult> ConnectRecipeAndTags(RecipeTagArray dto)
+        {
+            var response = await _tagService.ConnectRecipeAndTag(dto);
+
+            if(response.IsSuccess == false)
+            {
+                return BadRequest(response.Message.ToString());
+            }
+
+            return Ok(response.Message.ToString());
+        }
+
         [HttpGet]
         [Route("getBytext/{text}")]
         public async Task<IActionResult> GetByTextAsync(string text)

@@ -15,5 +15,7 @@ namespace FamilyCookbook.Service.Common
         Task<RepositoryResponse<Tag>> CreateAsync(List<Tag> entities);
 
         Task<RepositoryResponse<List<Tag>>> GetByTextAsync(string text);
+
+        Task<CreateResponse> ConnectRecipeAndTag(RecipeTagArray dto);
     }
 }
