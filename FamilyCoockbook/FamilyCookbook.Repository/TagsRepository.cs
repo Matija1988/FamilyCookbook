@@ -87,9 +87,9 @@ namespace FamilyCookbook.Repository
 
         #endregion
 
-        public async Task<RepositoryResponse<Tag>> CreateAsync(Tag entity)
+        public async Task<CreateResponse> CreateAsync(Tag entity)
         {
-            var response = new RepositoryResponse<Tag>();
+            var response = new CreateResponse();
 
             int rowsAffected = 0;
 
@@ -102,7 +102,7 @@ namespace FamilyCookbook.Repository
 
                 rowsAffected = await connection.ExecuteAsync(query.ToString(), entity);
 
-                response.Success = rowsAffected > 0;
+                response.IsSuccess = rowsAffected > 0;
                 response.Message = _successResponses.EntityCreated();
 
                 return response;
@@ -110,7 +110,7 @@ namespace FamilyCookbook.Repository
             }
             catch (Exception ex)
             {
-                response.Success = false;
+                response.IsSuccess = false;
                 response.Message = _errorMessages.ErrorCreatingEntity("Tag");
                 return response;
             }

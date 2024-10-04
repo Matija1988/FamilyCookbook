@@ -8,7 +8,7 @@ namespace FamilyCookbook.Service.Common
 {
     public interface IMemberService : IService<Member>
     {
-        Task<RepositoryResponse<Member>> CreateAsync(Member entity);
+        Task<CreateResponse> CreateAsync(Member entity);
         Task<RepositoryResponse<Member>> GetByGuidAsync(Guid uniqueId);
         Task<IActionResult> LogIn(string username, string password);
         Task<RepositoryResponse<Lazy<List<Member>>>> PaginateAsync(Paging paging, MemberFilter filter);

@@ -40,7 +40,7 @@ namespace FamilyCookbook.Controllers
 
             var response = await _tagService.CreateAsync(tags);
  
-            if(response.Success == false)
+            if(response.IsSuccess == false)
             {
                 return BadRequest(response.Message.ToString());
             }

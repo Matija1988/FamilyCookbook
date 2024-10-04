@@ -23,7 +23,7 @@ namespace FamilyCookbook.Service
             _recipeRepository = recipeRepository;
         }
 
-        public async Task<RepositoryResponse<Category>> CreateAsync(Category entity)
+        public async Task<CreateResponse> CreateAsync(Category entity)
         {
             entity.IsActive = true;
             return await _repository.CreateAsync(entity);

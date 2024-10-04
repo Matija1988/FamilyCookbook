@@ -12,7 +12,7 @@ namespace FamilyCookbook.Repository.Common
     {
         Task<RepositoryResponse<List<Tag>>> GetAllAsync();
 
-        Task<RepositoryResponse<Tag>> CreateAsync(Tag entity);
+        Task<CreateResponse> CreateAsync(Tag entity);
 
         Task<RepositoryResponse<List<Tag>>> GetByTextAsync(string text);
 

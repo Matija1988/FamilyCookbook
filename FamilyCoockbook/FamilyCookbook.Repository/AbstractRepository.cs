@@ -106,9 +106,9 @@ namespace FamilyCookbook.Repository
 
         #endregion
 
-        public async Task<RepositoryResponse<T>> CreateAsync(T entity)
+        public async Task<CreateResponse> CreateAsync(T entity)
         {
-            var response = new RepositoryResponse<T>();
+            var response = new CreateResponse();
 
             int rowsAffected = 0;
             string tableName = GetTableName();
@@ -124,7 +124,7 @@ namespace FamilyCookbook.Repository
 
                 rowsAffected = await BuildCreateQueryCommand(query.ToString(), connection, entity);
                     
-                response.Success = rowsAffected > 0;
+                response.IsSuccess = rowsAffected > 0;
                 response.Message = _successResponses.EntityCreated();
 
                 return response;
@@ -132,7 +132,7 @@ namespace FamilyCookbook.Repository
             }
             catch (Exception ex) 
             {
-                response.Success = false;
+                response.IsSuccess = false;
                 response.Message = _errorMessages.ErrorCreatingEntity(tableName, ex);
                 return response;
             }

@@ -36,7 +36,7 @@ namespace FamilyCookbook.Controllers
 
             var response = await _commentService.CreateAsync(comment);
 
-            if (response.Success == false)
+            if (response.IsSuccess == false)
             {
                 return BadRequest(response.Message.ToString());
             }

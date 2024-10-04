@@ -9,6 +9,6 @@ namespace FamilyCookbook.Service.Common
 {
     public interface IPictureService : IService<Picture>
     {
-        Task<RepositoryResponse<Picture>> CreateAsync(Picture entity);
+        Task<CreateResponse> CreateAsync(Picture entity);
     }
 }

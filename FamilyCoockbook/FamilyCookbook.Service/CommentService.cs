@@ -18,7 +18,7 @@ namespace FamilyCookbook.Service
             _commentRepository = commentRepository;
         }
 
-        public async Task<RepositoryResponse<Comment>> CreateAsync(Comment comment)
+        public async Task<CreateResponse> CreateAsync(Comment comment)
         {
             comment.IsActive = true;
             comment.DateCreated = DateTime.Now;

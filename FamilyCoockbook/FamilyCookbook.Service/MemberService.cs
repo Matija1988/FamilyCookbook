@@ -33,7 +33,7 @@ namespace FamilyCookbook.Service
             _configuration = configuration;
         }
 
-        public async Task<RepositoryResponse<Member>> CreateAsync(Member entity)
+        public async Task<CreateResponse> CreateAsync(Member entity)
         {
             entity.UniqueId = Guid.NewGuid();
             entity.IsActive = true;

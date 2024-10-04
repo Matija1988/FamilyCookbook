@@ -32,9 +32,9 @@ namespace FamilyCookbook.Service
             return response;
         }
 
-        public async Task<RepositoryResponse<Tag>> CreateAsync(List<Tag> entity)
+        public async Task<CreateResponse> CreateAsync(List<Tag> entity)
         {
-            var response = new RepositoryResponse<Tag>();
+            var response = new CreateResponse();
 
             foreach (var item in entity) 
             { 

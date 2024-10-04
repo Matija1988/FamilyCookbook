@@ -14,7 +14,7 @@ namespace FamilyCookbook.Service
             _repository = repository;
         }
 
-        public async Task<RepositoryResponse<Picture>> CreateAsync(Picture entity)
+        public async Task<CreateResponse> CreateAsync(Picture entity)
         {
             entity.IsActive = true;
 

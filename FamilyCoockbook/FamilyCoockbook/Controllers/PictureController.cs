@@ -108,7 +108,7 @@ namespace FamilyCookbook.Controllers
 
             var response = await _service.CreateAsync(picture);
 
-            if (response.Success == false)
+            if (response.IsSuccess == false)
             {
                 return BadRequest(response.Message.ToString());
             }
