@@ -48,5 +48,21 @@ namespace FamilyCookbook.Controllers
             return Ok(response.Message.ToString());
             
         }
+
+        [HttpGet]
+        [Route("getBytext/{text}")]
+        public async Task<IActionResult> GetByTextAsync(string text)
+        {
+            var response = await _tagService.GetByTextAsync(text);
+
+            if(response.Success == false)
+            {
+                return NotFound(response.Message.ToString());
+            }
+
+            return Ok(response.Items);
+
+        }
+
     }
 }

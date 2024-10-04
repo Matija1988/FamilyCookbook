@@ -3,6 +3,7 @@ using FamilyCookbook.Repository.Common;
 using FamilyCookbook.Service.Common;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,6 +25,13 @@ namespace FamilyCookbook.Service
             return response;
         }
 
+        public async Task<RepositoryResponse<List<Tag>>> GetByTextAsync(string text)
+        {
+            var response = await _tagRepository.GetByTextAsync(text);
+
+            return response;
+        }
+
         public async Task<RepositoryResponse<Tag>> CreateAsync(List<Tag> entity)
         {
             var response = new RepositoryResponse<Tag>();
@@ -35,5 +43,6 @@ namespace FamilyCookbook.Service
 
             return response;
         }
+
     }
 }

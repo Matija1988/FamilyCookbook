@@ -4,6 +4,7 @@ using FamilyCookbook.Model;
 using FamilyCookbook.Repository.Common;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -50,6 +51,37 @@ namespace FamilyCookbook.Repository
             } finally
             {
                 _context.CreateConnection().Close();
+            }
+        }
+
+        public async Task<RepositoryResponse<List<Tag>>> GetByTextAsync(string text)
+        {
+            var response = new RepositoryResponse<List<Tag>>();
+
+            try
+            {
+                StringBuilder query = new();
+                query.Append($"SELECT * FROM Tags WHERE Text LIKE '%{text}%';");
+
+                using var connection = _context.CreateConnection();
+
+                var entities = await connection.QueryAsync<Tag>(query.ToString());
+
+                response.Success = true;
+                response.Items = entities.ToList();
+
+                return response;
+
+            } catch (Exception ex) 
+            {
+                response.Success = false;
+                response.Message = _errorMessages.ErrorAccessingDb("Tag");
+                return response;
+
+            }
+            finally
+            {
+                _context.CreateConnection().Close();                
             }
         }
 
