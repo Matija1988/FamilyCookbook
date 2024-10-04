@@ -1,7 +1,7 @@
 ﻿using FamilyCookbook.Model;
 using FamilyCookbook.REST_Models.Picture;
 
-namespace FamilyCookbook.Mapping
+namespace FamilyCookbook.Mapping.MapperWrappers
 {
     public class PictureMapperWrapper : IMapper<Picture, PictureRead, PictureCreate>
     {

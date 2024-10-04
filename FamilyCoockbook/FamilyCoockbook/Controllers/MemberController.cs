@@ -1,5 +1,6 @@
 ﻿using FamilyCookbook.Common;
 using FamilyCookbook.Mapping;
+using FamilyCookbook.Mapping.MapperWrappers;
 using FamilyCookbook.Model;
 using FamilyCookbook.REST_Models.Member;
 using FamilyCookbook.Service.Common;
@@ -10,60 +11,22 @@ using Microsoft.AspNetCore.Mvc;
 namespace FamilyCookbook.Controllers
 {
     [ApiController]
-    [Route("api/v0/member")]
+    [Route("api/v0/[controller]")]
     [EnableCors("CorsPolicy")]
-    public class MemberController : ControllerBase
+    [Authorize(Roles="Admin, Moderator, Contributor")]
+    public class MemberController : AbstractController<Member, MemberRead, MemberCreate>
     {
         private readonly  IMemberService _service;
+        private readonly IMapper<Member, MemberRead, MemberCreate> _mapper;
 
-        public MemberController(IMemberService service)
+        public MemberController(IMemberService service, 
+            IMapper<Member, MemberRead, MemberCreate> mapper) 
+            : base(service, mapper)
         {
             _service = service;
+            _mapper = mapper;
         }
 
-        [Authorize(Roles = "Admin, Moderator, Contributor")]
-        [HttpGet]
-        public async Task<IActionResult> GetAllAsync() 
-        { 
-            var response = await _service.GetAllAsync();
-
-            if (response.Success == false)
-            {
-                return NotFound(response.Message.ToString());
-            }
-
-            var mapper = new MemberMapper();
-
-            var members = mapper.MemberToMemberReadList(response.Items);
-
-            var finalResponse = new PaginatedList<List<MemberRead>>();
-
-            finalResponse.Items = members;
-            finalResponse.TotalCount = response.TotalCount;
-            finalResponse.PageCount = response.PageCount;
-
-            return Ok(finalResponse);
-        }
-
-        [Authorize(Roles = "Admin")]
-        [HttpGet]
-        [Route("{id:int}")]
-
-        public async Task<IActionResult> GetByIdAsync(int id)
-        {
-            var response = await _service.GetByIdAsync(id);
-
-            if(response.Success == false)
-            {
-                return NotFound(response.Message.ToString());
-            }
-
-            var mapper = new MemberMapper();
-
-            var member = mapper.MemberGetById(response.Items);
-
-            return Ok(member);  
-        }
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
@@ -151,51 +114,6 @@ namespace FamilyCookbook.Controllers
             return Ok(response.Message.ToString());    
         }
 
-        [Authorize(Roles = "Admin")]
-        [HttpPut]
-        [Route("update/{id:int}")]
-        public async Task<IActionResult> UpdateAsync(int id, MemberCreate memberCreate)
-        {
-            var mapper = new MemberMapper();
-
-            var member = mapper.MemberCreateToMember(memberCreate);
-
-            var response = await _service.UpdateAsync(id, member);
-
-            if (response.Success == false) 
-            {
-                return BadRequest(response.Message.ToString());
-            }
-            return Ok(response.Message.ToString());
-        }
-        [Authorize(Roles = "Admin")]
-        [HttpPut]
-        [Route("delete/{id:int}")]
-        public async Task<IActionResult> SoftDeleteAsync(int id)
-        {
-            var response = await _service.SoftDeleteAsync(id);
-
-            if(response.Success == false)
-            {
-                return BadRequest(response.Message.ToString());
-            }
-            return Ok(response.Message.ToString());
-        }
-
-        [Authorize(Roles = "Admin")]
-        [HttpDelete]
-        [Route("permaDelete/{id:int}")]
-        public async Task<IActionResult> DeleteAsync(int id)
-        {
-            var response = await _service.DeleteAsync(id);
-
-            if(response.Success == false)
-            {
-                return BadRequest(response.Message.ToString());
-            }
-            return Ok(response.Message.ToString());
-        }
-
         [Authorize]
         [HttpGet]
         [Route("findByUsername/{username}")]
@@ -209,9 +127,7 @@ namespace FamilyCookbook.Controllers
                 return BadRequest(response.Message.ToString());
             }
 
-            var mapper = new MemberMapper();
-
-            var member = mapper.MemberToMemberRead(response.Items.Value);
+            var member = _mapper.MapReadToDto(response.Items.Value);
             
             return Ok(member);
         }

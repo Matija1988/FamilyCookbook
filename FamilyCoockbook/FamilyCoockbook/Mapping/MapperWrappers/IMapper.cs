@@ -1,4 +1,4 @@
-﻿namespace FamilyCookbook.Mapping
+﻿namespace FamilyCookbook.Mapping.MapperWrappers
 {
     public interface IMapper<T, TDR, TDI>
     {

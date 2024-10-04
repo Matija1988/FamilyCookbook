@@ -1,6 +1,7 @@
 ﻿
 using FamilyCookbook.Common;
 using FamilyCookbook.Mapping;
+using FamilyCookbook.Mapping.MapperWrappers;
 using FamilyCookbook.Model;
 using FamilyCookbook.REST_Models.Category;
 using FamilyCookbook.Service.Common;

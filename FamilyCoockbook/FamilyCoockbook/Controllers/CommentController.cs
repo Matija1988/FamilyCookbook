@@ -1,5 +1,5 @@
 ﻿using Autofac.Core;
-using FamilyCookbook.Mapping;
+using FamilyCookbook.Mapping.MapperWrappers;
 using FamilyCookbook.Model;
 using FamilyCookbook.Service.Common;
 using Microsoft.AspNetCore.Mvc;

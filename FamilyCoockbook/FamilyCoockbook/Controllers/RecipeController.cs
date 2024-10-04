@@ -2,6 +2,7 @@
 using FamilyCookbook.Common.Upload;
 using FamilyCookbook.Common.Validations;
 using FamilyCookbook.Mapping;
+using FamilyCookbook.Mapping.MapperWrappers;
 using FamilyCookbook.Model;
 using FamilyCookbook.REST_Models.Recipe;
 using FamilyCookbook.Service.Common;
@@ -18,12 +19,14 @@ namespace FamilyCookbook.Controllers
     public class RecipeController(IWebHostEnvironment environment,
         IRecipeService service,
         ICategoryService categoryService,
-        IPictureService pictureService) : ControllerBase
+        IPictureService pictureService,
+        IMapperExtended<Recipe, RecipeRead, RecipeCreate, RecipeCreateDTO> mapper) : ControllerBase
     {
         private readonly IRecipeService _service = service;
         private readonly IWebHostEnvironment _enviroment = environment;
         private readonly ICategoryService _categoryService = categoryService;
         private readonly IPictureService _pictureService = pictureService;
+        private readonly IMapperExtended<Recipe, RecipeRead, RecipeCreate, RecipeCreateDTO> _mapper = mapper;
 
         [Authorize, Authorize(Roles = "Admin")]
         [HttpGet]
@@ -36,9 +39,7 @@ namespace FamilyCookbook.Controllers
                 return NotFound(response.Message.ToString());
             }
 
-            var mapper = new RecipeMapper();
-
-            var recipes = mapper.RecipeToRecipeReadList(response.Items);
+            var recipes = _mapper.MapToReadList(response.Items);
 
             return Ok(recipes);
 
@@ -54,9 +55,8 @@ namespace FamilyCookbook.Controllers
             {
                 return NotFound(response.Message.ToString());
             }
-            var mapper = new RecipeMapper();
 
-            var recipe = mapper.RecipeToRecipeRead(response.Items);
+            var recipe = _mapper.MapReadToDto(response.Items);
 
             return Ok(recipe);
 
@@ -73,9 +73,8 @@ namespace FamilyCookbook.Controllers
             {
                 return NotFound(response.Message.ToString());
             }
-            var mapper = new RecipeMapper();
-
-            var recipes = mapper.RecipeToRecipeReadList(response.Items);
+          
+            var recipes = _mapper.MapToReadList(response.Items);
 
             var finalResponse = new PaginatedList<List<RecipeRead>>();
 
@@ -179,9 +178,7 @@ namespace FamilyCookbook.Controllers
 
             newRecipe.Text = sanitizedText;
 
-            var mapper = new RecipeMapper();
-
-            var recipe = mapper.RecipeCreateToRecipeCreateDTO(newRecipe);
+            var recipe = _mapper.MapReadToCreateDTO(newRecipe);
 
             Picture interMediaryPicture = new Picture();
 
@@ -232,9 +229,7 @@ namespace FamilyCookbook.Controllers
 
             updatedRecipe.Text = sanitizedText;
 
-            var mapper = new RecipeMapper();
-
-            var recipe = mapper.RecipeCreateToRecipe(updatedRecipe);
+            var recipe = _mapper.MapToEntity(updatedRecipe);
 
             var response = await _service.UpdateAsync(id, recipe);
 

@@ -1,10 +1,11 @@
 ﻿using Autofac;
 using FamilyCookbook.Controllers;
-using FamilyCookbook.Mapping;
+using FamilyCookbook.Mapping.MapperWrappers;
 using FamilyCookbook.Model;
 using FamilyCookbook.REST_Models.Category;
 using FamilyCookbook.REST_Models.Member;
 using FamilyCookbook.REST_Models.Picture;
+using FamilyCookbook.REST_Models.Recipe;
 using static FamilyCookbook.REST_Models.Comment.CommentModels;
 
 namespace FamilyCookbook
@@ -24,6 +25,10 @@ namespace FamilyCookbook
 
             builder.RegisterType<PictureMapperWrapper>()
                 .As<IMapper<Picture, PictureRead, PictureCreate>>().InstancePerDependency();
+
+            builder.RegisterType<RecipeMapperWrapper>()
+                .As<IMapperExtended<Recipe, RecipeRead, RecipeCreate, RecipeCreateDTO>>()
+                .InstancePerDependency();
         }
     }
 }

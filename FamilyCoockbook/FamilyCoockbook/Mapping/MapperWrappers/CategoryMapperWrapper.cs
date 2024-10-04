@@ -1,7 +1,7 @@
 ﻿using FamilyCookbook.Model;
 using FamilyCookbook.REST_Models.Category;
 
-namespace FamilyCookbook.Mapping
+namespace FamilyCookbook.Mapping.MapperWrappers
 {
     public class CategoryMapperWrapper : IMapper<Category, CategoryRead, CategoryCreate>
     {

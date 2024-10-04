@@ -1,7 +1,7 @@
 ﻿using FamilyCookbook.Model;
 using FamilyCookbook.REST_Models.Member;
 
-namespace FamilyCookbook.Mapping
+namespace FamilyCookbook.Mapping.MapperWrappers
 {
     public class MemberMapperWrapper : IMapper<Member, MemberRead, MemberCreate>
     {

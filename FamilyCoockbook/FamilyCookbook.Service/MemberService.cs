@@ -90,17 +90,14 @@ namespace FamilyCookbook.Service
             {
                 return chkMember;
             }
+            if (chkMember.Items.Password != entity.Password)
+            {
+                var passwordHash = BCrypt.Net.BCrypt.HashPassword(entity.Password, 12);
+                entity.Password = passwordHash;
 
-            var response = await _repository.UpdateAsync(id, entity);
-
-            if (chkMember.Items.Password == entity.Password) 
-            { 
-                return response;
             }
 
-            var passwordHash = BCrypt.Net.BCrypt.HashPassword(entity.Password, 12);
-            
-            response.Items.Password = passwordHash;
+            var response = await _repository.UpdateAsync(id, entity);
 
             return response;
 

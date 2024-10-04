@@ -1,7 +1,7 @@
 ﻿using FamilyCookbook.Model;
 using static FamilyCookbook.REST_Models.Comment.CommentModels;
 
-namespace FamilyCookbook.Mapping
+namespace FamilyCookbook.Mapping.MapperWrappers
 {
     public class CommentMapperWrapper : IMapper<Comment, CommentRead, CommentCreate>
     {

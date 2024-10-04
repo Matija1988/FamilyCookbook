@@ -1,6 +1,7 @@
 ﻿using FamilyCookbook.Common;
 using FamilyCookbook.Common.Upload;
 using FamilyCookbook.Mapping;
+using FamilyCookbook.Mapping.MapperWrappers;
 using FamilyCookbook.Model;
 using FamilyCookbook.REST_Models.Picture;
 using FamilyCookbook.Service.Common;

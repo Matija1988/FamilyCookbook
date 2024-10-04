@@ -144,7 +144,10 @@ namespace FamilyCookbook.Service
         {
             var response = await _repository.GetByIdAsync(id);
 
-            response.Items.AverageRating = await CalculateAverageRating(id);
+            if(response.Success)
+            {
+                response.Items.AverageRating = await CalculateAverageRating(id);
+            }
 
             return response; 
         }
