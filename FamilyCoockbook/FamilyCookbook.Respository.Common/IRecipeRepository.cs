@@ -13,7 +13,7 @@ namespace FamilyCookbook.Repository.Common
 
         Task<RepositoryResponse<Recipe>> AddMemberToRecipeAsync(MemberRecipe entity);
 
-        Task<RepositoryResponse<Recipe>> CreateAsyncTransaction(RecipeCreateDTO entity);
+        Task<CreateResponse> CreateAsyncTransaction(RecipeCreateDTO entity);
 
         Task<RepositoryResponse<List<Recipe>>> GetRecipesWithoutAuthors();
 

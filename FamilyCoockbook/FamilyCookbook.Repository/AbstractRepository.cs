@@ -143,9 +143,9 @@ namespace FamilyCookbook.Repository
 
        }
 
-        public async Task<RepositoryResponse<T>> UpdateAsync(int id, T entity)
+        public async Task<CreateResponse> UpdateAsync(int id, T entity)
         {
-            var response = new RepositoryResponse<T>();
+            var response = new CreateResponse();
 
             int rowsAffected = 0;
 
@@ -164,7 +164,7 @@ namespace FamilyCookbook.Repository
 
                 rowsAffected = await BuildUpdateCommand(query.ToString(), connection, parameters);
                   
-                response.Success = rowsAffected > 0;
+                response.IsSuccess = rowsAffected > 0;
                 response.Message = _successResponses.EntityUpdated();
 
                 return response;
@@ -173,7 +173,7 @@ namespace FamilyCookbook.Repository
             }
             catch (Exception ex)
             {
-                response.Success = false;
+                response.IsSuccess = false;
                 response.Message = _errorMessages.NotFound(id, ex);
                 return response;
             }

@@ -24,7 +24,7 @@ namespace FamilyCookbook.Service
         }
 
 
-        public async Task<RepositoryResponse<Picture>> UpdateAsync(int id, Picture entity)
+        public async Task<CreateResponse> UpdateAsync(int id, Picture entity)
         {
             var response = await _repository.UpdateAsync(id, entity);
 

@@ -189,162 +189,174 @@ export default function UpdateRecipe() {
 
   return (
     <>
-      <Sidebar></Sidebar>
-      <Container className="primaryContainer">
-        <h1>UPDATE RECIPE</h1>
-        <Form onSubmit={handleSubmit}>
-          <Row>
-            <Col>
-              <SelectionDropdown
-                atribute="Select category"
-                initValue={selectedCategoryId}
-                entities={categories}
-                onChanged={(e) => {
-                  setSelectedCategoryId(e.target.value);
-                }}
-              ></SelectionDropdown>
-            </Col>
-            <Col>
-              <Form.Label>Search members by first and last name</Form.Label>
-              <AsyncTypeahead
-                className="autocomplete"
-                id="condition"
-                emptyLabel="No result!"
-                searchText="Searching...."
-                labelKey={(member) => `${member.firstName} ${member.lastName}`}
-                minLength={3}
-                options={foundMembers}
-                onSearch={SearchByCondition}
-                renderMenuItemChildren={(member) => (
-                  <>
-                    <span
-                      key={member.id}
-                      onClick={() => assignMemberToRecipe(member)}
-                    >
-                      {member.firstName} {member.lastName}
-                    </span>
-                  </>
-                )}
-                ref={typeaheadRef}
-              ></AsyncTypeahead>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <InputText atribute="Title" value={recipe.title}></InputText>
-            </Col>
-            <Col>
-              <Table>
-                <thead>
-                  <tr>
-                    <th>First name</th>
-                    <th>Last name</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {recipe.members &&
-                  recipe.members.length > 0 &&
-                  members.length > 0 ? (
-                    recipe.members.map((member) => {
-                      if (member) {
-                        return (
-                          <tr key={member.id}>
-                            <td>{member.firstName}</td>
-                            <td>{member.lastName}</td>
-                            <td>
-                              <CustomButton
-                                label="REMOVE"
-                                onClick={() => removeMemberFromRecipe(member)}
-                              ></CustomButton>
-                            </td>
-                          </tr>
-                        );
-                      }
-                      return null;
-                    })
-                  ) : (
-                    <tr>
-                      <td colSpan="3">No members assigned to this recipe.</td>
-                    </tr>
-                  )}
-                </tbody>
-              </Table>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <InputText
-                atribute="Subtitle"
-                value={recipe.subtitle}
-              ></InputText>
-            </Col>
-            <Col></Col>
-          </Row>
-          <Row>
-            <Row>
-              <Col>
-                <Form.Label>Picture</Form.Label>
-              </Col>
-            </Row>
-            <Col>
-              <div>
-                <img
-                  src={URL + recipe.pictureLocation}
-                  style={{ width: "300px" }}
-                ></img>
-              </div>
-            </Col>
-            <Row>
-              <Col>
-                <Form.Label>Set new picture</Form.Label>
-              </Col>
-              <Col>
-                <Form.Label>Select image from gallery</Form.Label>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <div>
-                  <input
-                    type="file"
-                    onChange={(e) => handlePictureChange(e)}
-                  ></input>
-                  {error && <p style={{ color: red }}>{error}</p>}
-                </div>
-              </Col>
-              <Col>
-                <CustomButton
-                  label="Images"
-                  onClick={openImageModal}
-                ></CustomButton>
-              </Col>
-            </Row>
-          </Row>
-          <Row>
-            <RichTextEditor
-              value={recipe.text}
-              setValue={(text) => setRecipe({ ...recipe, text })}
-              ref={quillRef}
-            />
-          </Row>
-          <Row>
-            <Col>
-              <CustomButton
-                label="SUBMIT"
-                type="submit"
-                variant="primary  m-3"
-              ></CustomButton>
-              <CustomButton
-                label="CANCEL"
-                onClick={handleCancel}
-                variant="secondary  m-3"
-              ></CustomButton>
-            </Col>
-            <Col></Col>
-          </Row>
-        </Form>
-      </Container>
+      <Row>
+        <Col md={2}>
+          <Sidebar></Sidebar>
+        </Col>
+        <Col md={8}>
+          <Container className="primaryContainer">
+            <h1>UPDATE RECIPE</h1>
+            <Form onSubmit={handleSubmit}>
+              <Row>
+                <Col>
+                  <SelectionDropdown
+                    atribute="Select category"
+                    initValue={selectedCategoryId}
+                    entities={categories}
+                    onChanged={(e) => {
+                      setSelectedCategoryId(e.target.value);
+                    }}
+                  ></SelectionDropdown>
+                </Col>
+                <Col>
+                  <Form.Label>Search members by first and last name</Form.Label>
+                  <AsyncTypeahead
+                    className="autocomplete"
+                    id="condition"
+                    emptyLabel="No result!"
+                    searchText="Searching...."
+                    labelKey={(member) =>
+                      `${member.firstName} ${member.lastName}`
+                    }
+                    minLength={3}
+                    options={foundMembers}
+                    onSearch={SearchByCondition}
+                    renderMenuItemChildren={(member) => (
+                      <>
+                        <span
+                          key={member.id}
+                          onClick={() => assignMemberToRecipe(member)}
+                        >
+                          {member.firstName} {member.lastName}
+                        </span>
+                      </>
+                    )}
+                    ref={typeaheadRef}
+                  ></AsyncTypeahead>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <InputText atribute="Title" value={recipe.title}></InputText>
+                </Col>
+                <Col>
+                  <Table>
+                    <thead>
+                      <tr>
+                        <th>First name</th>
+                        <th>Last name</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {recipe.members &&
+                      recipe.members.length > 0 &&
+                      members.length > 0 ? (
+                        recipe.members.map((member) => {
+                          if (member) {
+                            return (
+                              <tr key={member.id}>
+                                <td>{member.firstName}</td>
+                                <td>{member.lastName}</td>
+                                <td>
+                                  <CustomButton
+                                    label="REMOVE"
+                                    onClick={() =>
+                                      removeMemberFromRecipe(member)
+                                    }
+                                  ></CustomButton>
+                                </td>
+                              </tr>
+                            );
+                          }
+                          return null;
+                        })
+                      ) : (
+                        <tr>
+                          <td colSpan="3">
+                            No members assigned to this recipe.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </Table>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <InputText
+                    atribute="Subtitle"
+                    value={recipe.subtitle}
+                  ></InputText>
+                </Col>
+                <Col></Col>
+              </Row>
+              <Row>
+                <Row>
+                  <Col>
+                    <Form.Label>Picture</Form.Label>
+                  </Col>
+                </Row>
+                <Col>
+                  <div>
+                    <img
+                      src={URL + recipe.pictureLocation}
+                      style={{ width: "300px" }}
+                    ></img>
+                  </div>
+                </Col>
+                <Row>
+                  <Col>
+                    <Form.Label>Set new picture</Form.Label>
+                  </Col>
+                  <Col>
+                    <Form.Label>Select image from gallery</Form.Label>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <div>
+                      <input
+                        type="file"
+                        onChange={(e) => handlePictureChange(e)}
+                      ></input>
+                      {error && <p style={{ color: red }}>{error}</p>}
+                    </div>
+                  </Col>
+                  <Col>
+                    <CustomButton
+                      label="Images"
+                      onClick={openImageModal}
+                    ></CustomButton>
+                  </Col>
+                </Row>
+              </Row>
+              <Row>
+                <RichTextEditor
+                  value={recipe.text}
+                  setValue={(text) => setRecipe({ ...recipe, text })}
+                  ref={quillRef}
+                />
+              </Row>
+              <Row>
+                <Col>
+                  <CustomButton
+                    label="SUBMIT"
+                    type="submit"
+                    variant="primary  m-3"
+                  ></CustomButton>
+                  <CustomButton
+                    label="CANCEL"
+                    onClick={handleCancel}
+                    variant="secondary  m-3"
+                  ></CustomButton>
+                </Col>
+                <Col></Col>
+              </Row>
+            </Form>
+          </Container>
+        </Col>
+      </Row>
       <ImageGallery
         isOpen={isImageGalleryOpen}
         closeModal={closeImageModal}

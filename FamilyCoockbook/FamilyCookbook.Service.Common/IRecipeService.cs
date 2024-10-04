@@ -12,7 +12,7 @@ namespace FamilyCookbook.Service.Common
     {
         Task<RepositoryResponse<Recipe>> AddMemberToRecipe(MemberRecipe entity);
 
-        Task<RepositoryResponse<Recipe>> CreateAsync(RecipeCreateDTO entityDto);
+        Task<CreateResponse> CreateAsync(RecipeCreateDTO entityDto);
 
         Task<RepositoryResponse<Recipe>> RemoveMemberFromRecipeAsync(int memberId, int recipeId);
 

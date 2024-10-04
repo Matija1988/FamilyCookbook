@@ -149,96 +149,102 @@ export default function Recipe() {
 
   return (
     <>
-      <Sidebar></Sidebar>
-      <Container className="primaryContainer">
-        <h1>RECIPES PAGE</h1>
-        <Row>
-          <Col>
-            <CustomButton
-              label="Create new"
-              variant="primary"
-              onClick={() => createRecipe()}
-              className="create-new-btn"
-            ></CustomButton>
-          </Col>
-          <Col>
-            <PageSizeDropdown
-              onChanged={handlePageSizeChange}
-              initValue={pageSize}
-            ></PageSizeDropdown>
-          </Col>
-          <Col>
-            <GenericInputs
-              atribute="Search by title"
-              type="text"
-              value=""
-              onChange={onSearchByTitleChange}
-            ></GenericInputs>
-          </Col>
-          <Col>
-            <GenericInputs
-              atribute="Search by subtitle"
-              type="text"
-              value=""
-              onChange={onSearchBySubtitleChange}
-            ></GenericInputs>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <ActivityStatusSelection
-              entities={statusOptions || []}
-              value={statusOptions.indexOf(1)}
-              onChanged={(e) => setActivityStatus(e.target.value)}
-              atribute="Search by activity status"
-            ></ActivityStatusSelection>
-          </Col>
-          <Col>
-            <SelectionDropdown
-              atribute="Search by category"
-              entities={categories || []}
-              onChanged={(e) => setSearchByCategoryId(e.target.value)}
-            ></SelectionDropdown>
-          </Col>
-          <Col>
-            <GenericInputs
-              atribute="Search by author name"
-              type="text"
-              value=""
-              onChange={onAuthorNameChange}
-            ></GenericInputs>
-          </Col>
-          <Col>
-            <GenericInputs
-              atribute="Search by author last name"
-              type="text"
-              value=""
-              onChange={onAuthorSurnameChange}
-            ></GenericInputs>
-          </Col>
-        </Row>
-        <Row>
-          <Col></Col>
-          <Col></Col>
-          <Col></Col>
-          <Col>
-            <CustomButton
-              label="Search"
-              onClick={paginateRecipes}
-              className="search-btn"
-            ></CustomButton>
-          </Col>
-        </Row>
-        <RecipeTable
-          recipes={recipes}
-          handleDelete={handleDelete}
-        ></RecipeTable>
-        <CustomPagination
-          pageNumber={pageNumber}
-          totalPages={totalPages}
-          handlePageChange={handlePageChange}
-        ></CustomPagination>
-      </Container>
+      <Row>
+        <Col md={2}>
+          <Sidebar></Sidebar>
+        </Col>
+        <Col md={8}>
+          <Container className="primaryContainer">
+            <h1>RECIPES PAGE</h1>
+            <Row>
+              <Col>
+                <CustomButton
+                  label="Create new"
+                  variant="primary"
+                  onClick={() => createRecipe()}
+                  className="create-new-btn"
+                ></CustomButton>
+              </Col>
+              <Col>
+                <PageSizeDropdown
+                  onChanged={handlePageSizeChange}
+                  initValue={pageSize}
+                ></PageSizeDropdown>
+              </Col>
+              <Col>
+                <GenericInputs
+                  atribute="Search by title"
+                  type="text"
+                  value=""
+                  onChange={onSearchByTitleChange}
+                ></GenericInputs>
+              </Col>
+              <Col>
+                <GenericInputs
+                  atribute="Search by subtitle"
+                  type="text"
+                  value=""
+                  onChange={onSearchBySubtitleChange}
+                ></GenericInputs>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <ActivityStatusSelection
+                  entities={statusOptions || []}
+                  value={statusOptions.indexOf(1)}
+                  onChanged={(e) => setActivityStatus(e.target.value)}
+                  atribute="Search by activity status"
+                ></ActivityStatusSelection>
+              </Col>
+              <Col>
+                <SelectionDropdown
+                  atribute="Search by category"
+                  entities={categories || []}
+                  onChanged={(e) => setSearchByCategoryId(e.target.value)}
+                ></SelectionDropdown>
+              </Col>
+              <Col>
+                <GenericInputs
+                  atribute="Search by author name"
+                  type="text"
+                  value=""
+                  onChange={onAuthorNameChange}
+                ></GenericInputs>
+              </Col>
+              <Col>
+                <GenericInputs
+                  atribute="Search by author last name"
+                  type="text"
+                  value=""
+                  onChange={onAuthorSurnameChange}
+                ></GenericInputs>
+              </Col>
+            </Row>
+            <Row>
+              <Col></Col>
+              <Col></Col>
+              <Col></Col>
+              <Col>
+                <CustomButton
+                  label="Search"
+                  onClick={paginateRecipes}
+                  className="search-btn"
+                ></CustomButton>
+              </Col>
+            </Row>
+            <RecipeTable
+              recipes={recipes}
+              handleDelete={handleDelete}
+            ></RecipeTable>
+            <CustomPagination
+              pageNumber={pageNumber}
+              totalPages={totalPages}
+              handlePageChange={handlePageChange}
+            ></CustomPagination>
+          </Container>
+        </Col>
+      </Row>
     </>
   );
 }

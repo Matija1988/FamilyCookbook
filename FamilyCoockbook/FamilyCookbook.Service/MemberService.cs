@@ -80,15 +80,18 @@ namespace FamilyCookbook.Service
 
         }
 
-        public async Task<RepositoryResponse<Member>> UpdateAsync(int id, Member entity)
+        public async Task<CreateResponse> UpdateAsync(int id, Member entity)
         {
             var chkMember = await _repository.GetByIdAsync(id);
+            var response = new CreateResponse();
 
             entity.DateUpdated = DateTime.Now;
 
             if (chkMember.Success == false) 
             {
-                return chkMember;
+                response.IsSuccess = false;
+                response.Message = chkMember.Message; 
+                return response;
             }
             if (chkMember.Items.Password != entity.Password)
             {
@@ -97,7 +100,7 @@ namespace FamilyCookbook.Service
 
             }
 
-            var response = await _repository.UpdateAsync(id, entity);
+            response = await _repository.UpdateAsync(id, entity);
 
             return response;
 

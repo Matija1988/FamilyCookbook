@@ -11,7 +11,7 @@ namespace FamilyCookbook.Respository.Common
 
      
 
-        Task<RepositoryResponse<T>> UpdateAsync(int id, T entity);
+        Task<CreateResponse> UpdateAsync(int id, T entity);
 
 
         Task<RepositoryResponse<T>> DeleteAsync(int id);

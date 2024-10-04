@@ -34,15 +34,10 @@ namespace FamilyCookbook.Service
             return await _repository.DeleteAsync(id);
         }
 
-        public async Task<RepositoryResponse<Category>> UpdateAsync(int id, Category entity)
+        public async Task<CreateResponse> UpdateAsync(int id, Category entity)
         {
             entity.IsActive = true;
             var response = await _repository.UpdateAsync(id, entity);
-
-            if (response.Success == false)
-            {
-                return response;
-            }
 
             return response;
         }

@@ -29,7 +29,7 @@ namespace FamilyCookbook.Service
             return response;
         }
 
-        public new async Task<RepositoryResponse<Comment>> UpdateAsync(int id, Comment comment)
+        public new async Task<CreateResponse> UpdateAsync(int id, Comment comment)
         {
             comment.DateUpdated = DateTime.Now;
 

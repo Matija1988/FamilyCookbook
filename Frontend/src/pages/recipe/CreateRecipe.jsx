@@ -193,139 +193,152 @@ export default function CreateRecipe() {
 
   return (
     <>
-      <Sidebar></Sidebar>
-      <Container className="primaryContainer">
-        <h1>Create recipe</h1>
-        <Form onSubmit={handleSubmit} className="createForm">
-          <Row>
-            <Col>
-              <SelectionDropdown
-                atribute="Select category"
-                entities={categories}
-                onChanged={(e) => setCategoryId(e.target.value)}
-              ></SelectionDropdown>
-            </Col>
-            <Col>
-              <Form.Label>Search members by first and last name</Form.Label>
-              <AsyncTypeahead
-                className="autocomplete"
-                id="condition"
-                emptyLabel="No result!"
-                searchText="Searching...."
-                labelKey={(member) => `${member.firstName} ${member.lastName}`}
-                minLength={3}
-                options={foundMembers}
-                onSearch={SearchByCondition}
-                renderMenuItemChildren={(member) => (
-                  <>
-                    <span
-                      key={member.id}
-                      onClick={() => assignMemberToRecipe(member)}
-                    >
-                      {member.firstName} {member.lastName}
-                    </span>
-                  </>
-                )}
-                ref={typeaheadRef}
-              ></AsyncTypeahead>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <InputText atribute="Title" value="" required={true}></InputText>
-            </Col>
-            <Col>
-              <h5 className="mt-3">Selected Members:</h5>
-              <ListGroup>
-                {recipe.memberIds.map((id) => {
-                  const member = members.find((m) => m.id === id);
-                  if (member) {
-                    return (
-                      <ListGroup.Item key={member.id}>
-                        {member.firstName} {member.lastName}
-                      </ListGroup.Item>
-                    );
-                  }
-                  return null;
-                })}
-              </ListGroup>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <InputText
-                atribute="Subtitle"
-                value=""
-                required={true}
-              ></InputText>
-            </Col>
-            <Col></Col>
-          </Row>
+      <Row>
+        <Col xs={12} md={2}>
+          <Sidebar></Sidebar>
+        </Col>
+        <Col xs={12} md={8}>
+          <Container className="primaryContainer">
+            <h1>Create recipe</h1>
+            <Form onSubmit={handleSubmit} className="createForm">
+              <Row>
+                <Col>
+                  <SelectionDropdown
+                    atribute="Select category"
+                    entities={categories}
+                    onChanged={(e) => setCategoryId(e.target.value)}
+                  ></SelectionDropdown>
+                </Col>
+                <Col>
+                  <Form.Label>Search members by first and last name</Form.Label>
+                  <AsyncTypeahead
+                    className="autocomplete"
+                    id="condition"
+                    emptyLabel="No result!"
+                    searchText="Searching...."
+                    labelKey={(member) =>
+                      `${member.firstName} ${member.lastName}`
+                    }
+                    minLength={3}
+                    options={foundMembers}
+                    onSearch={SearchByCondition}
+                    renderMenuItemChildren={(member) => (
+                      <>
+                        <span
+                          key={member.id}
+                          onClick={() => assignMemberToRecipe(member)}
+                        >
+                          {member.firstName} {member.lastName}
+                        </span>
+                      </>
+                    )}
+                    ref={typeaheadRef}
+                  ></AsyncTypeahead>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <InputText
+                    atribute="Title"
+                    value=""
+                    required={true}
+                  ></InputText>
+                </Col>
+                <Col>
+                  <h5 className="mt-3">Selected Members:</h5>
+                  <ListGroup>
+                    {recipe.memberIds.map((id) => {
+                      const member = members.find((m) => m.id === id);
+                      if (member) {
+                        return (
+                          <ListGroup.Item key={member.id}>
+                            {member.firstName} {member.lastName}
+                          </ListGroup.Item>
+                        );
+                      }
+                      return null;
+                    })}
+                  </ListGroup>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <InputText
+                    atribute="Subtitle"
+                    value=""
+                    required={true}
+                  ></InputText>
+                </Col>
+                <Col></Col>
+              </Row>
 
-          <Row>
-            <Col>
-              <Form.Label>Upload image</Form.Label>
-            </Col>
-            <Col>Select image from galley</Col>
-          </Row>
-          <Row>
-            <Col>
-              <div>
-                <input
-                  type="file"
-                  onChange={(e) => handlePictureChange(e)}
-                ></input>
-                {error && <p style={{ color: "red" }}>{error}</p>}
-              </div>
-            </Col>
-            <Col>
-              <CustomButton
-                label="Images"
-                type="button"
-                onClick={() => setIsImageGalleryOpen(true)}
-              ></CustomButton>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <img src={uploadedPicture} style={{ width: "300px" }}></img>
-              {imageFromGallery ? (
-                <img
-                  src={URL + imageFromGallery.location}
-                  style={{ width: "300px" }}
-                ></img>
-              ) : (
-                <div></div>
-              )}
-            </Col>
-          </Row>
-          <RichTextEditor
-            value={recipe.text}
-            setValue={(text) => setRecipe({ ...recipe, text })}
-            ref={quillRef}
-            className="ql-editor"
-          />
-          <Row>
-            <Col>
-              <CustomButton
-                label="SUBMIT"
-                type="submit"
-                variant="primary  m-3"
-              ></CustomButton>
-              <CustomButton
-                label="CANCEL"
-                onClick={handleCancel}
-                variant="secondary  m-3"
-              ></CustomButton>
-            </Col>
-          </Row>
-        </Form>
-        <ImageGallery
-          isOpen={isImageGalleryOpen}
-          closeModal={() => setIsImageGalleryOpen(false)}
-          setMainImage={setMainImage}
-        ></ImageGallery>
-      </Container>
+              <Row>
+                <Col>
+                  <Form.Label>Upload image</Form.Label>
+                </Col>
+                <Col>Select image from galley</Col>
+              </Row>
+              <Row>
+                <Col>
+                  <div>
+                    <input
+                      type="file"
+                      onChange={(e) => handlePictureChange(e)}
+                    ></input>
+                    {error && <p style={{ color: "red" }}>{error}</p>}
+                  </div>
+                </Col>
+                <Col>
+                  <CustomButton
+                    label="Images"
+                    type="button"
+                    onClick={() => setIsImageGalleryOpen(true)}
+                  ></CustomButton>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <img src={uploadedPicture} style={{ width: "300px" }}></img>
+                  {imageFromGallery ? (
+                    <img
+                      src={URL + imageFromGallery.location}
+                      style={{ width: "300px" }}
+                    ></img>
+                  ) : (
+                    <div></div>
+                  )}
+                </Col>
+              </Row>
+              <RichTextEditor
+                value={recipe.text}
+                setValue={(text) => setRecipe({ ...recipe, text })}
+                ref={quillRef}
+                className="ql-editor"
+              />
+              <Row>
+                <Col>
+                  <CustomButton
+                    label="SUBMIT"
+                    type="submit"
+                    variant="primary  m-3"
+                  ></CustomButton>
+                  <CustomButton
+                    label="CANCEL"
+                    onClick={handleCancel}
+                    variant="secondary  m-3"
+                  ></CustomButton>
+                </Col>
+              </Row>
+            </Form>
+            <ImageGallery
+              isOpen={isImageGalleryOpen}
+              closeModal={() => setIsImageGalleryOpen(false)}
+              setMainImage={setMainImage}
+            ></ImageGallery>
+          </Container>
+        </Col>
+        <Col></Col>
+      </Row>
     </>
   );
 }

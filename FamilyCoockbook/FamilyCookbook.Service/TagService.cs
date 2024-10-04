@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace FamilyCookbook.Service
 {
-    internal class TagService : ITagService
+    public sealed class TagService : ITagService
     {
         private readonly ITagRepository _tagRepository;
 

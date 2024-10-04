@@ -189,7 +189,7 @@ namespace FamilyCookbook.Controllers
 
             var response = await _service.CreateAsync(recipe);
 
-            if (response.Success == false)
+            if (response.IsSuccess == false)
             {
                 return BadRequest(response.Message.ToString());
             }
@@ -233,7 +233,7 @@ namespace FamilyCookbook.Controllers
 
             var response = await _service.UpdateAsync(id, recipe);
 
-            if (response.Success == false)
+            if (response.IsSuccess == false)
             {
                 return BadRequest(response.Message.ToString());
             }

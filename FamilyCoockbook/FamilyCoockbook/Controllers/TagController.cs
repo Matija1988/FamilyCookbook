@@ -9,7 +9,7 @@ namespace FamilyCookbook.Controllers
 {
     [ApiController]
     [Route("api/v0/tag")]
-    public class TagController : ControllerBase
+    public sealed class TagController : ControllerBase
     {
         private readonly ITagService _tagService;
 

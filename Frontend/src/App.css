@@ -132,9 +132,13 @@
   margin-top: 2%;
   background-color: #212529;
   color: white;
-  padding: 1%;
+  padding: 2rem;
   display: flex;
   flex-direction: column;
+  word-wrap: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   transition: transform 0.3 ease;
 }
 

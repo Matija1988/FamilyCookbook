@@ -73,7 +73,7 @@ namespace FamilyCookbook.Controllers
 
             var response = await _service.UpdateAsync(id, entity);
 
-            if (response.Success == false) 
+            if (response.IsSuccess == false) 
             {
                 return BadRequest(response.Message.ToString());
             }

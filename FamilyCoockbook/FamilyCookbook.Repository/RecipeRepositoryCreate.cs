@@ -10,9 +10,9 @@ namespace FamilyCookbook.Repository
 {
     public sealed partial class RecipeRepository
     {
-        public async Task<RepositoryResponse<Recipe>> CreateAsyncTransaction(RecipeCreateDTO entity)
+        public async Task<CreateResponse> CreateAsyncTransaction(RecipeCreateDTO entity)
         {
-            var response = new RepositoryResponse<Recipe>();
+            var response = new CreateResponse();
 
 
             using var connection = _context.CreateConnection();
@@ -66,7 +66,7 @@ namespace FamilyCookbook.Repository
 
                     if (entity.MemberIds == null)
                     {
-                        response.Success = false;
+                        response.IsSuccess = false;
                         response.Message = _errorMessages.NestedEntityWithIdFound("Recipe", "Members");
                         return response;
                     }
@@ -84,14 +84,14 @@ namespace FamilyCookbook.Repository
                             .ExecuteAsync(insertMemberRecipeQuery, memberRecipeParametes, transaction);
                     }
                     transaction.Commit();
-                    response.Success = true;
+                    response.IsSuccess = true;
                     response.Message = _successResponses.EntityCreated();
                     return response;
                 }
                 catch (Exception ex)
                 {
                     transaction.Rollback();
-                    response.Success = false;
+                    response.IsSuccess = false;
                     response.Message = _errorMessages.ErrorCreatingEntity(" Recipe ");
                     return response;
                 }

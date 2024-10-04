@@ -10,9 +10,9 @@ namespace FamilyCookbook.Repository
 {
     public sealed partial class RecipeRepository
     {
-        public async Task<RepositoryResponse<Recipe>> UpdateAsync(int id, Recipe entity)
+        public async Task<CreateResponse> UpdateAsync(int id, Recipe entity)
         {
-            var response = new RepositoryResponse<Recipe>();
+            var response = new CreateResponse();
 
             int rowAffected = 0;
 
@@ -44,14 +44,14 @@ namespace FamilyCookbook.Repository
                     Id = id
                 });
 
-                response.Success = rowAffected > 0;
+                response.IsSuccess = rowAffected > 0;
                 response.Message = _successResponses.EntityUpdated();
 
                 return response;
             }
             catch (Exception ex)
             {
-                response.Success = false;
+                response.IsSuccess = false;
                 response.Message = _errorMessages.ErrorAccessingDb("Recipe");
                 return response;
             }
