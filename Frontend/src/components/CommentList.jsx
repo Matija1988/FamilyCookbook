@@ -19,6 +19,8 @@ export default function CommentList({ recipeId }) {
   const [openComentId, setOpenComentId] = useState(null);
   const [editCommentId, setEditCommentId] = useState(null);
   const [editedText, setEditedText] = useState({});
+  const [editedRating, setEditedRating] = useState({});
+
   const { showLoading, hideLoading } = useLoading();
   const { showError, showErrormodal, errors, hideError } = useError();
 
@@ -45,6 +47,9 @@ export default function CommentList({ recipeId }) {
       hideLoading();
       showError(response.data);
     }
+    setComments((commentList) =>
+      commentList.filter((comment) => comment.id !== id)
+    );
   }
 
   async function updateComment(id, entity) {
@@ -54,6 +59,7 @@ export default function CommentList({ recipeId }) {
       hideLoading();
       showError(response.data);
     }
+    fetchComments();
     hideLoading();
   }
 
@@ -61,17 +67,31 @@ export default function CommentList({ recipeId }) {
     fetchComments();
   }, []);
 
-  const renderStars = (rating) => {
+  const renderStars = (comment, editable) => {
+    const rating = editable
+      ? editedRating[comment.id] || comment.rating
+      : comment.rating;
     const stars = [];
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 5; ++i) {
       stars.push(
-        <span key={i} style={{ color: i < rating ? "#FFD700" : "#CCCCCC" }}>
+        <span
+          key={i}
+          style={{
+            color: i < rating ? "#FFD700" : "#CCCCCC",
+            cursor: editable ? "pointer" : "default",
+          }}
+          onClick={() => editable && handleRatingChange(comment.id, i + 1)}
+        >
           ★
         </span>
       );
     }
     return stars;
+  };
+
+  const handleRatingChange = (id, rating) => {
+    setEditedRating((ratings) => ({ ...ratings, [id]: rating }));
   };
 
   const formatDate = (dateString) => {
@@ -91,29 +111,33 @@ export default function CommentList({ recipeId }) {
     setOpenComentId(openComentId === id ? null : id);
   };
 
-  const handleEdit = (id) => {
-    setEditCommentId(id);
+  const handleEdit = (comment) => {
+    setEditCommentId(comment.id);
+    setEditedText((prevText) => ({ ...prevText, [comment.id]: comment.text }));
+    setEditedRating((prevRating) => ({
+      ...prevRating,
+      [comment.id]: comment.rating,
+    }));
   };
 
   const handleDelete = (id) => {
     deleteComment(id);
-    setComments((commentList) =>
-      commentList.filter((comment) => comment.id !== id)
-    );
   };
 
   const handleSave = (comment) => {
     const updatedText = editedText[comment.id];
+    const updatedRating = editedRating[comment.id];
 
     let entity = {
       memberId: userId,
       recipeId: routeParams.id,
       text: updatedText,
-      rating: comment.rating,
+      rating: updatedRating,
     };
 
+    console.log("Updated rating:" + updatedRating);
+
     updateComment(comment.id, entity);
-    console.log("Saving comment:", entity);
     setEditCommentId(null);
   };
 
@@ -142,7 +166,8 @@ export default function CommentList({ recipeId }) {
                 Date created - {formatDate(comment.dateCreated)}
               </div>
               <div>
-                {renderStars(comment.rating)} ({comment.rating} / 5)
+                {renderStars(comment, editCommentId === comment.id)} (
+                {comment.rating} / 5)
               </div>
               <Button
                 variant="link"
@@ -179,7 +204,7 @@ export default function CommentList({ recipeId }) {
                         ) : (
                           <FaEdit
                             className="comment-icon cmt-edit-icon"
-                            onClick={() => handleEdit(comment.id)}
+                            onClick={() => handleEdit(comment)}
                           />
                         )}
                         <FaTrashAlt

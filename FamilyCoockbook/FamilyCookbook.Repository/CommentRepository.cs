@@ -36,7 +36,7 @@ namespace FamilyCookbook.Repository
             StringBuilder query = new();
 
             query.Append("UPDATE Comment SET MemberId = @MemberId, RecipeId = @RecipeId, Text = @Text," +
-                " DateUpdated = @DateUpdated WHERE Id = @id");
+                " Rating = @Rating, DateUpdated = @DateUpdated WHERE Id = @id");
             return query;
         }
 
