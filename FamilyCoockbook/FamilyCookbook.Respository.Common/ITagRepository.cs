@@ -1,4 +1,5 @@
-﻿using FamilyCookbook.Model;
+﻿using FamilyCookbook.Common;
+using FamilyCookbook.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -17,5 +18,7 @@ namespace FamilyCookbook.Repository.Common
         Task<RepositoryResponse<List<Tag>>> GetByTextAsync(string text);
 
         Task<CreateResponse> ConnectRecipeAndTag(RecipeTag dto);
+
+        Task<RepositoryResponse<ImmutableList<Tag>>> PaginateAsync(Paging paging, string text);
     }
 }

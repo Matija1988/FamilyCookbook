@@ -300,7 +300,7 @@ namespace FamilyCookbook.Repository
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = _errorMessages.ErrorAccessingDb("Member");
+                response.Message = _errorMessages.ErrorAccessingDb("Member", ex);
                 return response;
             }
             finally

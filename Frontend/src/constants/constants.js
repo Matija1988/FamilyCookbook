@@ -13,6 +13,7 @@ export const RouteNames = {
   LOGIN: "/userlogin",
   ADMIN_PANEL: "/c-admin/edit",
   ARTICLES_BY_CATEGORY: "/category/:id",
+  TAGS: "/tags",
 };
 
 export const App = {

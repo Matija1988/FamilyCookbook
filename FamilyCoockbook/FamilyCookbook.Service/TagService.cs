@@ -1,4 +1,5 @@
-﻿using FamilyCookbook.Model;
+﻿using FamilyCookbook.Common;
+using FamilyCookbook.Model;
 using FamilyCookbook.Repository.Common;
 using FamilyCookbook.Service.Common;
 using System;
@@ -54,6 +55,15 @@ namespace FamilyCookbook.Service
                 response = await _tagRepository.ConnectRecipeAndTag(recipeTag);
 
             }
+
+            return response;
+        }
+
+        public async Task<RepositoryResponse<ImmutableList<Tag>>> PaginateAsync(Paging paging, string text)
+        {
+            var response = await _tagRepository.PaginateAsync(paging, text);
+
+            response.PageCount = (int)Math.Ceiling(response.TotalCount / (double)paging.PageSize);
 
             return response;
         }

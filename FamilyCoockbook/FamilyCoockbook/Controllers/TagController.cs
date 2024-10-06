@@ -1,9 +1,11 @@
-﻿using FamilyCookbook.Mapping;
+﻿using FamilyCookbook.Common;
+using FamilyCookbook.Mapping;
 using FamilyCookbook.Model;
 using FamilyCookbook.REST_Models.Tags;
 using FamilyCookbook.Service.Common;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Immutable;
 
 namespace FamilyCookbook.Controllers
 {
@@ -77,6 +79,27 @@ namespace FamilyCookbook.Controllers
 
             return Ok(response.Items);
 
+        }
+
+        [HttpGet]
+        [Route("tags")]
+
+        public async Task<IActionResult> PaginateAsync([FromQuery]Paging paging, [FromQuery]string? text)
+        { 
+            var response = await _tagService.PaginateAsync(paging, text);
+
+            if(response.Success == false)
+            {
+                return NotFound(response.Message.ToString());
+            }
+
+            var finalResponse = new PaginatedList<ImmutableList<Tag>>();
+
+            finalResponse.Items = response.Items;
+            finalResponse.TotalCount = response.TotalCount;
+            finalResponse.PageCount = response.PageCount;
+
+            return Ok(finalResponse);
         }
 
     }

@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using Azure;
+using Dapper;
 using FamilyCookbook.Common;
 using FamilyCookbook.Model;
 using FamilyCookbook.Repository.Common;
@@ -83,6 +84,67 @@ namespace FamilyCookbook.Repository
             {
                 _context.CreateConnection().Close();                
             }
+        }
+
+        public async Task<RepositoryResponse<ImmutableList<Tag>>> PaginateAsync(Paging paging, string text)
+        {
+            var response = new RepositoryResponse<ImmutableList<Tag>>();
+
+            try
+            {
+                StringBuilder query = PaginationQueryBuilder(paging, text);
+
+                var entityDictionary = new Dictionary<int, Tag>();
+
+                using var connection = _context.CreateConnection();
+
+                using var multipleQuery = await connection.QueryMultipleAsync(query.ToString(), new
+                {
+                    Offset = (paging.PageNumber - 1) * paging.PageSize,
+                    PageSize = paging.PageSize
+                });
+
+                IEnumerable<Tag> entities = await multipleQuery.ReadAsync<Tag>();
+
+                response.TotalCount = await multipleQuery.ReadSingleAsync<int>();
+
+                response.Success = true;
+                response.Items = entities.ToImmutableList();
+
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = _errorMessages.ErrorAccessingDb("Tags", ex);
+                return response;
+            }
+            finally
+            {
+                _context.CreateConnection().Close();
+            }
+        }
+
+        private StringBuilder PaginationQueryBuilder(Paging paging, string text)
+        {
+            StringBuilder query = new("SELECT * FROM Tags WHERE 1 = 1 ");
+
+            StringBuilder countQuery = new($" SELECT COUNT (DISTINCT Id) FROM Tags WHERE Text LIKE '%{text}%';");
+
+            if (!string.IsNullOrWhiteSpace(text))
+            {
+                query.Append("AND Text = @Text");
+            }
+
+            query.Append(" ORDER BY Text ASC ");
+            query.Append(" OFFSET @Offset ROWS ");
+            query.Append(" FETCH NEXT @PageSize ROWS ONLY;");
+
+            query.Append(countQuery);
+
+            return query;
+
         }
 
         #endregion

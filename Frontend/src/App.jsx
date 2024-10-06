@@ -25,6 +25,7 @@ import LogIn from "./pages/logIn/LogIn";
 import AdminPanel from "./pages/AdminPanel/AdminPanel";
 import ProtectedRoutes from "./components/ProtectedRoutes";
 import ArticlesByCategory from "./pages/ArticlePages/ArticlesByCategory";
+import Tags from "./pages/Tags/Tags";
 function App() {
   const { errors, showErrorModal, hideErrorModal } = useError();
 
@@ -82,6 +83,7 @@ function App() {
             element={<UpdateRecipe />}
           ></Route>
           <Route path={RouteNames.ADMIN_PANEL} element={<AdminPanel />}></Route>
+          <Route path={RouteNames.TAGS} element={<Tags />}></Route>
         </Route>
         <Route
           path={RouteNames.RECIPE_DETAILS}
