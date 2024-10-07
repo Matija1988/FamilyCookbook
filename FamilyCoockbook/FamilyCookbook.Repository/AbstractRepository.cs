@@ -2,11 +2,13 @@
 using FamilyCookbook.Common;
 using FamilyCookbook.Model;
 using FamilyCookbook.Respository.Common;
+using Microsoft.Data.SqlClient;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -205,13 +207,20 @@ namespace FamilyCookbook.Repository
                 response.Message = _successResponses.EntityDeleted(tableName);
                 return response;
 
-            } 
+            }
+            catch (SqlException ex)
+            {
+                response.IsSuccess = false;
+                response.Message = _errorMessages.DeleteConstriantError("Recipe");
+                return response;
+            }
             catch (Exception ex)
             {
                 response.IsSuccess = false;
-                response.Message = _errorMessages.NotFound(id, ex);
+                response.Message = _errorMessages.NotFound(id);
                 return response;
             }
+            
             finally
             {
                 _context.CreateConnection().Close();

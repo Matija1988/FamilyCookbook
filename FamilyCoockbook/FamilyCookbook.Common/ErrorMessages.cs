@@ -41,8 +41,6 @@ namespace FamilyCookbook.Common
             return sb.Append("Error accessing database!!! Unable to get " + entityName + "! " + e);
         }
 
-
-
         public StringBuilder ErrorCreatingEntity(string entityName)
         {
             StringBuilder sb = new StringBuilder();
@@ -65,6 +63,15 @@ namespace FamilyCookbook.Common
             return sb.Append("Member not found!!!");
         }
 
+        public StringBuilder DeleteConstriantError(string tiedEntity)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append($"The entity is tied to {tiedEntity} in the database. " +
+                $"If you wish to permanently delete this entry contact your application administrator!");
+            return sb;
+        }
+
+
         public StringBuilder NestedEntityWithIdFound(string entityName, string nestedEntity)
         {
             StringBuilder sb = new StringBuilder();
@@ -77,6 +84,7 @@ namespace FamilyCookbook.Common
             StringBuilder sb = new StringBuilder();
             return sb.Append("Invalid username!!!");
         }
+
 
     }
 }

@@ -27,5 +27,7 @@ namespace FamilyCookbook.Common
         StringBuilder NestedEntityWithIdFound(string entityName, string nestedEntity);
 
         StringBuilder InvalidUsername();
+
+        StringBuilder DeleteConstriantError(string entityName);
     }
 }
