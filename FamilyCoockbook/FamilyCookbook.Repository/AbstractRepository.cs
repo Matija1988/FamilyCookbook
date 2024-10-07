@@ -389,7 +389,7 @@ namespace FamilyCookbook.Repository
 
         protected virtual async Task<int> BuildUpdateCommand(string query, System.Data.IDbConnection connection, DynamicParameters parameters)
         {
-            return connection.Execute(query, parameters);
+            return await connection.ExecuteAsync(query, parameters);
         }
 
         protected virtual StringBuilder BuildUpdateQuery(string tableName, string keyColumn, string keyProperty, int id)

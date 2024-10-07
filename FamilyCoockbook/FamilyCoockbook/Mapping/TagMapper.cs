@@ -8,5 +8,7 @@ namespace FamilyCookbook.Mapping
     public partial class TagMapper
     {
         public partial List<Tag> ListTagToListTagCreate(List<TagCreate> entity);
+
+        public partial Tag TagCreateToTag(TagCreate tagCreate);
     }
 }

@@ -11,7 +11,7 @@ export default function TagsUpsert({ entity }) {
   const [tags, setTags] = useState([]);
 
   const { showLoading, hideLoading } = useLoading();
-  const { showError } = useError();
+  const { showError, errors, showErrorModal, hideError } = useError();
 
   useEffect(() => {
     if (entity) {
@@ -28,8 +28,14 @@ export default function TagsUpsert({ entity }) {
 
     let response;
 
+    let updatedText = tagText;
+
+    const updateBody = {
+      text: updatedText,
+    };
+
     if (entity && entity.id) {
-      response = await TagsService.update("");
+      response = await TagsService.update("tag/update", entity.id, updateBody);
     } else {
       response = await TagsService.create("tag", requestBody.entities);
     }
@@ -38,7 +44,6 @@ export default function TagsUpsert({ entity }) {
     }
     hideLoading();
   }
-
   const handleAdd = () => {
     if (tagText.trim() !== "") {
       setTags((prevTags) => [...prevTags, { text: tagText.trim() }]);
@@ -50,7 +55,7 @@ export default function TagsUpsert({ entity }) {
   return (
     <>
       <Container>
-        <h4>{entity && entity.id ? "Update Tag" : "Create Tag"}</h4>
+        <h4>{entity && entity.text ? "Update Tag" : "Create Tag"}</h4>
         <Form onSubmit={handleSubmit}>
           <Form.Group>
             <InputText

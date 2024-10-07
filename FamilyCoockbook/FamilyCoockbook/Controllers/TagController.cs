@@ -119,9 +119,18 @@ namespace FamilyCookbook.Controllers
 
         [HttpPut]
         [Route("update/{id:int}")]
-        public async Task<IActionResult> UpdateAsync(int id, Tag tag)
+        public async Task<IActionResult> UpdateAsync(int id, TagCreate tag)
         {
-            var response = await _tagService.UpdateAsync(id, tag);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var mapper = new TagMapper();
+
+            var entity = mapper.TagCreateToTag(tag);
+
+            var response = await _tagService.UpdateAsync(id, entity);
 
             if(response.IsSuccess == false)
             {
