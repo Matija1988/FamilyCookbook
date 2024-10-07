@@ -7,6 +7,7 @@ import {
   update,
   setNotActive,
   processError,
+  deleteEntity,
 } from "./HttpService";
 
 async function paginate(params) {
@@ -27,4 +28,5 @@ export default {
   update,
   setNotActive,
   paginate,
+  deleteEntity,
 };

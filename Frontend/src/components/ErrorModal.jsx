@@ -33,3 +33,4 @@ ErrorModal.propTypes = {
   errors: PropTypes.array,
   show: PropTypes.bool.isRequired,
 };
+  

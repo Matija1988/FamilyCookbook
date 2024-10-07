@@ -67,5 +67,12 @@ namespace FamilyCookbook.Service
 
             return response;
         }
+
+        public async Task<CreateResponse> DeleteAsync(int id)
+        {
+            var response = await _tagRepository.DeleteAsync(id);
+
+            return response;
+        }
     }
 }

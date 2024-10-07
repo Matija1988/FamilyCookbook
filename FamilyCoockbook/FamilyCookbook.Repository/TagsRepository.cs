@@ -216,5 +216,39 @@ namespace FamilyCookbook.Repository
                 _context.CreateConnection().Close();
             }
         }
+
+        public async Task<CreateResponse> DeleteAsync(int id)
+        {
+            var response = new CreateResponse();
+
+            int rowsAffected = 0;
+
+            try
+            {
+                StringBuilder query = new("DELETE FROM Tags WHERE Id = @Id");
+
+                using var connection = _context.CreateConnection();
+
+                rowsAffected = await connection.ExecuteAsync(query.ToString(), new { id });
+
+                response.IsSuccess = rowsAffected > 0;
+                response.Message = _successResponses.EntityDeleted("Tag");
+
+                return response;
+
+
+            }
+            catch (Exception ex)
+            {
+                response.IsSuccess = false;
+                response.Message = _errorMessages.ErrorAccessingDb("Tags");
+                return response;
+            }
+            finally
+            {
+                _context.CreateConnection().Close();
+            }
+
+        }
     }
 }

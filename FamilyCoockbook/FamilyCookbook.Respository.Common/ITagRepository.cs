@@ -20,5 +20,7 @@ namespace FamilyCookbook.Repository.Common
         Task<CreateResponse> ConnectRecipeAndTag(RecipeTag dto);
 
         Task<RepositoryResponse<ImmutableList<Tag>>> PaginateAsync(Paging paging, string text);
+
+        Task<CreateResponse> DeleteAsync(int id);
     }
 }

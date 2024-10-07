@@ -78,7 +78,18 @@ export async function update(name, id, entity) {
 
 export async function setNotActive(name, id) {
   return await httpService
-    .put("/" + name + "/", id)
+    .put("/" + name + "/" + id)
+    .then((res) => {
+      return handleSuccess(res);
+    })
+    .catch((e) => {
+      return processError(e);
+    });
+}
+
+export async function deleteEntity(name, id) {
+  return await httpService
+    .delete("/" + name + "/", id)
     .then((res) => {
       return handleSuccess(res);
     })

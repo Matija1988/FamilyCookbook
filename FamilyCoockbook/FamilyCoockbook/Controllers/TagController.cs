@@ -102,5 +102,21 @@ namespace FamilyCookbook.Controllers
             return Ok(finalResponse);
         }
 
+        [HttpDelete]
+        [Route("delete/{id:int}")]
+
+        public async Task<IActionResult> DeleteAsync(int id)
+        {
+            var resposne = await _tagService.DeleteAsync(id);
+
+            if(resposne.IsSuccess == false)
+            {
+                return BadRequest(resposne.Message.ToString());
+            }
+
+            return Ok(resposne.Message.ToString());
+        }
+
+
     }
 }

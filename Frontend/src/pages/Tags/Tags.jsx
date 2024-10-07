@@ -8,6 +8,8 @@ import GenericTable from "../../components/GenericTable";
 import { useNavigate } from "react-router-dom";
 import DeleteModal from "../../components/DeleteModal";
 import PageSizeDropdown from "../../components/PageSizeDropdown";
+import CustomPagination from "../../components/CustomPagination";
+import ErrorModal from "../../components/ErrorModal";
 
 export default function Tags() {
   const [tags, setTags] = useState([]);
@@ -37,6 +39,7 @@ export default function Tags() {
     if (text) {
       params["Text"] = text;
     }
+    return params;
   };
 
   async function paginateTags() {
@@ -52,6 +55,7 @@ export default function Tags() {
 
     setTags(items);
     setTotalPages(pageCount);
+    hideLoading();
   }
 
   useEffect(() => {
@@ -60,40 +64,77 @@ export default function Tags() {
 
   async function handleUpdate(tag) {}
 
-  async function deleteTag(tag) {}
+  async function deleteTag(tag) {
+    showLoading();
+    const response = await TagsService.deleteEntity("tag/delete/" + tag.id);
+    if (!response.ok) {
+      hideLoading();
+      showError(response.data);
+    }
+    setShowDeleteModal(false);
+    paginateTags();
+    hideLoading();
+  }
 
   const handlePageSizeChange = (event) => {};
 
+  const handlePageChange = (value) => {
+    setPageNumber(value);
+  };
+
   return (
     <>
-      <Sidebar></Sidebar>
-      <Container className="primaryContainer">
-        <h1>Tags</h1>
-        <Row>
-          <Col></Col>
-          <Col></Col>
-          <Col>
-            <PageSizeDropdown
-              initValue={pageSize}
-              onChanged={handlePageSizeChange}
-            ></PageSizeDropdown>
-          </Col>
-        </Row>
-        <GenericTable
-          dataArray={tags}
-          onDelete={(tag) => {
-            setEntityToDelete(tag), setShowDeleteModal(true);
-          }}
-          onUpdate={handleUpdate}
-          className="gen-tbl"
-        ></GenericTable>
-      </Container>
+      <Row>
+        <Col md={2}>
+          <Sidebar></Sidebar>
+        </Col>
+        <Col md={8}>
+          <Container className="primaryContainer">
+            <h1>Tags</h1>
+            <Row>
+              <Col>
+                <PageSizeDropdown
+                  initValue={pageSize}
+                  onChanged={handlePageSizeChange}
+                ></PageSizeDropdown>
+              </Col>
+
+              <Col></Col>
+              <Col></Col>
+            </Row>
+            <Row>
+              <Col>
+                <GenericTable
+                  dataArray={tags}
+                  onUpdate={handleUpdate}
+                  onDelete={(tag) => {
+                    setEntityToDelete(tag), setShowDeleteModal(true);
+                  }}
+                  className="gen-tbl"
+                  cutRange={1}
+                ></GenericTable>
+              </Col>
+              <Col></Col>
+            </Row>
+            <CustomPagination
+              pageNumber={pageNumber}
+              totalPages={totalPages}
+              handlePageChange={handlePageChange}
+            ></CustomPagination>
+          </Container>
+        </Col>
+      </Row>
       <DeleteModal
         show={showDeleteModal}
         handleClose={() => setShowDeleteModal(false)}
-        hanldeDelete={deleteTag}
+        handleDelete={deleteTag}
         entity={entityToDelete}
       ></DeleteModal>
+      <ErrorModal
+        show={showErrorModal}
+        onHide={hideError}
+        errors={errors}
+      ></ErrorModal>
     </>
   );
 }
