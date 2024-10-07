@@ -18,7 +18,7 @@ namespace FamilyCookbook.Service
         {
             _repository = repository;
         }
-        public async Task<RepositoryResponse<T>> DeleteAsync(int id)
+        public async Task<MessageResponse> DeleteAsync(int id)
         {
             return await _repository.DeleteAsync(id);
         }
@@ -55,7 +55,7 @@ namespace FamilyCookbook.Service
             return await _repository.SoftDeleteAsync(id);
         }
 
-        public async Task<CreateResponse> UpdateAsync(int id, T entity)
+        public async Task<MessageResponse> UpdateAsync(int id, T entity)
         {
             return await _repository.UpdateAsync(id, entity);
         }

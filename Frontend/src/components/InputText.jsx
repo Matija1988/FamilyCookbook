@@ -7,6 +7,7 @@ export default function InputText({
   required,
   className,
   type,
+  onChange,
 }) {
   return (
     <Form.Group>
@@ -17,6 +18,7 @@ export default function InputText({
         required={required}
         className={className}
         type={type}
+        onChange={onChange}
       />
     </Form.Group>
   );

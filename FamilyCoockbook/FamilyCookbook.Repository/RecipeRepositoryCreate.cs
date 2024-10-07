@@ -10,9 +10,9 @@ namespace FamilyCookbook.Repository
 {
     public sealed partial class RecipeRepository
     {
-        public async Task<CreateResponse> CreateAsyncTransaction(RecipeCreateDTO entity)
+        public async Task<MessageResponse> CreateAsyncTransaction(RecipeCreateDTO entity)
         {
-            var response = new CreateResponse();
+            var response = new MessageResponse();
 
 
             using var connection = _context.CreateConnection();

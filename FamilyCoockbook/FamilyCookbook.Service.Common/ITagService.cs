@@ -9,18 +9,16 @@ using System.Threading.Tasks;
 
 namespace FamilyCookbook.Service.Common
 {
-    public interface ITagService
+    public interface ITagService : IService<Tag>
     {
-        Task<RepositoryResponse<List<Tag>>> GetAllAsync();
 
-        Task<CreateResponse> CreateAsync(List<Tag> entities);
+        Task<MessageResponse> CreateAsync(List<Tag> entities);
 
         Task<RepositoryResponse<List<Tag>>> GetByTextAsync(string text);
 
-        Task<CreateResponse> ConnectRecipeAndTag(RecipeTagArray dto);
+        Task<MessageResponse> ConnectRecipeAndTag(RecipeTagArray dto);
 
         Task<RepositoryResponse<ImmutableList<Tag>>> PaginateAsync(Paging paging, string text);
 
-        Task<CreateResponse> DeleteAsync(int id);
     }
 }

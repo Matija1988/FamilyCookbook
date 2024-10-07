@@ -10,7 +10,7 @@ namespace FamilyCookbook.Repository.Common
 {
     public interface ICommentRepository : IRepository<Comment>
     {
-        Task<CreateResponse> CreateAsync(Comment comment);
+        Task<MessageResponse> CreateAsync(Comment comment);
 
         Task<RepositoryResponse<List<Comment>>> GetRecipeCommentsAsync(int recipeId);
     }

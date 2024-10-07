@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FamilyCookbook.Model
 {
-    public struct CreateResponse
+    public struct MessageResponse
     {
         public bool IsSuccess { get; set; }
 

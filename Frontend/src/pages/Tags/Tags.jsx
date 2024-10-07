@@ -10,18 +10,20 @@ import DeleteModal from "../../components/DeleteModal";
 import PageSizeDropdown from "../../components/PageSizeDropdown";
 import CustomPagination from "../../components/CustomPagination";
 import ErrorModal from "../../components/ErrorModal";
+import GenericInputs from "../../components/GenericInputs";
+import CustomButton from "../../components/CustomButton";
+import TagsUpsert from "./TagsUpsert";
 
 export default function Tags() {
   const [tags, setTags] = useState([]);
   const [newText, setText] = useState([]);
-  const [searchByText, setSearchByText] = "";
+  const [searchByText, setSearchByText] = useState("");
   const [pageSize, setPageSize] = useState(10);
   const [pageNumber, setPageNumber] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-
   const [entityToDelete, setEntityToDelete] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(null);
-
+  const [selectedTag, setSelectedTag] = useState(null);
   const navigate = useNavigate();
 
   const { showLoading, hideLoading } = useLoading();
@@ -37,7 +39,7 @@ export default function Tags() {
       params["PageNumber"] = pageNumber;
     }
     if (text) {
-      params["Text"] = text;
+      params["text"] = text;
     }
     return params;
   };
@@ -62,7 +64,9 @@ export default function Tags() {
     paginateTags();
   }, [pageNumber, pageSize]);
 
-  async function handleUpdate(tag) {}
+  async function handleUpdate(tag) {
+    setSelectedTag(tag);
+  }
 
   async function deleteTag(tag) {
     showLoading();
@@ -76,10 +80,17 @@ export default function Tags() {
     hideLoading();
   }
 
-  const handlePageSizeChange = (event) => {};
+  const handlePageSizeChange = (e) => {
+    setPageSize(e.target.value);
+    setPageNumber(1);
+  };
 
   const handlePageChange = (value) => {
     setPageNumber(value);
+  };
+
+  const onSearchTextChange = (e) => {
+    setSearchByText(e.target.value);
   };
 
   return (
@@ -98,9 +109,21 @@ export default function Tags() {
                   onChanged={handlePageSizeChange}
                 ></PageSizeDropdown>
               </Col>
-
-              <Col></Col>
-              <Col></Col>
+              <Col>
+                <GenericInputs
+                  atribute="Text"
+                  type="text"
+                  value=""
+                  onChange={onSearchTextChange}
+                ></GenericInputs>
+              </Col>
+              <Col>
+                <CustomButton
+                  label="Search"
+                  onClick={paginateTags}
+                  className="search-btn"
+                ></CustomButton>
+              </Col>
             </Row>
             <Row>
               <Col>
@@ -114,7 +137,9 @@ export default function Tags() {
                   cutRange={1}
                 ></GenericTable>
               </Col>
-              <Col></Col>
+              <Col>
+                <TagsUpsert tag={selectedTag}></TagsUpsert>
+              </Col>
             </Row>
             <CustomPagination
               pageNumber={pageNumber}

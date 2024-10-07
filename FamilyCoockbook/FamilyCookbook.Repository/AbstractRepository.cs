@@ -53,7 +53,7 @@ namespace FamilyCookbook.Repository
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = _errorMessages.ErrorAccessingDb(GetTableName());
+                response.Message = _errorMessages.ErrorAccessingDb(GetTableName(), ex);
                 return response;
             }
             finally 
@@ -106,9 +106,9 @@ namespace FamilyCookbook.Repository
 
         #endregion
 
-        public async Task<CreateResponse> CreateAsync(T entity)
+        public async Task<MessageResponse> CreateAsync(T entity)
         {
-            var response = new CreateResponse();
+            var response = new MessageResponse();
 
             int rowsAffected = 0;
             string tableName = GetTableName();
@@ -143,9 +143,9 @@ namespace FamilyCookbook.Repository
 
        }
 
-        public async Task<CreateResponse> UpdateAsync(int id, T entity)
+        public async Task<MessageResponse> UpdateAsync(int id, T entity)
         {
-            var response = new CreateResponse();
+            var response = new MessageResponse();
 
             int rowsAffected = 0;
 
@@ -184,9 +184,9 @@ namespace FamilyCookbook.Repository
 
         }
 
-        public async Task<RepositoryResponse<T>> DeleteAsync(int id)
+        public async Task<MessageResponse> DeleteAsync(int id)
         {
-            var response = new RepositoryResponse<T>(); 
+            var response = new MessageResponse(); 
 
             int rowsAffected = 0;
 
@@ -196,20 +196,19 @@ namespace FamilyCookbook.Repository
                 string keyColumn = GetKeyColumnName();
                 string keyProperty = GetKeyPropertyName();
                 var query = BuildPermaDeleteQuery(tableName, keyColumn, id);
-                  //  $"DELETE FROM {tableName} WHERE {keyColumn} = @{keyProperty};";
-
+             
                 using var connection =  _context.CreateConnection();
 
                 rowsAffected = await connection.ExecuteAsync(query.ToString(), new { id });
 
-                response.Success = rowsAffected > 0;
+                response.IsSuccess = rowsAffected > 0;
                 response.Message = _successResponses.EntityDeleted(tableName);
                 return response;
 
             } 
             catch (Exception ex)
             {
-                response.Success = false;
+                response.IsSuccess = false;
                 response.Message = _errorMessages.NotFound(id, ex);
                 return response;
             }

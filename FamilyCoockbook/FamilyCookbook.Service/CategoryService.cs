@@ -23,18 +23,18 @@ namespace FamilyCookbook.Service
             _recipeRepository = recipeRepository;
         }
 
-        public async Task<CreateResponse> CreateAsync(Category entity)
+        public async Task<MessageResponse> CreateAsync(Category entity)
         {
             entity.IsActive = true;
             return await _repository.CreateAsync(entity);
         }
 
-        public async Task<RepositoryResponse<Category>> DeleteAsync(int id)
+        public async Task<MessageResponse> DeleteAsync(int id)
         {
             return await _repository.DeleteAsync(id);
         }
 
-        public async Task<CreateResponse> UpdateAsync(int id, Category entity)
+        public async Task<MessageResponse> UpdateAsync(int id, Category entity)
         {
             entity.IsActive = true;
             var response = await _repository.UpdateAsync(id, entity);

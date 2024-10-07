@@ -14,7 +14,7 @@ namespace FamilyCookbook.Service
             _repository = repository;
         }
 
-        public async Task<CreateResponse> CreateAsync(Picture entity)
+        public async Task<MessageResponse> CreateAsync(Picture entity)
         {
             entity.IsActive = true;
 
@@ -24,7 +24,7 @@ namespace FamilyCookbook.Service
         }
 
 
-        public async Task<CreateResponse> UpdateAsync(int id, Picture entity)
+        public async Task<MessageResponse> UpdateAsync(int id, Picture entity)
         {
             var response = await _repository.UpdateAsync(id, entity);
 

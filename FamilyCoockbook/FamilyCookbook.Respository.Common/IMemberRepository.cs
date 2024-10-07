@@ -11,7 +11,7 @@ namespace FamilyCookbook.Repository.Common
 {
     public interface IMemberRepository : IRepository<Member>
     {
-        Task<CreateResponse> CreateAsync(Member entity);
+        Task<MessageResponse> CreateAsync(Member entity);
         Task<RepositoryResponse<Member>> GetByGuidAsync(Guid uniqueId);
 
         Task<RepositoryResponse<Lazy<List<Member>>>> PaginateAsync(Paging paging, MemberFilter filter);

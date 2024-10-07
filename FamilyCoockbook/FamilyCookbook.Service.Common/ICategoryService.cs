@@ -9,6 +9,6 @@ namespace FamilyCookbook.Service.Common
 {
     public interface ICategoryService : IService<Category>
     {
-        Task<CreateResponse> CreateAsync(Category entity);
+        Task<MessageResponse> CreateAsync(Category entity);
     }
 }

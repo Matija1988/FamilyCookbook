@@ -10,6 +10,6 @@ namespace FamilyCookbook.Repository.Common
 {
     public interface IPictureRespository : IRepository<Picture>
     {
-        Task<CreateResponse> CreateAsync(Picture entity);
+        Task<MessageResponse> CreateAsync(Picture entity);
     }
 }

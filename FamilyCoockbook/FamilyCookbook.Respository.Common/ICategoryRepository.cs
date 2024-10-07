@@ -10,6 +10,6 @@ namespace FamilyCookbook.Repository.Common
 {
     public interface ICategoryRepository : IRepository<Category>
     {
-        Task<CreateResponse> CreateAsync(Category entity);
+        Task<MessageResponse> CreateAsync(Category entity);
     }
 }

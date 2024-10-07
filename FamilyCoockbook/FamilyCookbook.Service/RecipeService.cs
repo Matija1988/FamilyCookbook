@@ -110,7 +110,7 @@ namespace FamilyCookbook.Service
             return response;
         }
 
-        public async Task<CreateResponse> UpdateAsync(int id, Recipe entity)
+        public async Task<MessageResponse> UpdateAsync(int id, Recipe entity)
         {
             entity.DateUpdated = DateTime.Now;
             entity.IsActive = true;
@@ -127,7 +127,7 @@ namespace FamilyCookbook.Service
             return response;
         }
 
-        public async Task<CreateResponse> CreateAsync(RecipeCreateDTO entity)
+        public async Task<MessageResponse> CreateAsync(RecipeCreateDTO entity)
         {
             entity.DateCreated = DateTime.Now;
             entity.DateUpdated = DateTime.Now;

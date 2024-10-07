@@ -18,7 +18,7 @@ namespace FamilyCookbook.Service
             _commentRepository = commentRepository;
         }
 
-        public async Task<CreateResponse> CreateAsync(Comment comment)
+        public async Task<MessageResponse> CreateAsync(Comment comment)
         {
             comment.IsActive = true;
             comment.DateCreated = DateTime.Now;
@@ -29,7 +29,7 @@ namespace FamilyCookbook.Service
             return response;
         }
 
-        public new async Task<CreateResponse> UpdateAsync(int id, Comment comment)
+        public new async Task<MessageResponse> UpdateAsync(int id, Comment comment)
         {
             comment.DateUpdated = DateTime.Now;
 

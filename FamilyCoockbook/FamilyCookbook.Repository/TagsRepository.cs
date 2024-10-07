@@ -12,13 +12,16 @@ using System.Threading.Tasks;
 
 namespace FamilyCookbook.Repository
 {
-    public sealed class TagsRepository : ITagRepository
+    public sealed class TagsRepository : AbstractRepository<Tag>, ITagRepository
     {
         IErrorMessages _errorMessages;
         ISuccessResponses _successResponses;
         DapperDBContext _context;
 
-        public TagsRepository(IErrorMessages errorMessages, ISuccessResponses success, DapperDBContext context)
+        public TagsRepository(DapperDBContext context,
+            ISuccessResponses success,
+            IErrorMessages errorMessages
+            ) : base(context,  errorMessages, success)
         {
             _context = context;
             _errorMessages = errorMessages;
@@ -26,33 +29,12 @@ namespace FamilyCookbook.Repository
         }
 
         #region GET METHODS
-        public async Task<RepositoryResponse<List<Tag>>> GetAllAsync()
+
+        protected override StringBuilder BuildQueryReadAll()
         {
-            var response = new RepositoryResponse<List<Tag>>(); 
-            try
-            {
-                StringBuilder query = new StringBuilder();
-                query.Append("SELECT * FROM Tags");
+            StringBuilder query = new("SELECT * FROM Tag");
 
-                using var connection = _context.CreateConnection();
-
-                var entity = await connection.QueryAsync<Tag>(query.ToString());
-
-                response.Items = entity.ToList();
-                response.Success = true;
-                
-                return response;
-
-            }
-            catch (Exception ex)
-            {
-                response.Message = _errorMessages.ErrorAccessingDb("Tags", ex);
-                response.Success = false;
-                return response;
-            } finally
-            {
-                _context.CreateConnection().Close();
-            }
+            return query;
         }
 
         public async Task<RepositoryResponse<List<Tag>>> GetByTextAsync(string text)
@@ -62,7 +44,7 @@ namespace FamilyCookbook.Repository
             try
             {
                 StringBuilder query = new();
-                query.Append($"SELECT * FROM Tags WHERE Text LIKE '%{text}%';");
+                query.Append($"SELECT * FROM Tag WHERE Text LIKE '%{text}%';");
 
                 using var connection = _context.CreateConnection();
 
@@ -128,13 +110,13 @@ namespace FamilyCookbook.Repository
 
         private StringBuilder PaginationQueryBuilder(Paging paging, string text)
         {
-            StringBuilder query = new("SELECT * FROM Tags WHERE 1 = 1 ");
+            StringBuilder query = new("SELECT * FROM Tag WHERE 1 = 1 ");
 
-            StringBuilder countQuery = new($" SELECT COUNT (DISTINCT Id) FROM Tags WHERE Text LIKE '%{text}%';");
+            StringBuilder countQuery = new($" SELECT COUNT (DISTINCT Id) FROM Tag WHERE Text LIKE '%{text}%';");
 
             if (!string.IsNullOrWhiteSpace(text))
             {
-                query.Append("AND Text = @Text");
+                query.Append($"AND Text LIKE '%{text}%'");
             }
 
             query.Append(" ORDER BY Text ASC ");
@@ -149,43 +131,18 @@ namespace FamilyCookbook.Repository
 
         #endregion
 
-        public async Task<CreateResponse> CreateAsync(Tag entity)
+        protected override StringBuilder BuildCreateQuery(string tableName, string columns, string properties)
         {
-            var response = new CreateResponse();
+            StringBuilder query = new ("INSERT INTO Tag (Text) VALUES (@Text);");
 
-            int rowsAffected = 0;
-
-            try
-            {
-                StringBuilder query = new();
-                query.Append("INSERT INTO Tags (Text) VALUES (@Text);");
-
-                using var connection = _context.CreateConnection();
-
-                rowsAffected = await connection.ExecuteAsync(query.ToString(), entity);
-
-                response.IsSuccess = rowsAffected > 0;
-                response.Message = _successResponses.EntityCreated();
-
-                return response;
-
-            }
-            catch (Exception ex)
-            {
-                response.IsSuccess = false;
-                response.Message = _errorMessages.ErrorCreatingEntity("Tag");
-                return response;
-            }
-            finally
-            {
-                _context.CreateConnection().Close();
-            }
-
+            return query;
         }
 
-        public async Task<CreateResponse> ConnectRecipeAndTag(RecipeTag dto)
+       
+
+        public async Task<MessageResponse> ConnectRecipeAndTag(RecipeTag dto)
         {
-            var response = new CreateResponse();
+            var response = new MessageResponse();
             int rowsAffected = 0;
 
             try
@@ -217,38 +174,10 @@ namespace FamilyCookbook.Repository
             }
         }
 
-        public async Task<CreateResponse> DeleteAsync(int id)
+        protected override StringBuilder BuildPermaDeleteQuery(string tableName, string keyColumn, int id)
         {
-            var response = new CreateResponse();
-
-            int rowsAffected = 0;
-
-            try
-            {
-                StringBuilder query = new("DELETE FROM Tags WHERE Id = @Id");
-
-                using var connection = _context.CreateConnection();
-
-                rowsAffected = await connection.ExecuteAsync(query.ToString(), new { id });
-
-                response.IsSuccess = rowsAffected > 0;
-                response.Message = _successResponses.EntityDeleted("Tag");
-
-                return response;
-
-
-            }
-            catch (Exception ex)
-            {
-                response.IsSuccess = false;
-                response.Message = _errorMessages.ErrorAccessingDb("Tags");
-                return response;
-            }
-            finally
-            {
-                _context.CreateConnection().Close();
-            }
-
+            return new StringBuilder("DELETE FROM Tag WHERE Id = @Id");
         }
+        
     }
 }

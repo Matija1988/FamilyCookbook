@@ -10,9 +10,9 @@ namespace FamilyCookbook.Repository
 {
     public sealed partial class RecipeRepository
     {
-        public async Task<CreateResponse> UpdateAsync(int id, Recipe entity)
+        public async Task<MessageResponse> UpdateAsync(int id, Recipe entity)
         {
-            var response = new CreateResponse();
+            var response = new MessageResponse();
 
             int rowAffected = 0;
 

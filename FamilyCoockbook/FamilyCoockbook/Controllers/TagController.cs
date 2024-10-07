@@ -26,7 +26,7 @@ namespace FamilyCookbook.Controllers
         {
             var response = await _tagService.GetAllAsync();
 
-            return response.Success ? Ok(response) : BadRequest(response.Message);
+            return response.Success ? Ok(response) : BadRequest(response.Message.ToString());
         }
         [HttpPost]
         public async Task<IActionResult> CreateAsync(List<TagCreate> entites)
@@ -115,6 +115,20 @@ namespace FamilyCookbook.Controllers
             }
 
             return Ok(resposne.Message.ToString());
+        }
+
+        [HttpPut]
+        [Route("update/{id:int}")]
+        public async Task<IActionResult> UpdateAsync(int id, Tag tag)
+        {
+            var response = await _tagService.UpdateAsync(id, tag);
+
+            if(response.IsSuccess == false)
+            {
+                return BadRequest(response.Message.ToString());
+            }
+
+            return Ok(response.Message.ToString());
         }
 
 

@@ -33,9 +33,9 @@ namespace FamilyCookbook.Service
             return response;
         }
 
-        public async Task<CreateResponse> CreateAsync(List<Tag> entity)
+        public async Task<MessageResponse> CreateAsync(List<Tag> entity)
         {
-            var response = new CreateResponse();
+            var response = new MessageResponse();
 
             foreach (var item in entity) 
             { 
@@ -45,9 +45,9 @@ namespace FamilyCookbook.Service
             return response;
         }
 
-        public async Task<CreateResponse> ConnectRecipeAndTag(RecipeTagArray dto)
+        public async Task<MessageResponse> ConnectRecipeAndTag(RecipeTagArray dto)
         {
-            var response = new CreateResponse();
+            var response = new MessageResponse();
 
             for (int j = 0; j < dto.tagId.Length; j++)
             {
@@ -68,11 +68,26 @@ namespace FamilyCookbook.Service
             return response;
         }
 
-        public async Task<CreateResponse> DeleteAsync(int id)
+        public async Task<MessageResponse> DeleteAsync(int id)
         {
             var response = await _tagRepository.DeleteAsync(id);
 
             return response;
+        }
+
+        public async Task<MessageResponse> UpdateAsync(int id, Tag tag)
+        {
+            return await _tagRepository.UpdateAsync(id, tag);
+        }
+
+        public Task<RepositoryResponse<Tag>> GetByIdAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RepositoryResponse<Tag>> SoftDeleteAsync(int id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

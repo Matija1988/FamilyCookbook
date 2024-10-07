@@ -33,7 +33,7 @@ namespace FamilyCookbook.Service
             _configuration = configuration;
         }
 
-        public async Task<CreateResponse> CreateAsync(Member entity)
+        public async Task<MessageResponse> CreateAsync(Member entity)
         {
             entity.UniqueId = Guid.NewGuid();
             entity.IsActive = true;
@@ -80,10 +80,10 @@ namespace FamilyCookbook.Service
 
         }
 
-        public async Task<CreateResponse> UpdateAsync(int id, Member entity)
+        public async Task<MessageResponse> UpdateAsync(int id, Member entity)
         {
             var chkMember = await _repository.GetByIdAsync(id);
-            var response = new CreateResponse();
+            var response = new MessageResponse();
 
             entity.DateUpdated = DateTime.Now;
 
