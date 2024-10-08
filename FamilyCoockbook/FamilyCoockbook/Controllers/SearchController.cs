@@ -1,4 +1,7 @@
-﻿using FamilyCookbook.Service.Common;
+﻿using FamilyCookbook.Mapping.MapperWrappers;
+using FamilyCookbook.Model;
+using FamilyCookbook.REST_Models.Recipe;
+using FamilyCookbook.Service.Common;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FamilyCookbook.Controllers
@@ -8,10 +11,12 @@ namespace FamilyCookbook.Controllers
     public class SearchController : ControllerBase
     {
         private readonly ISearchService _searchService;
-
-        public SearchController(ISearchService searchService)
+        private readonly IMapperExtended<Recipe, RecipeRead, RecipeCreate, RecipeCreateDTO> _mapper;
+        public SearchController(ISearchService searchService, 
+            IMapperExtended<Recipe, RecipeRead, RecipeCreate, RecipeCreateDTO> mapper)
         {
             _searchService = searchService;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -26,7 +31,9 @@ namespace FamilyCookbook.Controllers
                 return BadRequest(response.Message.ToString());
             }
 
-            return Ok(response);
+            var recipes = _mapper.MapListToReadList(response.Items);
+
+            return Ok(recipes);
         }
     }
 }

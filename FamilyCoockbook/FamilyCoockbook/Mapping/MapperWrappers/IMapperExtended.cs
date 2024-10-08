@@ -1,4 +1,6 @@
-﻿namespace FamilyCookbook.Mapping.MapperWrappers
+﻿using System.Collections.Immutable;
+
+namespace FamilyCookbook.Mapping.MapperWrappers
 {
     public interface IMapperExtended<T, TDR, TDI, TDI2>
     {
@@ -8,5 +10,7 @@
         TDI2 MapReadToCreateDTO(TDI dto);
 
         List<TDR> MapToReadList(List<T> entities);
+
+        ImmutableList<TDR> MapListToReadList(ImmutableList<T> entities); 
     }
 }

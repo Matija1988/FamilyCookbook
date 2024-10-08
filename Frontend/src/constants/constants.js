@@ -14,6 +14,7 @@ export const RouteNames = {
   ADMIN_PANEL: "/c-admin/edit",
   ARTICLES_BY_CATEGORY: "/category/:id",
   TAGS: "/tags",
+  SEARCH_RESULTS: "/found-recipes",
 };
 
 export const App = {

@@ -40,13 +40,6 @@ function ArticleCard({ recipe }) {
       );
     }
 
-    // for (let i = 0; i < 5; i++) {
-    //   stars.push(
-    //     <span key={i} style={{ color: i < rating ? "#FFD700" : "#CCCCCC" }}>
-    //       ★
-    //     </span>
-    //   );
-    // }
     return stars;
   };
 

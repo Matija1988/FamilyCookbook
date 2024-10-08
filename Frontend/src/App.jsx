@@ -26,6 +26,7 @@ import AdminPanel from "./pages/AdminPanel/AdminPanel";
 import ProtectedRoutes from "./components/ProtectedRoutes";
 import ArticlesByCategory from "./pages/ArticlePages/ArticlesByCategory";
 import Tags from "./pages/Tags/Tags";
+import SearchResult from "./pages/SearchResult";
 function App() {
   const { errors, showErrorModal, hideErrorModal } = useError();
 
@@ -95,6 +96,10 @@ function App() {
         <Route
           path={RouteNames.ARTICLES_BY_CATEGORY}
           element={<ArticlesByCategory />}
+        ></Route>
+        <Route
+          path={RouteNames.SEARCH_RESULTS}
+          element={<SearchResult />}
         ></Route>
       </Routes>
     </>

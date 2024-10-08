@@ -1,11 +1,17 @@
 ﻿using FamilyCookbook.Model;
 using FamilyCookbook.REST_Models.Recipe;
+using System.Collections.Immutable;
 
 namespace FamilyCookbook.Mapping.MapperWrappers
 {
     public class RecipeMapperWrapper : IMapperExtended<Recipe, RecipeRead, RecipeCreate, RecipeCreateDTO>
     {
         private readonly RecipeMapper _mapper = new();
+
+        public ImmutableList<RecipeRead> MapListToReadList(ImmutableList<Recipe> entities)
+        {
+            return _mapper.MapListToListRead(entities);
+        }
 
         public RecipeCreateDTO MapReadToCreateDTO(RecipeCreate dto)
         {

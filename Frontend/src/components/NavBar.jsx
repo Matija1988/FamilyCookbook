@@ -13,8 +13,10 @@ import CategoriesService from "../services/CategoriesService";
 import useError from "../hooks/useError";
 import { useEffect, useState } from "react";
 import InputText from "./InputText";
-import { Form } from "react-bootstrap";
+import { Col, Form, Row } from "react-bootstrap";
 import CustomButton from "./CustomButton";
+import SearchService from "../services/SearchService";
+import { HiDeviceTablet } from "react-icons/hi";
 
 function NavBar() {
   const [categories, setCategories] = useState([]);
@@ -36,7 +38,15 @@ function NavBar() {
   }
 
   async function searchRecipes() {
-    
+    const response = await SearchService.SearchRecipeByTag(searchText);
+    if (!response.ok) {
+      showError();
+      return;
+    }
+
+    const foundRecipes = response.data;
+
+    navigate(RouteNames.SEARCH_RESULTS, { state: { recipes: foundRecipes } });
   }
 
   useEffect(() => {
@@ -45,6 +55,11 @@ function NavBar() {
 
   const searchCondition = (e) => {
     setSearchText(e.target.value);
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    searchRecipes();
   };
 
   return (
@@ -90,17 +105,22 @@ function NavBar() {
                 <NavDropdown.Item>No categories to load</NavDropdown.Item>
               )}
             </NavDropdown>
-            <Form>
-              <Form.Control
-                type="input"
-                placeholder="search..."
-                onChange={searchCondition}
-              ></Form.Control>
-              <CustomButton
-                label="Search"
-                onClick={searchRecipes}
-              ></CustomButton>
+
+            <Form onSubmit={handleSearch}>
+              <Row>
+                <Col>
+                  <Form.Control
+                    type="input"
+                    placeholder="search..."
+                    onChange={searchCondition}
+                  ></Form.Control>
+                </Col>
+                <Col>
+                  <CustomButton label="Search" type="submit"></CustomButton>
+                </Col>
+              </Row>
             </Form>
+
             {isLoggedIn ? (
               <Nav.Link className="logIn-link" onClick={logout}>
                 Logout
