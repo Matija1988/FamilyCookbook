@@ -151,6 +151,8 @@ export default function CreateRecipe() {
 
     const authorIds = recipe.memberIds.map((id) => id);
 
+    const postTagIds = recipe.tagIds.map((id) => id);
+
     if (authorIds.length == 0) {
       alert("Plsease select a member as the author");
       return;
@@ -164,6 +166,7 @@ export default function CreateRecipe() {
       memberIds: authorIds,
       pictureName: pictureName,
       pictureBlob: uploadedPicture,
+      tagIds: postTagIds,
     });
   }
 
