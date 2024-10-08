@@ -139,7 +139,10 @@ export default function Tags() {
                 ></GenericTable>
               </Col>
               <Col>
-                <TagsUpsert entity={selectedTag}></TagsUpsert>
+                <TagsUpsert
+                  entity={selectedTag}
+                  paginate={paginateTags}
+                ></TagsUpsert>
               </Col>
             </Row>
             <CustomPagination

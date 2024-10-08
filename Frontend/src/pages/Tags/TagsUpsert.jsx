@@ -6,7 +6,7 @@ import useError from "../../hooks/useError";
 import TagsService from "../../services/TagsService";
 import CustomButton from "../../components/CustomButton";
 
-export default function TagsUpsert({ entity }) {
+export default function TagsUpsert({ entity, paginate }) {
   const [tagText, setTagText] = useState("");
   const [tags, setTags] = useState([]);
 
@@ -42,6 +42,7 @@ export default function TagsUpsert({ entity }) {
     if (!response.ok) {
       showError(response.data);
     }
+    paginate();
     hideLoading();
   }
   const handleAdd = () => {

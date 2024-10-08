@@ -67,9 +67,7 @@ export default function RecipeTable({
                   ></CustomButton>
                   <CustomButton
                     variant="danger"
-                    onClick={() => (
-                      setEntityId(entity.id), handleDelete(entity.id)
-                    )}
+                    onClick={() => (setEntityId(entity), handleDelete(entity))}
                     label="DELETE"
                   ></CustomButton>
                 </td>

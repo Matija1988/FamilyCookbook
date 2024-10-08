@@ -24,6 +24,7 @@ import useError from "../../hooks/useError";
 import ErrorModal from "../../components/ErrorModal";
 import DeleteModal from "../../components/DeleteModal";
 import Sidebar from "../AdminPanel/Sidebar";
+import { useUser } from "../../contexts/UserContext";
 
 export default function Members() {
   const [members, setMembers] = useState();
@@ -47,6 +48,8 @@ export default function Members() {
   const [entityToDelete, setEntityToDelete] = useState(null);
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const { userId } = useUser();
 
   const navigate = useNavigate();
 
@@ -113,8 +116,14 @@ export default function Members() {
   }, [pageNumber, pageSize]);
 
   async function deleteMember(member) {
+    if (userId == member.id) {
+      alert("User cannot delete himself");
+      return;
+    }
+
     const response = await MembersService.setNotActive(
-      "member/delete/" + member.id
+      "member/softDelete",
+      member.id
     );
     if (response.ok) {
       paginateMembers();
