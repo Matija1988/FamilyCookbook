@@ -14,9 +14,12 @@ import useError from "../hooks/useError";
 import { useEffect, useState } from "react";
 import InputText from "./InputText";
 import { Form } from "react-bootstrap";
+import CustomButton from "./CustomButton";
 
 function NavBar() {
   const [categories, setCategories] = useState([]);
+  const [searchText, setSearchText] = useState("");
+  const [recipes, setRecipes] = useState([]);
   const { showError, showErrorModal, errors, hideError } = useError();
   const navigate = useNavigate();
 
@@ -32,9 +35,17 @@ function NavBar() {
     setCategories(response.data.items);
   }
 
+  async function searchRecipes() {
+    
+  }
+
   useEffect(() => {
     fetchCategories();
   }, []);
+
+  const searchCondition = (e) => {
+    setSearchText(e.target.value);
+  };
 
   return (
     <Navbar
@@ -80,7 +91,15 @@ function NavBar() {
               )}
             </NavDropdown>
             <Form>
-              <Form.Control type="input" placeholder="search..."></Form.Control>
+              <Form.Control
+                type="input"
+                placeholder="search..."
+                onChange={searchCondition}
+              ></Form.Control>
+              <CustomButton
+                label="Search"
+                onClick={searchRecipes}
+              ></CustomButton>
             </Form>
             {isLoggedIn ? (
               <Nav.Link className="logIn-link" onClick={logout}>

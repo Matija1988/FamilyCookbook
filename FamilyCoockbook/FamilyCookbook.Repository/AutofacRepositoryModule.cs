@@ -34,6 +34,9 @@ namespace FamilyCookbook.Repository
             builder.RegisterType<TagsRepository>().As<ITagRepository>()
                 .InstancePerLifetimeScope();
 
+            builder.RegisterType<SearchRepository>().As<ISearchRepository>()
+                .InstancePerLifetimeScope();
+
 
         }
     }

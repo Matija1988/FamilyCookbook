@@ -27,6 +27,8 @@ namespace FamilyCookbook.Service
 
             builder.RegisterType<TagService>().As<ITagService>().InstancePerDependency();   
 
+            builder.RegisterType<SearchService>().As<ISearchService>().InstancePerDependency(); 
+
 
         }
 
