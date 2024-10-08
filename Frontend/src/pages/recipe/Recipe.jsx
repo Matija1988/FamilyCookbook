@@ -15,6 +15,9 @@ import RecipeTable from "./components/RecipeTable";
 
 import "./createForm.css";
 import Sidebar from "../AdminPanel/Sidebar";
+import DeleteModal from "../../components/DeleteModal";
+import useError from "../../hooks/useError";
+import useLoading from "../../hooks/useLoading";
 
 export default function Recipe() {
   const recipeState = {
@@ -39,6 +42,12 @@ export default function Recipe() {
   const [searchByLastName, setSearchByLastName] = useState("");
   const [entityId, setEntityId] = useState();
   const [activityStatus, setActivityStatus] = useState(1);
+  const [entityToDelete, setEntityToDelete] = useState(null);
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const { showError, showErrorModal, errors, hideError } = useError();
+
+  const { showLoading, hideLoading } = useLoading();
 
   const statusOptions = [
     { id: 1, name: "Active" },
@@ -46,7 +55,6 @@ export default function Recipe() {
   ];
 
   const navigate = useNavigate();
-  const [error, setError] = useState([]);
   const getRequestParams = (pageSize, pageNumber, activityStatus) => {
     let params = {};
 
@@ -78,26 +86,26 @@ export default function Recipe() {
   };
 
   async function paginateRecipes() {
+    showLoading();
     const params = getRequestParams(pageSize, pageNumber, activityStatus);
-    try {
-      const response = await RecipeService.paginate(params);
+    const response = await RecipeService.paginate(params);
 
-      const { items, pageCount } = response.data;
-
-      setRecipes(items);
-      setTotalPages(pageCount);
-    } catch (e) {
-      setError("Error fetching recipes " + e.message);
+    if (!response.ok) {
+      hideLoading();
+      showError(response.data);
     }
+    const { items, pageCount } = response.data;
+    setRecipes(items);
+    setTotalPages(pageCount);
+    hideLoading();
   }
 
   async function fetchCategories() {
-    try {
-      const response = await CategoriesService.readAll("category");
-      setCategories(response.data.items);
-    } catch (e) {
-      Alert("Error fetchig categories " + e.message);
+    const response = await CategoriesService.readAll("category");
+    if (!response.ok) {
+      showError(response.data);
     }
+    setCategories(response.data.items);
   }
 
   useEffect(() => {
@@ -109,9 +117,12 @@ export default function Recipe() {
     navigate(RouteNames.RECIPES_CREATE);
   }
 
-  async function handleDelete(id) {
+  async function handleDelete(recipe) {
     try {
-      const response = await RecipeService.setNotActive("recipe/disable/" + id);
+      const response = await RecipeService.setNotActive(
+        "recipe/disable",
+        recipe.id
+      );
       if (response.ok) {
         paginateRecipes();
       }
@@ -235,7 +246,9 @@ export default function Recipe() {
             </Row>
             <RecipeTable
               recipes={recipes}
-              handleDelete={handleDelete}
+              handleDelete={(recipe) => {
+                setEntityToDelete(recipe), setShowDeleteModal(true);
+              }}
             ></RecipeTable>
             <CustomPagination
               pageNumber={pageNumber}
@@ -245,6 +258,12 @@ export default function Recipe() {
           </Container>
         </Col>
       </Row>
+      <DeleteModal
+        show={showDeleteModal}
+        handleClose={() => setShowDeleteModal(false)}
+        entity={entityToDelete}
+        handleDelete={handleDelete}
+      ></DeleteModal>
     </>
   );
 }

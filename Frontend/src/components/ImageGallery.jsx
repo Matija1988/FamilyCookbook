@@ -15,7 +15,7 @@ export default function ImageGallery({ isOpen, closeModal, setMainImage }) {
     try {
       const response = await PictureService.readAll("picture");
       if (response.ok) {
-        setPictures(response.data.items);
+        setPictures(response.data);
       }
     } catch (error) {
       setError(error.message);

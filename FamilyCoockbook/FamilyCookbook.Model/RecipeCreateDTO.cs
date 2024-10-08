@@ -32,5 +32,7 @@ namespace FamilyCookbook.Model
         public Picture? Picture { get; set; }
         public List<int> MemberIds { get; set; }
 
+        public int[]? TagIds { get; set; }
+
     }
 }

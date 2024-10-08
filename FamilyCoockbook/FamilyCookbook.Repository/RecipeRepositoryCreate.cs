@@ -75,14 +75,34 @@ namespace FamilyCookbook.Repository
                     {
                         var memberRecipeParametes = new
                         {
-
                             RecipeId = recipeId,
                             MemberId = memberId
                         };
 
                         await connection
                             .ExecuteAsync(insertMemberRecipeQuery, memberRecipeParametes, transaction);
+
                     }
+
+
+                    if (entity.TagIds != null)
+                    {
+
+                        var insertRecipeTagsQuery = "INSERT INTO RecipeTags(TagId, RecipeId) " +
+                            " VALUES (@TagId, @RecipeId); SELECT SCOPE_IDENTITY();";
+
+                        foreach (var tagId in entity.TagIds)
+                        {
+                            var recipeTagParameters = new
+                            {
+                                TagId = tagId,
+                                RecipeId = recipeId
+                            };
+                            await connection.ExecuteAsync(insertRecipeTagsQuery, recipeTagParameters, transaction);
+                        }
+
+                    }
+
                     transaction.Commit();
                     response.IsSuccess = true;
                     response.Message = _successResponses.EntityCreated();

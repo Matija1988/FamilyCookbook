@@ -38,13 +38,14 @@ export default function Categories() {
 
   async function deleteCategory(category) {
     const response = await CategoriesService.setNotActive(
-      "category/softDelete/" + category.id
+      "category/softDelete",
+      category.id
     );
-    if (response.ok) {
-      setShowDeleteModal(false);
-      fetchCategories();
+    if (!response.ok) {
+      showError(response.data);
     }
-    showError(response.data);
+    setShowDeleteModal(false);
+    fetchCategories();
   }
 
   function updateCategory(category) {

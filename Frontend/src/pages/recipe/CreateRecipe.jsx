@@ -24,6 +24,8 @@ import { httpService } from "../../services/HttpService";
 
 import "./createForm.css";
 import Sidebar from "../AdminPanel/Sidebar";
+import TagsService from "../../services/TagsService";
+import useError from "../../hooks/useError";
 
 export default function CreateRecipe() {
   const [recipe, setRecipe] = useState({
@@ -33,6 +35,7 @@ export default function CreateRecipe() {
     categoryId: null,
     memberIds: [],
     pictureName: "",
+    tagIds: [],
   });
 
   const [categories, setCategories] = useState([]);
@@ -44,7 +47,12 @@ export default function CreateRecipe() {
   const [pictureName, setPictureName] = useState("");
   const [uploadedPicture, setUploadedPicture] = useState(null);
 
+  const [tags, setTags] = useState([]);
+  const [foundTags, setFoundTags] = useState([]);
+
   const [error, setError] = useState("");
+
+  const { showError, showErrorModal, errors, hideError } = useError();
 
   const [imageFromGallery, setImageFromGallery] = useState(null);
 
@@ -53,6 +61,7 @@ export default function CreateRecipe() {
   const quillRef = useRef(null);
 
   const typeaheadRef = useRef(null);
+  const tagTypeaheadRef = useRef(null);
 
   const navigate = useNavigate();
 
@@ -83,6 +92,14 @@ export default function CreateRecipe() {
     }
   }
 
+  async function tagSearchCondition(input) {
+    const response = await TagsService.getByText(input);
+    if (!response.ok) {
+      showError(response.data);
+    }
+    setFoundTags(response.data);
+  }
+
   async function fetchMembers() {
     const response = await MembersService.readAll("member");
     if (!response.ok) {
@@ -90,6 +107,15 @@ export default function CreateRecipe() {
       return;
     }
     setMembers(response.data.items);
+  }
+
+  async function fetchTags() {
+    const response = await TagsService.readAll("tag");
+    if (!response.ok) {
+      showError();
+      return;
+    }
+    setTags(response.data.items);
   }
 
   async function postRecipe(entity, isMultiPart = false) {
@@ -110,6 +136,7 @@ export default function CreateRecipe() {
   useEffect(() => {
     fetchCategories();
     fetchMembers();
+    fetchTags();
   }, []);
 
   function handleSubmit(e) {
@@ -144,6 +171,12 @@ export default function CreateRecipe() {
     const updatedMembers = [...recipe.memberIds, member.id];
     setRecipe({ ...recipe, memberIds: updatedMembers });
     setFoundMembers([]);
+  }
+
+  async function assignTagToRecipe(tag) {
+    const updatedTags = [...recipe.tagIds, tag.id];
+    setRecipe({ ...recipe, tagIds: updatedTags });
+    setFoundTags([]);
   }
 
   function handleCancel() {
@@ -235,6 +268,30 @@ export default function CreateRecipe() {
                     ref={typeaheadRef}
                   ></AsyncTypeahead>
                 </Col>
+                <Col>
+                  <Form.Label>Search existing tags</Form.Label>
+                  <AsyncTypeahead
+                    className="autocomplete"
+                    id="tagCondition"
+                    emptyLabel="No tags selected!"
+                    searchText="Searching..."
+                    labelKey={(tag) => `${tag.text}`}
+                    minLength={3}
+                    options={foundTags}
+                    onSearch={tagSearchCondition}
+                    renderMenuItemChildren={(tag) => (
+                      <>
+                        <span
+                          key={tag.id}
+                          onClick={() => assignTagToRecipe(tag)}
+                        >
+                          {tag.text}
+                        </span>
+                      </>
+                    )}
+                    ref={tagTypeaheadRef}
+                  ></AsyncTypeahead>
+                </Col>
               </Row>
               <Row>
                 <Col>
@@ -260,6 +317,19 @@ export default function CreateRecipe() {
                     })}
                   </ListGroup>
                 </Col>
+                <Col>
+                  <h5 className="mt-3">Selected tags: </h5>
+                  <ListGroup>
+                    {recipe.tagIds.map((id) => {
+                      const ta = tags.find((ta) => ta.id === id);
+                      if (ta) {
+                        return (
+                          <ListGroup.Item key={ta.id}>{ta.text}</ListGroup.Item>
+                        );
+                      }
+                    })}
+                  </ListGroup>
+                </Col>
               </Row>
               <Row>
                 <Col>
@@ -270,6 +340,7 @@ export default function CreateRecipe() {
                   ></InputText>
                 </Col>
                 <Col></Col>
+                <Col></Col>
               </Row>
 
               <Row>
@@ -277,6 +348,7 @@ export default function CreateRecipe() {
                   <Form.Label>Upload image</Form.Label>
                 </Col>
                 <Col>Select image from galley</Col>
+                <Col></Col>
               </Row>
               <Row>
                 <Col>
@@ -295,6 +367,7 @@ export default function CreateRecipe() {
                     onClick={() => setIsImageGalleryOpen(true)}
                   ></CustomButton>
                 </Col>
+                <Col></Col>
               </Row>
               <Row>
                 <Col>
