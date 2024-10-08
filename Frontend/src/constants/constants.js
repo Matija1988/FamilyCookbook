@@ -15,6 +15,7 @@ export const RouteNames = {
   ARTICLES_BY_CATEGORY: "/category/:id",
   TAGS: "/tags",
   SEARCH_RESULTS: "/found-recipes",
+  REGISTER: "/register",
 };
 
 export const App = {

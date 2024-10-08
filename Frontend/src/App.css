@@ -115,12 +115,32 @@
   margin: auto;
   width: 40%;
   margin-bottom: 1%;
+  background-color: rgb(80, 6, 80);
+}
+
+.w-25 .reg-btn {
+  margin-top: 2%;
+  width: 50%;
+  background-color: purple;
+}
+
+.w-25 .reg-btn:hover {
+  margin-top: 2%;
+  width: 50%;
+  background-color: rgb(80, 6, 80);
+}
+
+.w-25 .cncl-btn {
+  margin-top: 2%;
+  width: 50%;
+  background-color: rgb(73, 72, 72);
 }
 
 .w-25 .logIn-cancel {
   margin: auto;
   width: 40%;
   margin-bottom: 1%;
+  background-color: rgb(73, 72, 72);
 }
 
 .sidebar {

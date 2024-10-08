@@ -181,7 +181,6 @@ namespace FamilyCookbook.Repository
 
         #endregion
 
-
         public async Task<RepositoryResponse<Member>> GetByGuidAsync(Guid uniqueId)
         {
             var response = new RepositoryResponse<Member>();
@@ -248,8 +247,6 @@ namespace FamilyCookbook.Repository
                 _context.CreateConnection().Close();
             }
         }
-
-        
 
         public async Task<RepositoryResponse<Lazy<List<Member>>>> PaginateAsync(Paging paging, MemberFilter filter)
         {
@@ -384,5 +381,6 @@ namespace FamilyCookbook.Repository
         }
 
         #endregion
+
     }
 }

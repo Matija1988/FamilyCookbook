@@ -188,5 +188,37 @@ namespace FamilyCookbook.Service
 
             return response;
         }
+
+        public async Task<MessageResponse> UserRegister(UserRegistry user)
+        {
+            var chkMember = await _repository.GetAllAsync();
+
+            if(chkMember.Items.Any(c => c.Username == user.Username))
+            {
+                return new MessageResponse
+                { 
+                    IsSuccess = false, 
+                    Message = new StringBuilder("User with selected username already exists!!!")
+                };
+            }
+            
+            var member = new Member();
+
+            member.FirstName = user.FirstName;
+            member.LastName = user.LastName;
+            member.DateOfBirth = user.DateOfBirth;
+            member.Username = user.Username;
+            member.Password = BCrypt.Net.BCrypt.HashPassword(user.Password, 12);
+            member.DateCreated = DateTime.Now;
+            member.DateUpdated = DateTime.Now;
+            member.UniqueId = Guid.NewGuid();
+            member.IsActive = true;
+            member.RoleId = 1;
+
+            var response = await _repository.CreateAsync(member);
+
+            return response;
+
+        }
     }
 }

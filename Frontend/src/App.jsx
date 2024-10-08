@@ -27,6 +27,7 @@ import ProtectedRoutes from "./components/ProtectedRoutes";
 import ArticlesByCategory from "./pages/ArticlePages/ArticlesByCategory";
 import Tags from "./pages/Tags/Tags";
 import SearchResult from "./pages/SearchResult";
+import Register from "./pages/logIn/Register";
 function App() {
   const { errors, showErrorModal, hideErrorModal } = useError();
 
@@ -101,6 +102,7 @@ function App() {
           path={RouteNames.SEARCH_RESULTS}
           element={<SearchResult />}
         ></Route>
+        <Route path={RouteNames.REGISTER} element={<Register />}></Route>
       </Routes>
     </>
   );

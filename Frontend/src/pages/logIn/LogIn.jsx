@@ -44,6 +44,11 @@ export default function LogIn() {
             label="Cancel"
             onClick={() => navigate(RouteNames.HOME)}
           ></CustomButton>
+          <CustomButton
+            variant="link"
+            label="Not registered? Register as member"
+            onClick={() => navigate(RouteNames.REGISTER)}
+          ></CustomButton>
         </Row>
       </Form>
     </Container>

@@ -16,5 +16,7 @@ namespace FamilyCookbook.Service.Common
         Task<RepositoryResponse<List<Member>>> SearchMemberByCondition(string condition);
 
         Task<RepositoryResponse<Lazy<Member>>> GeByUsernameAsync(string username);
+
+        Task<MessageResponse> UserRegister(UserRegistry user);
     }
 }
