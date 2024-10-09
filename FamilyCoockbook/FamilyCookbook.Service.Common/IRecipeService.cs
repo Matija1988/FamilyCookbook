@@ -14,6 +14,8 @@ namespace FamilyCookbook.Service.Common
 
         Task<MessageResponse> CreateAsync(RecipeCreateDTO entityDto);
 
+        Task<MessageResponse> UpdateAsync(int id, RecipeCreateDTO dto);
+
         Task<RepositoryResponse<Recipe>> RemoveMemberFromRecipeAsync(int memberId, int recipeId);
 
         Task<RepositoryResponse<List<Recipe>>> PaginateAsync(Paging paging, RecipeFilter filter);

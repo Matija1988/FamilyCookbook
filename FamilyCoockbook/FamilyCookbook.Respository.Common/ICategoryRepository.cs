@@ -11,5 +11,9 @@ namespace FamilyCookbook.Repository.Common
     public interface ICategoryRepository : IRepository<Category>
     {
         Task<MessageResponse> CreateAsync(Category entity);
+
+
+        Task<MessageResponse> UpdateAsync(int id, Category entity);
+
     }
 }

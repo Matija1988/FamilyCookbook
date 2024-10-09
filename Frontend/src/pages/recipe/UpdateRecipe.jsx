@@ -1,7 +1,7 @@
 import { Col, Container, Form, ListGroup, Row, Table } from "react-bootstrap";
 import InputText from "../../components/InputText";
 import { useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 import RecipeService from "../../services/RecipeService";
 import InputTextArea from "../../components/InputTextArea";
 import CategoriesService from "../../services/CategoriesService";
@@ -15,6 +15,9 @@ import RichTextEditor from "../../components/RichTextEditor";
 import PictureService from "../../services/PictureService";
 import ImageGallery from "../../components/ImageGallery";
 import Sidebar from "../AdminPanel/Sidebar";
+import TagsService from "../../services/TagsService";
+import useError from "../../hooks/useError";
+import useLoading from "../../hooks/useLoading";
 
 export default function UpdateRecipe() {
   const [recipe, setRecipe] = useState({
@@ -32,11 +35,17 @@ export default function UpdateRecipe() {
     pictureName: "",
     pictureLocation: "",
     pictureId: "",
+    tags: [{ id: "", text: "" }],
   });
   const [categories, setCategories] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const [members, setMembers] = useState([]);
   const [foundMembers, setFoundMembers] = useState([]);
+  const [tags, setTags] = useState([]);
+  const [foundTags, setFoundTags] = useState([]);
+
+  const { showError, errors, hideError, showErrorModal } = useError();
+  const { showLoading, hideLoading } = useLoading();
 
   const [newPicture, setNewPicture] = useState(null);
   const [newPictureName, setNewPictureName] = useState("");
@@ -47,6 +56,7 @@ export default function UpdateRecipe() {
   const maxPictureSize = 1 * 1024 * 1024;
 
   const typeaheadRef = useRef(null);
+  const tagTypeaheadRef = useRef(null);
 
   const routeParams = useParams();
   const navigate = useNavigate();
@@ -55,16 +65,17 @@ export default function UpdateRecipe() {
   const [error, setError] = useState("");
 
   async function fetchRecipe() {
-    try {
-      const response = await RecipeService.getById("recipe", routeParams.id);
-      if (response.ok) {
-        setRecipe(response.data);
-        setMembers(response.data.members);
-        setSelectedCategoryId(response.data.categoryId);
-      }
-    } catch (error) {
-      alert(error.message);
+    showLoading();
+    const response = await RecipeService.getById("recipe", routeParams.id);
+    if (!response.ok) {
+      hideLoading();
+      showError(response.data);
     }
+    setRecipe(response.data);
+    setMembers(response.data.members);
+    setTags(response.data.tags);
+    setSelectedCategoryId(response.data.categoryId);
+    hideLoading();
   }
 
   async function fetchCategories() {
@@ -127,6 +138,14 @@ export default function UpdateRecipe() {
     }
   }
 
+  async function tagSearchCondition(input) {
+    const response = await TagsService.getByText(input);
+    if (!response.ok) {
+      showError(response.data);
+    }
+    setFoundTags(response.data);
+  }
+
   function handleSubmit(e) {
     e.preventDefault();
 
@@ -142,6 +161,7 @@ export default function UpdateRecipe() {
       text: recipe.text,
       categoryId: parseInt(selectedCategoryId),
       memberIds: authorIds,
+      pictureName: newPictureName,
     });
   }
 
@@ -185,6 +205,12 @@ export default function UpdateRecipe() {
   };
   const closeImageModal = () => {
     setIsImageGalleryOpen(false);
+  };
+
+  const assignTagToRecipe = (tag) => {
+    const updatedTags = [...recipe.tags, tag];
+    setRecipe({ ...recipe, tags: updatedTags });
+    setFoundTags([]);
   };
 
   return (
@@ -234,6 +260,30 @@ export default function UpdateRecipe() {
                     ref={typeaheadRef}
                   ></AsyncTypeahead>
                 </Col>
+                <Col>
+                  <Form.Label>Search existing tags</Form.Label>
+                  <AsyncTypeahead
+                    className="autocomplete"
+                    id="tagCondition"
+                    emptyLabel="No tags selected!"
+                    searchText="Searching..."
+                    labelKey={(tag) => `${tag.text}`}
+                    minLength={3}
+                    options={foundTags}
+                    onSearch={tagSearchCondition}
+                    renderMenuItemChildren={(tag) => (
+                      <>
+                        <span
+                          key={tag.id}
+                          onClick={() => assignTagToRecipe(tag)}
+                        >
+                          {tag.text}
+                        </span>
+                      </>
+                    )}
+                    ref={tagTypeaheadRef}
+                  ></AsyncTypeahead>
+                </Col>
               </Row>
               <Row>
                 <Col>
@@ -281,6 +331,22 @@ export default function UpdateRecipe() {
                     </tbody>
                   </Table>
                 </Col>
+                <Col>
+                  <h5 className="mt-3">Recipe tags:</h5>
+                  <ListGroup>
+                    {recipe.tags ? (
+                      recipe.tags.map((tag) => {
+                        <ListGroup.Item key={tag.id}>
+                          {tag.text}
+                        </ListGroup.Item>;
+                      })
+                    ) : (
+                      <ListGroup.Item>
+                        No tags assigned to this recipe
+                      </ListGroup.Item>
+                    )}
+                  </ListGroup>
+                </Col>
               </Row>
               <Row>
                 <Col>
@@ -289,6 +355,7 @@ export default function UpdateRecipe() {
                     value={recipe.subtitle}
                   ></InputText>
                 </Col>
+                <Col></Col>
                 <Col></Col>
               </Row>
               <Row>

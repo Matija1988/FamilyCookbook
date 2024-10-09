@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using FamilyCookbook.Model;
+using System.Diagnostics.CodeAnalysis;
 
 namespace FamilyCookbook.REST_Models.Recipe
 {
@@ -27,6 +28,8 @@ namespace FamilyCookbook.REST_Models.Recipe
         public string PictureId { get; set; }
 
         public decimal AverageRating { get; set; }
+
+        public List<Tag> Tags { get; set; }
 
     }
 }

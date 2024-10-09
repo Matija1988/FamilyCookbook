@@ -110,12 +110,39 @@ namespace FamilyCookbook.Service
             return response;
         }
 
-        public async Task<MessageResponse> UpdateAsync(int id, Recipe entity)
+        public async Task<MessageResponse> UpdateAsync(int id, RecipeCreateDTO entity)
         {
+            var response = new MessageResponse();
+            var memberChk = await _repository.GetByIdAsync(id);
+
+            if (!memberChk.Success) 
+            {
+                response.IsSuccess = false;
+                response.Message = memberChk.Message;
+                return response;
+            }
+
+            var oldMembers = memberChk.Items.Members;
+
+            var oldMembersIds = new List<int>();
+
+            foreach (var member in oldMembers)
+            {
+                oldMembersIds.Add(member.Id);
+            }
+
+            var tempList = new List<int>();
+
+            tempList.Intersect(oldMembersIds);
+            
+            var tempList2 = tempList.Distinct().ToList();
+
             entity.DateUpdated = DateTime.Now;
             entity.IsActive = true;
+            entity.Picture.IsActive = true;
+            entity.MemberIds = tempList2;
 
-            var response = await _repository.UpdateAsync(id, entity);
+            response = await _repository.UpdateAsync(id, entity);
 
             return response;
         }   

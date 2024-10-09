@@ -35,5 +35,7 @@ namespace FamilyCookbook.Model
         public double AverageRating { get; set; }
 
         public IList<Member> Members { get; set; } = new List<Member>();
+
+        public IList<Tag>? Tags { get; set; } = new List<Tag>();
     }
 }

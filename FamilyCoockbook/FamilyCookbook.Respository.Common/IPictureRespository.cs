@@ -11,5 +11,6 @@ namespace FamilyCookbook.Repository.Common
     public interface IPictureRespository : IRepository<Picture>
     {
         Task<MessageResponse> CreateAsync(Picture entity);
+
     }
 }

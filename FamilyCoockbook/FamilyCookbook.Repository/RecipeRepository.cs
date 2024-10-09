@@ -139,7 +139,7 @@ namespace FamilyCookbook.Repository
 
             return query.Append("SELECT a.Id, a.Title, a.Subtitle, a.Text, a.CategoryId, " +
                     "c.Id, c.FirstName, c.LastName, c.Bio, " +
-                    "d.Id, d.Name, e.* " +
+                    "d.Id, d.Name, e.*, f.* " +
                     "FROM Recipe a " +
                     "JOIN MemberRecipe b on a.Id = b.RecipeId " +
                     "JOIN Member c on b.MemberId = c.Id " +
@@ -188,17 +188,18 @@ namespace FamilyCookbook.Repository
 
         protected override StringBuilder BuildQueryReadSingle(int id)
         {
-            StringBuilder query = new();
-
-            return query.Append("SELECT a.Id, a.Title, a.Subtitle, a.Text, a.CategoryId, " +
+            return new StringBuilder("SELECT a.Id, a.Title, a.Subtitle, a.Text, a.CategoryId, " +
                     "c.Id, c.FirstName, c.LastName, c.Bio, " +
                     "d.Id, d.Name, d.Description, " +
-                    "e.* " +
+                    "e.*, " +
+                    "g.* " +
                     "FROM Recipe a " +
                     "JOIN MemberRecipe b on a.Id = b.RecipeId " +
                     "JOIN Member c on b.MemberId = c.Id " +
                     "LEFT JOIN Category d on d.Id = a.CategoryId " +
                     "JOIN Picture e on e.Id = a.PictureId " +
+                    "JOIN RecipeTags f on f.RecipeId = a.Id " +
+                    "JOIN Tag g on g.Id = f.TagId " +
                     "WHERE a.Id = @Id ");
         }
 
@@ -206,9 +207,9 @@ namespace FamilyCookbook.Repository
         {
             var entityDictionary = new Dictionary<int, Recipe>();
 
-            var entities = await connection.QueryAsync<Recipe, Member, Category, Picture, Recipe>
+            var entities = await connection.QueryAsync<Recipe, Member, Category, Picture, Tag, Recipe>
                 (query,
-                (recipe, member, category, picture) =>
+                (recipe, member, category, picture, tag) =>
                 {
                     if (!entityDictionary.TryGetValue(recipe.Id, out var existingEntity))
                     {
@@ -230,6 +231,11 @@ namespace FamilyCookbook.Repository
                     if (picture != null)
                     {
                         existingEntity.Picture = picture;
+                    }
+
+                    if(tag != null)
+                    {
+                        existingEntity.Tags.Add(tag);
                     }
 
                     return existingEntity;

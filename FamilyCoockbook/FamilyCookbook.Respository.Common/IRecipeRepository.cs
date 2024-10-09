@@ -15,6 +15,10 @@ namespace FamilyCookbook.Repository.Common
 
         Task<MessageResponse> CreateAsyncTransaction(RecipeCreateDTO entity);
 
+
+        Task<MessageResponse> UpdateAsync(int id, RecipeCreateDTO entity);
+
+
         Task<RepositoryResponse<List<Recipe>>> GetRecipesWithoutAuthors();
 
         Task<RepositoryResponse<List<Recipe>>> PaginateAsync(Paging paging, RecipeFilter filter);

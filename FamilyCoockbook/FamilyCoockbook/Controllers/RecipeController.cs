@@ -229,7 +229,7 @@ namespace FamilyCookbook.Controllers
 
             updatedRecipe.Text = sanitizedText;
 
-            var recipe = _mapper.MapToEntity(updatedRecipe);
+            var recipe = _mapper.MapReadToCreateDTO(updatedRecipe);
 
             var response = await _service.UpdateAsync(id, recipe);
 

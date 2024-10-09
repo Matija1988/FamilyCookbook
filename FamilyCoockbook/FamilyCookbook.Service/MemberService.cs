@@ -198,7 +198,7 @@ namespace FamilyCookbook.Service
                 return new MessageResponse
                 { 
                     IsSuccess = false, 
-                    Message = new StringBuilder("User with selected username already exists!!!")
+                    Message = new StringBuilder("Username taken. Try something else!!!")
                 };
             }
             
