@@ -59,7 +59,7 @@ namespace FamilyCookbook.Service
             return response;
         }
 
-        public async Task<RepositoryResponse<ImmutableList<Tag>>> PaginateAsync(Paging paging, string text)
+        public async Task<RepositoryResponse<List<Tag>>> PaginateAsync(Paging paging, string text)
         {
             var response = await _tagRepository.PaginateAsync(paging, text);
 

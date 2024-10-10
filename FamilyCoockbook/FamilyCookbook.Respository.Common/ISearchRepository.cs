@@ -10,6 +10,6 @@ namespace FamilyCookbook.Repository.Common
 {
     public interface ISearchRepository
     {
-        Task<RepositoryResponse<ImmutableList<Recipe>>> GetAllBySearchText(string searchText);
+        Task<RepositoryResponse<List<Recipe>>> GetAllBySearchText(string searchText);
     }
 }

@@ -8,7 +8,7 @@ namespace FamilyCookbook.Mapping.MapperWrappers
     {
         private readonly RecipeMapper _mapper = new();
 
-        public ImmutableList<RecipeRead> MapListToReadList(ImmutableList<Recipe> entities)
+        public List<RecipeRead> MapListToReadList(List<Recipe> entities)
         {
             return _mapper.MapListToListRead(entities);
         }

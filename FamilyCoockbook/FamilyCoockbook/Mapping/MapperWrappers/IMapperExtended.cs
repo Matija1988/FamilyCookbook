@@ -11,6 +11,6 @@ namespace FamilyCookbook.Mapping.MapperWrappers
 
         List<TDR> MapToReadList(List<T> entities);
 
-        ImmutableList<TDR> MapListToReadList(ImmutableList<T> entities); 
+        List<TDR> MapListToReadList(List<T> entities); 
     }
 }

@@ -69,9 +69,9 @@ namespace FamilyCookbook.Repository
             }
         }
 
-        public async Task<RepositoryResponse<ImmutableList<Tag>>> PaginateAsync(Paging paging, string text)
+        public async Task<RepositoryResponse<List<Tag>>> PaginateAsync(Paging paging, string text)
         {
-            var response = new RepositoryResponse<ImmutableList<Tag>>();
+            var response = new RepositoryResponse<List<Tag>>();
 
             try
             {
@@ -92,7 +92,7 @@ namespace FamilyCookbook.Repository
                 response.TotalCount = await multipleQuery.ReadSingleAsync<int>();
 
                 response.Success = true;
-                response.Items = entities.ToImmutableList();
+                response.Items = entities.ToList();
 
                 return response;
 

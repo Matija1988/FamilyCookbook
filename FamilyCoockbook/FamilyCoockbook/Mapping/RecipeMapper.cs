@@ -17,7 +17,7 @@ namespace FamilyCookbook.Mapping
 
          public partial RecipeCreateDTO RecipeCreateToRecipeCreateDTO(RecipeCreate newRecipeCreate);
 
-        public partial ImmutableList<RecipeRead> MapListToListRead(ImmutableList<Recipe> recipes);
+        public partial List<RecipeRead> MapListToListRead(List<Recipe> recipes);
 
     }
 

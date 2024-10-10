@@ -16,15 +16,16 @@ namespace FamilyCookbook.Repository
 
             int rowAffected = 0;
 
-            using var connection =  _context.CreateConnection();
+            using var connection = _context.CreateConnection();
 
             connection.Open();
 
-            using(var transaction = connection.BeginTransaction())
+            using (var transaction = connection.BeginTransaction())
             {
                 try
                 {
                     var updatePictureQuery = UpdatePictureQuery(entity).ToString();
+
 
                     var pictureParameters = new
                     {
@@ -35,7 +36,16 @@ namespace FamilyCookbook.Repository
 
                     await connection.ExecuteAsync(updatePictureQuery, pictureParameters, transaction);
 
-                    var updateRecipeQuery = UpdateRecipeQuery(entity).ToString();
+                    var updateRecipeQuery = UpdateRecipeQuery(entity, id).ToString();
+
+                    int? pictureId = entity.Picture?.Id;
+
+                    if(entity.Picture.Id == null || entity.Picture.Id == 0)
+                    {
+                        pictureId = await connection.QuerySingleAsync<int>(InsertPictureQuery(entity).ToString(), 
+                            pictureParameters, transaction );  
+                        
+                    }
 
                     var recipeParameters = new
                     {
@@ -44,21 +54,22 @@ namespace FamilyCookbook.Repository
                         Text = entity.Text,
                         IsActive = entity.IsActive,
                         CategoryId = entity.CategoryId,
-                        PictureId = entity.Picture.Id,
+                        PictureId = pictureId ?? entity.Picture.Id,
                         DateUpdated = entity.DateUpdated,
+                        Id = id,
                     };
 
-                    await connection.ExecuteAsync(updateRecipeQuery, recipeParameters, transaction);      
+                    await connection.ExecuteAsync(updateRecipeQuery, recipeParameters, transaction);
 
                     var updateMemberRecipeQuery = UpdateMemberRecipeQuery(entity).ToString();
 
-                    if(entity.MemberIds == null)
+                    if (entity.MemberIds == null)
                     {
                         response.IsSuccess = false;
                         response.Message = _errorMessages.NestedEntityWithIdFound("Recipe", "Member");
                     }
 
-                    foreach(var memberId in entity.MemberIds)
+                    foreach (var memberId in entity.MemberIds)
                     {
                         var memberRecipeParameters = new
                         {
@@ -73,9 +84,9 @@ namespace FamilyCookbook.Repository
                     if (entity.TagIds != null)
                     {
                         var insertRecipeTagsQuery = "INSERT INTO RecipeTags(TagId, RecipeId) " +
-                            " VALUES (@TagId, @RecipeId); SELECT SCOPE_IDENTITY();"; 
-                        
-                        foreach(var tagId in entity.TagIds)
+                            " VALUES (@TagId, @RecipeId); SELECT SCOPE_IDENTITY();";
+
+                        foreach (var tagId in entity.TagIds)
                         {
                             var recipeTagParameters = new
                             {
@@ -93,57 +104,16 @@ namespace FamilyCookbook.Repository
                     response.Message = _successResponses.EntityUpdated();
                     return response;
                 }
-                catch (Exception ex) 
+                catch (Exception ex)
                 {
                     transaction.Rollback();
                     response.IsSuccess = false;
-                    response.Message = _errorMessages.ErrorAccessingDb("Recipe");
+                    response.Message = _errorMessages.ErrorAccessingDb("Recipe", ex);
                     return response;
-                } 
+                }
                 finally { _context.CreateConnection().Close(); }
 
-                
             }
-
-            //try
-            //{
-
-            //    var query = "UPDATE Recipe " +
-            //        "SET Title = @Title, " +
-            //        "Subtitle = @Subtitle, " +
-            //        "Text = @Text, " +
-            //        "DateUpdated = @DateUpdated, " +
-            //        "IsActive = @IsActive, " +
-            //        "CategoryId = @CategoryId " +
-            //        "WHERE Id = @Id";
-
-      
-            //    rowAffected = await connection.ExecuteAsync(query, new
-            //    {
-            //        entity.Title,
-            //        entity.Subtitle,
-            //        entity.Text,
-            //        entity.DateUpdated,
-            //        entity.IsActive,
-            //        entity.CategoryId,
-            //        Id = id
-            //    });
-
-            //    response.IsSuccess = rowAffected > 0;
-            //    response.Message = _successResponses.EntityUpdated();
-
-            //    return response;
-            //}
-            //catch (Exception ex)
-            //{
-            //    response.IsSuccess = false;
-            //    response.Message = _errorMessages.ErrorAccessingDb("Recipe");
-            //    return response;
-            //}
-            //finally
-            //{
-            //    _context.CreateConnection().Close();
-            //}
 
         }
 
@@ -154,7 +124,7 @@ namespace FamilyCookbook.Repository
                 "SELECT SCOPE_IDENTITY();");
         }
 
-        private StringBuilder UpdateRecipeQuery(RecipeCreateDTO entity)
+        private StringBuilder UpdateRecipeQuery(RecipeCreateDTO entity, int id)
         {
             return new StringBuilder("UPDATE Recipe " +
                 "SET Title = @Title, Subtitle = @Subtitle, Text = @Text, " +
@@ -165,9 +135,18 @@ namespace FamilyCookbook.Repository
 
         private StringBuilder UpdatePictureQuery(RecipeCreateDTO entity)
         {
-            return new StringBuilder("UPDATE Picture SET Name = @Name, " + 
+
+            return new StringBuilder("UPDATE Picture SET Name = @Name, " +
                                        " Location = @Location, IsActive = @IsActive " +
                                       $" WHERE Id = {entity.Picture.Id};");
+
+        }
+
+        private StringBuilder InsertPictureQuery(RecipeCreateDTO entity)
+        {
+            return new StringBuilder("INSERT Picture (Name, Location, IsActive) " +
+                "VALUES (@Name, @Location, @IsActive);" +
+                "SELECT SCOPE_IDENTITY();");
         }
     }
 }

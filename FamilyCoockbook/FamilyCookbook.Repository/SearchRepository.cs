@@ -24,9 +24,9 @@ namespace FamilyCookbook.Repository
             _errorMessages = errorMessages;
             _successResponses = successResponses;
         }
-        public async Task<RepositoryResponse<ImmutableList<Recipe>>> GetAllBySearchText(string searchText)
+        public async Task<RepositoryResponse<List<Recipe>>> GetAllBySearchText(string searchText)
         {
-            var response = new RepositoryResponse<ImmutableList<Recipe>>();
+            var response = new RepositoryResponse<List<Recipe>>();
 
             try
             {
@@ -69,7 +69,7 @@ namespace FamilyCookbook.Repository
                     }, splitOn: "Id");
 
                 response.Success = true;
-                response.Items = entityDictionary.Values.ToImmutableList();
+                response.Items = entityDictionary.Values.ToList();
                 return response;
             }
             catch (Exception ex)

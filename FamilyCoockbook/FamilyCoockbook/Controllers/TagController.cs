@@ -93,7 +93,7 @@ namespace FamilyCookbook.Controllers
                 return NotFound(response.Message.ToString());
             }
 
-            var finalResponse = new PaginatedList<ImmutableList<Tag>>();
+            var finalResponse = new PaginatedList<List<Tag>>();
 
             finalResponse.Items = response.Items;
             finalResponse.TotalCount = response.TotalCount;

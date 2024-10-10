@@ -18,6 +18,7 @@ import Sidebar from "../AdminPanel/Sidebar";
 import TagsService from "../../services/TagsService";
 import useError from "../../hooks/useError";
 import useLoading from "../../hooks/useLoading";
+import ErrorModal from "../../components/ErrorModal";
 
 export default function UpdateRecipe() {
   const [recipe, setRecipe] = useState({
@@ -43,12 +44,13 @@ export default function UpdateRecipe() {
   const [foundMembers, setFoundMembers] = useState([]);
   const [tags, setTags] = useState([]);
   const [foundTags, setFoundTags] = useState([]);
-
   const { showError, errors, hideError, showErrorModal } = useError();
   const { showLoading, hideLoading } = useLoading();
+  const [oldPictureName, setOldPictureName] = useState("");
 
   const [newPicture, setNewPicture] = useState(null);
   const [newPictureName, setNewPictureName] = useState("");
+  const [imageFromGallery, setImageFromGallery] = useState(null);
   const quillRef = useRef(null);
 
   const [isImageGalleryOpen, setIsImageGalleryOpen] = useState(false);
@@ -70,11 +72,14 @@ export default function UpdateRecipe() {
     if (!response.ok) {
       hideLoading();
       showError(response.data);
+      return;
     }
     setRecipe(response.data);
     setMembers(response.data.members);
     setTags(response.data.tags);
     setSelectedCategoryId(response.data.categoryId);
+    setOldPictureName(response.data.pictureName);
+    setImageFromGallery({ location: response.data.pictureLocation });
     hideLoading();
   }
 
@@ -153,7 +158,13 @@ export default function UpdateRecipe() {
 
     const authorIds = recipe.members.map((member) => member.id);
 
+    const postTagIds = recipe.tags.map((id) => id);
+
     console.log("AuthorIds " + authorIds);
+
+    if (!newPictureName || newPictureName.trim() === "") {
+      setNewPictureName(oldPictureName);
+    }
 
     UpdateRecipe({
       title: information.get("Title"),
@@ -161,7 +172,9 @@ export default function UpdateRecipe() {
       text: recipe.text,
       categoryId: parseInt(selectedCategoryId),
       memberIds: authorIds,
-      pictureName: newPictureName,
+      tagsIds: postTagIds,
+      pictureName: newPictureName || oldPictureName,
+      pictureBlob: newPicture || null,
     });
   }
 
@@ -198,6 +211,11 @@ export default function UpdateRecipe() {
       setNewPicture(reader.result);
     };
     reader.readAsDataURL(file);
+  };
+
+  const setMainImage = async (image) => {
+    setNewPictureName(image.name);
+    setImageFromGallery(image);
   };
 
   const openImageModal = () => {
@@ -314,6 +332,7 @@ export default function UpdateRecipe() {
                                     onClick={() =>
                                       removeMemberFromRecipe(member)
                                     }
+                                    type="button"
                                   ></CustomButton>
                                 </td>
                               </tr>
@@ -367,9 +386,30 @@ export default function UpdateRecipe() {
                 <Col>
                   <div>
                     <img
-                      src={URL + recipe.pictureLocation}
+                      src={newPicture}
                       style={{ width: "300px" }}
+                      alt="Existing picture"
                     ></img>
+                    {/* <div>
+                      {newPicture ? (
+                        <img
+                          src={newPicture}
+                          alt="New uploaded picture"
+                          style={{ width: "300px" }}
+                        ></img>
+                      ) : null}
+                    </div> */}
+                    {imageFromGallery ? (
+                      <img
+                        src={URL + imageFromGallery.location}
+                        style={{ width: "300px" }}
+                        alt="Existing picture"
+                      ></img>
+                    ) : (
+                      <div>
+                        <p>nothing</p>
+                      </div>
+                    )}
                   </div>
                 </Col>
                 <Row>
@@ -394,6 +434,7 @@ export default function UpdateRecipe() {
                     <CustomButton
                       label="Images"
                       onClick={openImageModal}
+                      type="button"
                     ></CustomButton>
                   </Col>
                 </Row>
@@ -427,7 +468,13 @@ export default function UpdateRecipe() {
       <ImageGallery
         isOpen={isImageGalleryOpen}
         closeModal={closeImageModal}
+        setMainImage={setMainImage}
       ></ImageGallery>
+      <ErrorModal
+        show={showErrorModal}
+        hideError={hideError}
+        errors={errors}
+      ></ErrorModal>
     </>
   );
 }

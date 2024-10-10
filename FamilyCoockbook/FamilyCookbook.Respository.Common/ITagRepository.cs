@@ -19,7 +19,7 @@ namespace FamilyCookbook.Repository.Common
 
         Task<MessageResponse> ConnectRecipeAndTag(RecipeTag dto);
 
-        Task<RepositoryResponse<ImmutableList<Tag>>> PaginateAsync(Paging paging, string text);
+        Task<RepositoryResponse<List<Tag>>> PaginateAsync(Paging paging, string text);
 
         Task<MessageResponse> UpdateAsync(int id, Tag tag);
 

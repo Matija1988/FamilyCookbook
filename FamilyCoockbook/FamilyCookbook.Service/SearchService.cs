@@ -19,7 +19,7 @@ namespace FamilyCookbook.Service
             _searchRepository = searchRepository;
             _commentRepository = commentRepository;
         }
-        public async Task<RepositoryResponse<ImmutableList<Recipe>>> GetAllBySearchText(string searchText)
+        public async Task<RepositoryResponse<List<Recipe>>> GetAllBySearchText(string searchText)
         {
             var response = await _searchRepository.GetAllBySearchText(searchText);
 

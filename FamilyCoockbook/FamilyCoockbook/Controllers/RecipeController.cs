@@ -1,4 +1,5 @@
-﻿using FamilyCookbook.Common;
+﻿using AngleSharp.Dom;
+using FamilyCookbook.Common;
 using FamilyCookbook.Common.Upload;
 using FamilyCookbook.Common.Validations;
 using FamilyCookbook.Mapping;
@@ -10,6 +11,7 @@ using Ganss.Xss;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
+using System.Reflection.Metadata.Ecma335;
 
 namespace FamilyCookbook.Controllers
 {
@@ -223,6 +225,75 @@ namespace FamilyCookbook.Controllers
                 return BadRequest(ModelState);
             }
 
+            byte[] imageBytes = null;
+            string fileExtension = "";
+            string relativePath = "";
+
+            try
+            {
+                if (!string.IsNullOrEmpty(updatedRecipe.PictureBlob))
+                {
+                    var base64DataParts = updatedRecipe.PictureBlob.Split(',');
+                    var mimeType = base64DataParts[0];
+                    var base64Data = base64DataParts[1];
+
+                    imageBytes = Convert.FromBase64String(base64Data);
+
+                    fileExtension = mimeType switch
+                    {
+                        "data:image/jpeg;base64" => ".jpg",
+                        "data:image/jpg;base64" => ".jpg",
+                        "data:image/png;base64" => ".png",
+                        _ => ""
+                    };
+
+                    if (string.IsNullOrEmpty(fileExtension))
+                    {
+                        return BadRequest("Unsuported file type. Use JPEG, JPG or PNG!");
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Failed to create image: {ex.Message}");
+            }
+
+            var uploadsFolder = Path.Combine(_enviroment.WebRootPath, "uploads");
+
+            if(!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            var pictures = await _pictureService.GetAllAsync();
+
+            var image = pictures.Items.Find(pic => pic.Name == updatedRecipe.PictureName);
+
+            Picture intemediaryPicture = new Picture();
+
+            if (image is null && imageBytes != null)
+            {
+                var fileName = updatedRecipe.PictureName + fileExtension;
+                var filePath = Path.Combine(uploadsFolder, fileName);
+                relativePath = Path.Combine("uploads", fileName);
+
+                
+                intemediaryPicture.Location = relativePath;
+                intemediaryPicture.Name = updatedRecipe.PictureName;
+
+                await System.IO.File.WriteAllBytesAsync(filePath, imageBytes);
+            }
+            else if (image is not null) 
+            { 
+                relativePath = image.Location;
+
+                intemediaryPicture.Id = image.Id;
+                intemediaryPicture.Location = image.Location;
+                intemediaryPicture.Name = updatedRecipe.PictureName;
+
+            }
+
             var sanitizer = new HtmlSanitizer();
 
             string sanitizedText = sanitizer.Sanitize(updatedRecipe.Text);
@@ -230,6 +301,10 @@ namespace FamilyCookbook.Controllers
             updatedRecipe.Text = sanitizedText;
 
             var recipe = _mapper.MapReadToCreateDTO(updatedRecipe);
+
+            
+
+            recipe.Picture = intemediaryPicture;
 
             var response = await _service.UpdateAsync(id, recipe);
 
