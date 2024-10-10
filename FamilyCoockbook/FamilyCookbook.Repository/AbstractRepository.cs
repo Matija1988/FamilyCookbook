@@ -82,7 +82,7 @@ namespace FamilyCookbook.Repository
                 
                 response.Items = entity;
 
-                if(entity == null)
+                if (entity == null)
                 {
                     response.Success = false;
                     response.Message = _errorMessages.NotFound(id);
@@ -96,7 +96,7 @@ namespace FamilyCookbook.Repository
             } catch (Exception ex) 
             {
                 response.Success = false;
-                response.Message = _errorMessages.ErrorAccessingDb(GetTableName());
+                response.Message = _errorMessages.ErrorAccessingDb(GetTableName(),ex);
                 return response;
             }
             finally

@@ -42,7 +42,6 @@ export default function UpdateRecipe() {
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const [members, setMembers] = useState([]);
   const [foundMembers, setFoundMembers] = useState([]);
-  const [tags, setTags] = useState([]);
   const [foundTags, setFoundTags] = useState([]);
   const { showError, errors, hideError, showErrorModal } = useError();
   const { showLoading, hideLoading } = useLoading();
@@ -76,7 +75,7 @@ export default function UpdateRecipe() {
     }
     setRecipe(response.data);
     setMembers(response.data.members);
-    setTags(response.data.tags);
+
     setSelectedCategoryId(response.data.categoryId);
     setOldPictureName(response.data.pictureName);
     setImageFromGallery({ location: response.data.pictureLocation });
@@ -158,7 +157,7 @@ export default function UpdateRecipe() {
 
     const authorIds = recipe.members.map((member) => member.id);
 
-    const postTagIds = recipe.tags.map((id) => id);
+    const postTagIds = recipe.tags.map((tag) => tag.id);
 
     console.log("AuthorIds " + authorIds);
 
@@ -226,8 +225,10 @@ export default function UpdateRecipe() {
   };
 
   const assignTagToRecipe = (tag) => {
-    const updatedTags = [...recipe.tags, tag];
-    setRecipe({ ...recipe, tags: updatedTags });
+    if (!recipe.tags.some((t) => t.id === tag.id)) {
+      const updatedTags = [...recipe.tags, tag];
+      setRecipe({ ...recipe, tags: updatedTags });
+    }
     setFoundTags([]);
   };
 
@@ -290,14 +291,13 @@ export default function UpdateRecipe() {
                     options={foundTags}
                     onSearch={tagSearchCondition}
                     renderMenuItemChildren={(tag) => (
-                      <>
-                        <span
-                          key={tag.id}
-                          onClick={() => assignTagToRecipe(tag)}
-                        >
-                          {tag.text}
-                        </span>
-                      </>
+                      <span
+                        key={tag.id}
+                        onClick={() => assignTagToRecipe(tag)}
+                        style={{ cursor: "pointer" }}
+                      >
+                        {tag.text}
+                      </span>
                     )}
                     ref={tagTypeaheadRef}
                   ></AsyncTypeahead>
@@ -353,11 +353,13 @@ export default function UpdateRecipe() {
                 <Col>
                   <h5 className="mt-3">Recipe tags:</h5>
                   <ListGroup>
-                    {recipe.tags ? (
+                    {recipe.tags && recipe.tags.length > 0 ? (
                       recipe.tags.map((tag) => {
-                        <ListGroup.Item key={tag.id}>
-                          {tag.text}
-                        </ListGroup.Item>;
+                        return (
+                          <ListGroup.Item key={tag.id}>
+                            {tag.text}
+                          </ListGroup.Item>
+                        );
                       })
                     ) : (
                       <ListGroup.Item>
@@ -472,7 +474,7 @@ export default function UpdateRecipe() {
       ></ImageGallery>
       <ErrorModal
         show={showErrorModal}
-        hideError={hideError}
+        onHide={hideError}
         errors={errors}
       ></ErrorModal>
     </>
