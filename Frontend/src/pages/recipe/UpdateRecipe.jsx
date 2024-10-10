@@ -171,7 +171,7 @@ export default function UpdateRecipe() {
       text: recipe.text,
       categoryId: parseInt(selectedCategoryId),
       memberIds: authorIds,
-      tagsIds: postTagIds,
+      tagIds: postTagIds,
       pictureName: newPictureName || oldPictureName,
       pictureBlob: newPicture || null,
     });
@@ -459,6 +459,7 @@ export default function UpdateRecipe() {
                     label="CANCEL"
                     onClick={handleCancel}
                     variant="secondary  m-3"
+                    type="button"
                   ></CustomButton>
                 </Col>
                 <Col></Col>

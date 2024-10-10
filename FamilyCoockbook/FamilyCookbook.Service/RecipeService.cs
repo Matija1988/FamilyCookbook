@@ -3,6 +3,7 @@ using FamilyCookbook.Common;
 using FamilyCookbook.Model;
 using FamilyCookbook.Repository.Common;
 using FamilyCookbook.Service.Common;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace FamilyCookbook.Service
         private readonly IRecipeRepository _repository;
         private readonly ICommentRepository _commentRepository;
 
-        public RecipeService(IRecipeRepository repository, 
+        public RecipeService(IRecipeRepository repository,
             ICommentRepository commentRepository) : base(repository)
         {
             _repository = repository;
@@ -33,31 +34,31 @@ namespace FamilyCookbook.Service
 
             if (chk.Success == false)
             {
-                    var create = await _repository.AddMemberToRecipeAsync(entity);
-                    if (create.Success == false)
-                    {
-                        
-                        create.Success = false;
-                        create.Message = errorBuilder.Append("Error adding members to recipe");
-                        return create;
-                    }
+                var create = await _repository.AddMemberToRecipeAsync(entity);
+                if (create.Success == false)
+                {
+
+                    create.Success = false;
+                    create.Message = errorBuilder.Append("Error adding members to recipe");
                     return create;
-             
+                }
+                return create;
+
             }
 
             var oldMembers = chk.Items.Members;
 
             var oldMembersIds = new List<int>();
 
-            foreach (var member in oldMembers) 
-            { 
+            foreach (var member in oldMembers)
+            {
                 oldMembersIds.Add(member.Id);
             }
 
             var tempList = new List<int>();
 
             oldMembersIds.ForEach(x => {
-                if(!oldMembersIds.Contains(entity.MemberId))
+                if (!oldMembersIds.Contains(entity.MemberId))
                 {
                     tempList.Add(entity.MemberId);
                 }
@@ -65,16 +66,16 @@ namespace FamilyCookbook.Service
 
             var tempList2 = tempList.Distinct().ToImmutableList();
 
-            if (tempList2.Count == 0 || tempList2 is null) 
+            if (tempList2.Count == 0 || tempList2 is null)
             {
                 chk.Success = false;
                 chk.Message = errorBuilder.Append("Author is already added to the recipe!");
                 return chk;
             }
-            
-            foreach (var item in tempList2) 
+
+            foreach (var item in tempList2)
             {
-                MemberRecipe memberRecipe = new MemberRecipe { MemberId = item, RecipeId = entity.RecipeId};
+                MemberRecipe memberRecipe = new MemberRecipe { MemberId = item, RecipeId = entity.RecipeId };
                 var response = await _repository.AddMemberToRecipeAsync(memberRecipe);
             }
 
@@ -91,11 +92,11 @@ namespace FamilyCookbook.Service
 
         public async Task<RepositoryResponse<List<Recipe>>> PaginateAsync(Paging paging, RecipeFilter filter)
         {
-          var response = await _repository.PaginateAsync(paging, filter);
+            var response = await _repository.PaginateAsync(paging, filter);
 
             response.PageCount = (int)Math.Ceiling(response.TotalCount / (double)paging.PageSize);
 
-            foreach(var item in response.Items)
+            foreach (var item in response.Items)
             {
                 item.AverageRating = await CalculateAverageRating(item.Id);
             }
@@ -115,37 +116,54 @@ namespace FamilyCookbook.Service
             var response = new MessageResponse();
             var memberChk = await _repository.GetByIdAsync(id);
 
-            if (!memberChk.Success) 
+            if (!memberChk.Success)
             {
                 response.IsSuccess = false;
                 response.Message = memberChk.Message;
                 return response;
             }
 
-            var oldMembers = memberChk.Items.Members;
 
-            var oldMembersIds = new List<int>();
+            int[] tagDistArray = Array.Empty<int>();
 
-            foreach (var member in oldMembers)
-            {
-                oldMembersIds.Add(member.Id);
+            if (entity.TagIds != null || entity.TagIds.Length > 0) {
+                tagDistArray = entity.TagIds.Distinct().ToArray();
             }
 
-            var tempList = new List<int>();
+            List<int> oldMemberIds = new();
 
-            tempList.Intersect(oldMembersIds);
-            
-            var tempList2 = tempList.Distinct().ToList();
+            foreach(var member in memberChk.Items.Members)
+            {
+                oldMemberIds.Add(member.Id);
+            }
+
+            var tempList = ReturnDistinctList(entity.MemberIds, oldMemberIds);
 
             entity.DateUpdated = DateTime.Now;
             entity.IsActive = true;
             entity.Picture.IsActive = true;
-            entity.MemberIds = tempList2;
+            entity.MemberIds = tempList;
+            
+            entity.TagIds = tagDistArray;
 
             response = await _repository.UpdateAsync(id, entity);
 
             return response;
-        }   
+        }
+
+        private List<int> ReturnDistinctList(List<int> intList, List<int> oldMemberIds)
+        {
+            var tempList = intList.Distinct().ToList();
+            
+            if (tempList.Count > 0)
+            {
+               return intList = tempList;
+            }
+            else
+            {
+                return intList = oldMemberIds.Distinct().ToList();
+            }
+        }
 
         public async Task<RepositoryResponse<Recipe>> AddPictureToRecipeAsync(int pictureId, int recipeId)
         {
@@ -159,8 +177,14 @@ namespace FamilyCookbook.Service
             entity.DateCreated = DateTime.Now;
             entity.DateUpdated = DateTime.Now;
             entity.IsActive = true;
-
             entity.Picture.IsActive = true;
+
+            entity.MemberIds = entity.MemberIds.Distinct().ToList();
+
+            if (entity.TagIds != null)
+            {
+              entity.TagIds = entity.TagIds.Distinct().ToArray();
+            }
 
             var response = await _repository.CreateAsyncTransaction(entity);
 
@@ -175,6 +199,12 @@ namespace FamilyCookbook.Service
             {
                 response.Items.AverageRating = await CalculateAverageRating(id);
             }
+
+            var distinctMembers = response.Items.Members.GroupBy(m => m.Id).Select(g => g.First()).ToList();
+            response.Items.Members = distinctMembers;
+
+            var distinctTags = response.Items.Tags.GroupBy(t => t.Id).Select(g => g.First()).ToList();
+            response.Items.Tags = distinctTags;
 
             return response; 
         }

@@ -29,7 +29,7 @@ namespace FamilyCookbook.REST_Models.Recipe
 
         public decimal AverageRating { get; set; }
 
-        public List<Tag> Tags { get; set; }
+        public List<Tag>? Tags { get; set; }
 
     }
 }

@@ -302,8 +302,6 @@ namespace FamilyCookbook.Controllers
 
             var recipe = _mapper.MapReadToCreateDTO(updatedRecipe);
 
-            
-
             recipe.Picture = intemediaryPicture;
 
             var response = await _service.UpdateAsync(id, recipe);
@@ -311,16 +309,6 @@ namespace FamilyCookbook.Controllers
             if (response.IsSuccess == false)
             {
                 return BadRequest(response.Message.ToString());
-            }
-
-            foreach (var item in updatedRecipe.MemberIds)
-            {
-                var memberRecipe = new MemberRecipe();
-
-                memberRecipe.RecipeId = id;
-                memberRecipe.MemberId = item;
-
-                var addMemberToRecipe = await _service.AddMemberToRecipe(memberRecipe);
             }
 
             return Ok(recipe);

@@ -40,11 +40,11 @@ namespace FamilyCookbook.Repository
 
                     int? pictureId = entity.Picture?.Id;
 
-                    if(entity.Picture.Id == null || entity.Picture.Id == 0)
+                    if (entity.Picture.Id == null || entity.Picture.Id == 0)
                     {
-                        pictureId = await connection.QuerySingleAsync<int>(InsertPictureQuery(entity).ToString(), 
-                            pictureParameters, transaction );  
-                        
+                        pictureId = await connection.QuerySingleAsync<int>(InsertPictureQuery(entity).ToString(),
+                            pictureParameters, transaction);
+
                     }
 
                     var recipeParameters = new
@@ -61,12 +61,17 @@ namespace FamilyCookbook.Repository
 
                     await connection.ExecuteAsync(updateRecipeQuery, recipeParameters, transaction);
 
-                    var updateMemberRecipeQuery = UpdateMemberRecipeQuery(entity).ToString();
+                    var deleteMemberRecipeQuery = "DELETE FROM MemberRecipe WHERE RecipeId = @RecipeId";
+
+                    await connection.ExecuteAsync(deleteMemberRecipeQuery, new { RecipeId = id }, transaction);
+
+                    var insertMemberRecipeQuery = InsertMemberRecipeQuery(entity).ToString();
 
                     if (entity.MemberIds == null)
                     {
                         response.IsSuccess = false;
                         response.Message = _errorMessages.NestedEntityWithIdFound("Recipe", "Member");
+                        return response;
                     }
 
                     foreach (var memberId in entity.MemberIds)
@@ -77,14 +82,19 @@ namespace FamilyCookbook.Repository
                             MemberId = memberId
                         };
 
-                        await connection
-                            .ExecuteAsync(updateMemberRecipeQuery, memberRecipeParameters, transaction);
+                            await connection
+                            .ExecuteAsync(insertMemberRecipeQuery, memberRecipeParameters, transaction);
                     }
 
                     if (entity.TagIds != null)
                     {
+                        var deleteRecipeTagsQuery = "DELETE FROM RecipeTags WHERE RecipeId = @RecipeId";
+
+                        await connection
+                            .ExecuteAsync(deleteRecipeTagsQuery, new { RecipeId = id }, transaction);
+
                         var insertRecipeTagsQuery = "INSERT INTO RecipeTags(TagId, RecipeId) " +
-                            " VALUES (@TagId, @RecipeId); SELECT SCOPE_IDENTITY();";
+                            " VALUES (@TagId, @RecipeId);";
 
                         foreach (var tagId in entity.TagIds)
                         {
@@ -117,7 +127,7 @@ namespace FamilyCookbook.Repository
 
         }
 
-        private StringBuilder UpdateMemberRecipeQuery(RecipeCreateDTO entity)
+        private StringBuilder InsertMemberRecipeQuery(RecipeCreateDTO entity)
         {
             return new StringBuilder("INSERT INTO MemberRecipe(RecipeId, MemberId) " +
                 "VALUES (@RecipeId, @MemberId); " +
