@@ -3,7 +3,7 @@ import RecipeService from "../services/RecipeService";
 import { useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { RouteNames } from "../constants/constants";
+import { App, RouteNames } from "../constants/constants";
 
 import "./Carousel.css";
 
@@ -48,7 +48,7 @@ function RotatingCarousel({}) {
             onClick={() => {
               navigate(RouteNames.RECIPE_DETAILS.replace(":id", recipe.id));
             }}
-            src={"https://localhost:7170/" + recipe.pictureLocation}
+            src={App.URL + recipe.pictureLocation}
             alt={recipe.title}
             style={{
               height: "500px",

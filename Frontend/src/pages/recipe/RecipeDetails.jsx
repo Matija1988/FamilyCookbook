@@ -16,6 +16,7 @@ import CommentCreate from "../../components/CommentCreate";
 import ErrorModal from "../../components/ErrorModal";
 import useError from "../../hooks/useError";
 import useLoading from "../../hooks/useLoading";
+import { App } from "../../constants/constants";
 
 export default function RecipeDetails() {
   const recipeState = {
@@ -34,6 +35,8 @@ export default function RecipeDetails() {
   const { showError, showErrorModal, errors, hideError } = useError();
   const { showLoading, hideLoading } = useLoading();
   const [openMemberId, setOpenMemberId] = useState(null);
+
+  const URL = App.URL;
 
   const routeParams = useParams();
   const navigate = useNavigate();
@@ -67,7 +70,7 @@ export default function RecipeDetails() {
         <h4>{recipe.subtitle}</h4>
         <h6 className="category">CATEGORY: {recipe.categoryName}</h6>
         <h6 className="category-desc">{recipe.categoryDescription}</h6>
-        <img src={"https://localhost:7170/" + recipe.pictureLocation} />
+        <img src={URL + recipe.pictureLocation} />
         <div dangerouslySetInnerHTML={{ __html: recipe.text }}></div>
         <ListGroup>
           {members.map((member) => (

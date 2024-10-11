@@ -120,6 +120,14 @@ function NavBar() {
                 </Col>
               </Row>
             </Form>
+          </Nav>
+          <Nav className="ml-auto d-flex align-items-end gag-2">
+            <Nav.Link
+              className="impresum-link"
+              onClick={() => navigate(RouteNames.IMPRESUM)}
+            >
+              Impressum
+            </Nav.Link>
 
             {isLoggedIn ? (
               <Nav.Link className="logIn-link" onClick={logout}>

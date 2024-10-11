@@ -135,8 +135,6 @@ export default function CommentList({ recipeId }) {
       rating: updatedRating,
     };
 
-    console.log("Updated rating:" + updatedRating);
-
     updateComment(comment.id, entity);
     setEditCommentId(null);
   };

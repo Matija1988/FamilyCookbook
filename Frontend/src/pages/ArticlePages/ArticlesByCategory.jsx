@@ -38,9 +38,6 @@ export default function ArticlesByCategory() {
     return { pageSize, pageNumber, searchByActivityStatus, searchByCategory };
   };
 
-  console.log("Search by category = " + searchByCategory);
-  console.log("Route params = ", routeParams.id);
-
   async function fetchRecipes() {
     const params = getRequestParams(
       pageSize,

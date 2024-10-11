@@ -5,16 +5,17 @@ import "react-quill/dist/quill.snow.css";
 
 const RichTextEditor = forwardRef(({ value, setValue }, ref) => {
   const handleChange = (content) => {
-    setValue(content); // Update the value using the setValue prop
+    setValue(content);
   };
 
   return (
     <Container>
       <ReactQuill
-        ref={ref} // Attach the ref to ReactQuill
+        ref={ref}
         theme="snow"
         value={value}
         onChange={handleChange}
+        style={{ heigth: "50%" }}
       />
     </Container>
   );

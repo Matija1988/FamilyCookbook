@@ -15,12 +15,10 @@ import { AsyncTypeahead, TypeaheadRef } from "react-bootstrap-typeahead";
 import MembersService from "../../services/MembersService";
 import RecipeService from "../../services/RecipeService";
 import { useNavigate } from "react-router-dom";
-import { RouteNames } from "../../constants/constants";
+import { App, RouteNames } from "../../constants/constants";
 import CustomButton from "../../components/CustomButton";
 import RichTextEditor from "../../components/RichTextEditor";
 import ImageGallery from "../../components/ImageGallery";
-import PictureService from "../../services/PictureService";
-import { httpService } from "../../services/HttpService";
 
 import "./createForm.css";
 import Sidebar from "../AdminPanel/Sidebar";
@@ -65,7 +63,7 @@ export default function CreateRecipe() {
 
   const navigate = useNavigate();
 
-  const URL = "https://localhost:7170/";
+  const URL = App.URL;
 
   const [isImageGalleryOpen, setIsImageGalleryOpen] = useState(false);
 
@@ -189,7 +187,7 @@ export default function CreateRecipe() {
   const handlePictureChange = (event) => {
     const file = event.target.files[0];
     setPictureName(file.name);
-    console.log(file);
+
     const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
 
     if (file && !allowedTypes.includes(file.type)) {
@@ -211,15 +209,11 @@ export default function CreateRecipe() {
     reader.onloadend = () => {
       setUploadedPicture(reader.result);
     };
-
     reader.readAsDataURL(file);
-    console.log("Picture: ", uploadedPicture);
   };
 
   const setMainImage = async (image) => {
     setPictureName(image.name);
-    console.log("Image name " + image.name);
-    console.log("Image location " + image.location);
     setImageFromGallery(image);
   };
 

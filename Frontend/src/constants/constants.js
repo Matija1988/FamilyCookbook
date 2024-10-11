@@ -16,9 +16,10 @@ export const RouteNames = {
   TAGS: "/tags",
   SEARCH_RESULTS: "/found-recipes",
   REGISTER: "/register",
+  IMPRESUM: "/impresum",
 };
 
 export const App = {
-  URL: "https://localhost:7170/",
-  DEV: true,
+  URL: "http://matijapavkovic-001-site2.dtempurl.com/",
+  DEV: false,
 };

@@ -254,6 +254,7 @@ namespace FamilyCookbook.Controllers
 
                 }
             }
+
             catch (Exception ex)
             {
                 return BadRequest($"Failed to create image: {ex.Message}");

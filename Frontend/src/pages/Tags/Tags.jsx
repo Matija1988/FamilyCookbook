@@ -66,7 +66,6 @@ export default function Tags() {
 
   async function handleUpdate(tag) {
     setSelectedTag(tag);
-    console.log("Selected tag:", selectedTag);
   }
 
   async function deleteTag(tag) {

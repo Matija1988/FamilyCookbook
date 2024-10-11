@@ -28,6 +28,7 @@ import ArticlesByCategory from "./pages/ArticlePages/ArticlesByCategory";
 import Tags from "./pages/Tags/Tags";
 import SearchResult from "./pages/SearchResult";
 import Register from "./pages/logIn/Register";
+import Impresum from "./pages/Impersum/Impesum";
 function App() {
   const { errors, showErrorModal, hideErrorModal } = useError();
 
@@ -103,6 +104,7 @@ function App() {
           element={<SearchResult />}
         ></Route>
         <Route path={RouteNames.REGISTER} element={<Register />}></Route>
+        <Route path={RouteNames.IMPRESUM} element={<Impresum />}></Route>
       </Routes>
     </>
   );

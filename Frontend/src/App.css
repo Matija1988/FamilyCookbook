@@ -79,6 +79,11 @@
 .navbar-nav .logIn-link {
   color: white;
   margin-left: auto;
+  align-items: end;
+}
+
+.navbar-nav .impresum-link {
+  margin-left: 70%;
 }
 
 .logInContainer {

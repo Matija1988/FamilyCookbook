@@ -3,10 +3,10 @@ import Card from "react-bootstrap/Card";
 
 import "./articleCardStyle.css";
 import { Route, useNavigate } from "react-router-dom";
-import { RouteNames } from "../../constants/constants";
+import { App, RouteNames } from "../../constants/constants";
 
 function ArticleCard({ recipe }) {
-  const URL = "https://localhost:7170/";
+  const URL = App.URL;
 
   const navigate = useNavigate();
 

@@ -3,13 +3,13 @@ import PictureService from "../services/PictureService";
 import { useEffect, useState } from "react";
 
 import "./ImageGallery.css";
+import { App } from "../constants/constants";
 
 export default function ImageGallery({ isOpen, closeModal, setMainImage }) {
   const [pictures, setPictures] = useState([]);
   const [error, setError] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
   const [fullScreenImage, setFullScreenImage] = useState(null);
-  const URL = "https://localhost:7170/";
 
   async function fetchPictures() {
     try {
@@ -51,7 +51,7 @@ export default function ImageGallery({ isOpen, closeModal, setMainImage }) {
       {fullScreenImage && (
         <div className="fullscreen-overlay" onClick={closeFullscreen}>
           <img
-            src={URL + fullScreenImage.location}
+            src={App.URL + fullScreenImage.location}
             className="fullscreen-image"
             alt="Fullscreen"
             onClick={(e) => e.stopPropagation()}
@@ -77,7 +77,7 @@ export default function ImageGallery({ isOpen, closeModal, setMainImage }) {
         <div className="gallery">
           {pictures.map((picture, index) => (
             <img
-              src={URL + picture.location}
+              src={App.URL + picture.location}
               key={index}
               className={`gallery-image ${
                 selectedImage === picture ? "selected" : ""

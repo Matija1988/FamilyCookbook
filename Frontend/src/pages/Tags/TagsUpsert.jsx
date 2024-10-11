@@ -42,6 +42,7 @@ export default function TagsUpsert({ entity, paginate }) {
     if (!response.ok) {
       showError(response.data);
     }
+    setTags([]);
     paginate();
     hideLoading();
   }
@@ -50,7 +51,6 @@ export default function TagsUpsert({ entity, paginate }) {
       setTags((prevTags) => [...prevTags, { text: tagText.trim() }]);
       setTagText("");
     }
-    console.log("Tags", tags);
   };
 
   return (

@@ -35,7 +35,6 @@ export function AuthProvider({ children }) {
       setAuthToken(token);
       setIsLoggedIn(true);
       await setUserOnLogin(token);
-      console.log("Token:", token);
       const decodedToken = jwtDecode(token);
       setRole(decodedToken.role);
       navigate(RouteNames.HOME);
@@ -43,6 +42,7 @@ export function AuthProvider({ children }) {
       localStorage.setItem("Bearer", "");
       setAuthToken("");
       setIsLoggedIn(false);
+      return "Invalid username or password";
     }
   }
 

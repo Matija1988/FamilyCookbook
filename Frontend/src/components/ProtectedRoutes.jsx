@@ -8,14 +8,12 @@ const ProtectedRoutes = ({ allowedRoles }) => {
   const navigate = useNavigate();
 
   if (!token) {
-    Console.log("No token found");
     return <Navigate to="/" />;
   }
 
   try {
     const decode = jwtDecode(token);
     const userRole = decode.role;
-    console.log("Protected route User Role: ", userRole);
 
     if (allowedRoles.includes(userRole)) {
       return <Outlet />;

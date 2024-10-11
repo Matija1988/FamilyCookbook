@@ -7,7 +7,7 @@ import InputTextArea from "../../components/InputTextArea";
 import CategoriesService from "../../services/CategoriesService";
 import SelectionDropdown from "../../components/SelectionDropdown";
 import CustomButton from "../../components/CustomButton";
-import { RouteNames } from "../../constants/constants";
+import { App, RouteNames } from "../../constants/constants";
 import MembersService from "../../services/MembersService";
 import { AsyncTypeahead } from "react-bootstrap-typeahead";
 import { TbWashDryP } from "react-icons/tb";
@@ -61,7 +61,7 @@ export default function UpdateRecipe() {
 
   const routeParams = useParams();
   const navigate = useNavigate();
-  const URL = "https://localhost:7170/";
+  const URL = App.URL;
 
   const [error, setError] = useState("");
 
@@ -158,8 +158,6 @@ export default function UpdateRecipe() {
     const authorIds = recipe.members.map((member) => member.id);
 
     const postTagIds = recipe.tags.map((tag) => tag.id);
-
-    console.log("AuthorIds " + authorIds);
 
     if (!newPictureName || newPictureName.trim() === "") {
       setNewPictureName(oldPictureName);
