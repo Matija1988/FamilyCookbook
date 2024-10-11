@@ -29,6 +29,7 @@ export default function GenericTable({
       <Table striped bordered hover responsive className={className}>
         <thead>
           <tr>
+            <th>No</th>
             {columns.map((column) => (
               <th key={column}>{column}</th>
             ))}
@@ -38,6 +39,7 @@ export default function GenericTable({
         <tbody>
           {dataArray.map((row, rowIndex) => (
             <tr key={rowIndex}>
+              <td>{rowIndex + 1}</td>
               {columns.map((column) => (
                 <td key={column}>{row[column]}</td>
               ))}

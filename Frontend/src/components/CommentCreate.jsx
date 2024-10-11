@@ -83,7 +83,7 @@ export default function CommentCreate({ recipeId, fetchComments }) {
         >
           {openCommentCreate ? "Cancel" : "Create comment"}
         </Button>
-        {userId ? (
+        {userRole ? (
           <ListGroup.Item>
             <Collapse in={openCommentCreate === true}>
               <Form onSubmit={handleSubmit}>

@@ -95,81 +95,87 @@ export default function UpdateMember() {
 
   return (
     <>
-      <Sidebar></Sidebar>
-      <Container className="primaryContainer">
-        <Form onSubmit={handleSubmit} className="createForm">
-          <Row>
-            <Col>
-              <InputText
-                atribute="First name"
-                value={member.firstName}
-              ></InputText>
-            </Col>
-            <Col>
-              <InputText
-                atribute="Last name"
-                value={member.lastName}
-              ></InputText>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <DateAndTime
-                atribute="Date of birth"
-                propertyName="dateOfBirth"
-                value={member.birthDate}
-              ></DateAndTime>
-            </Col>
-            <Col>
-              <SelectionDropdown
-                atribute="Select role"
-                entities={roles || []}
-                onChanged={(e) => {
-                  setRoleId(e.target.value);
-                }}
-                initValue={selectRoleId}
-              ></SelectionDropdown>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <InputText
-                atribute="Username"
-                value={member.username}
-              ></InputText>
-            </Col>
-            <Col>
-              <InputText
-                atribute="Password"
-                value={member.password}
-              ></InputText>
-            </Col>
-          </Row>
-          <Row>
-            <Form.Label>Biography</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={3}
-              name="Biography"
-              value={member.bio}
-            />
-          </Row>
-          <Row>
-            <Col>
-              <CustomButton
-                label="SUBMIT"
-                type="submit"
-                variant="primary  m-3"
-              ></CustomButton>
-              <CustomButton
-                label="CANCEL"
-                onClick={handleCancel}
-                variant="secondary  m-3"
-              ></CustomButton>
-            </Col>
-          </Row>
-        </Form>
-      </Container>
+      <Row>
+        <Col md={2}>
+          <Sidebar></Sidebar>
+        </Col>
+        <Col md={8}>
+          <Container className="primaryContainer">
+            <Form onSubmit={handleSubmit} className="createForm">
+              <Row>
+                <Col>
+                  <InputText
+                    atribute="First name"
+                    value={member.firstName}
+                  ></InputText>
+                </Col>
+                <Col>
+                  <InputText
+                    atribute="Last name"
+                    value={member.lastName}
+                  ></InputText>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <DateAndTime
+                    atribute="Date of birth"
+                    propertyName="dateOfBirth"
+                    value={member.birthDate}
+                  ></DateAndTime>
+                </Col>
+                <Col>
+                  <SelectionDropdown
+                    atribute="Select role"
+                    entities={roles || []}
+                    onChanged={(e) => {
+                      setRoleId(e.target.value);
+                    }}
+                    initValue={selectRoleId}
+                  ></SelectionDropdown>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <InputText
+                    atribute="Username"
+                    value={member.username}
+                  ></InputText>
+                </Col>
+                <Col>
+                  <InputText
+                    atribute="Password"
+                    value={member.password}
+                  ></InputText>
+                </Col>
+              </Row>
+              <Row>
+                <Form.Label>Biography</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={3}
+                  name="Biography"
+                  value={member.bio}
+                />
+              </Row>
+              <Row>
+                <Col>
+                  <CustomButton
+                    label="SUBMIT"
+                    type="submit"
+                    variant="primary  m-3"
+                  ></CustomButton>
+                  <CustomButton
+                    label="CANCEL"
+                    onClick={handleCancel}
+                    variant="secondary  m-3"
+                  ></CustomButton>
+                </Col>
+              </Row>
+            </Form>
+          </Container>
+        </Col>
+      </Row>
       <ErrorModal
         show={showErrorModal}
         onHide={hideError}

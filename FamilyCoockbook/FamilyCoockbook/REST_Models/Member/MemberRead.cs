@@ -15,7 +15,7 @@ namespace FamilyCookbook.REST_Models.Member
         public string LastName { get; set; }
         public DateTime DateOfBirth { get; set; }
 
-        public string Bio { get; set; }
+        public string? Bio { get; set; }
 
         public int RoleId { get; set; }
         public string RoleName { get; set; }

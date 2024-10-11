@@ -103,14 +103,14 @@ namespace FamilyCookbook.Controllers
         {
             var mapper = new MemberMapper();
 
-            var member = mapper.MemberCreateToMember(memberCreate);
+                var member = mapper.MemberCreateToMember(memberCreate);
 
-            var response = await _service.CreateAsync(member);
+                var response = await _service.CreateAsync(member);
 
-            if(response.IsSuccess == false)
-            {
-                return BadRequest(response.Message.ToString());
-            }   
+                if(response.IsSuccess == false)
+                {
+                    return BadRequest(response.Message.ToString());
+                }   
 
             return Ok(response.Message.ToString());    
         }

@@ -1,7 +1,7 @@
 import { Col, Container, Form, ListGroup, Row, Table } from "react-bootstrap";
 import InputText from "../../components/InputText";
 import { useEffect, useRef, useState } from "react";
-import { useLoaderData, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import RecipeService from "../../services/RecipeService";
 import InputTextArea from "../../components/InputTextArea";
 import CategoriesService from "../../services/CategoriesService";
@@ -10,7 +10,6 @@ import CustomButton from "../../components/CustomButton";
 import { App, RouteNames } from "../../constants/constants";
 import MembersService from "../../services/MembersService";
 import { AsyncTypeahead } from "react-bootstrap-typeahead";
-import { TbWashDryP } from "react-icons/tb";
 import RichTextEditor from "../../components/RichTextEditor";
 import PictureService from "../../services/PictureService";
 import ImageGallery from "../../components/ImageGallery";
@@ -21,7 +20,7 @@ import useLoading from "../../hooks/useLoading";
 import ErrorModal from "../../components/ErrorModal";
 
 export default function UpdateRecipe() {
-  const [recipe, setRecipe] = useState({
+  const initialState = {
     title: "",
     subtitle: "",
     text: "",
@@ -31,13 +30,15 @@ export default function UpdateRecipe() {
         id: "",
         firstName: "",
         lastName: "",
+        bio: "",
       },
     ],
     pictureName: "",
     pictureLocation: "",
     pictureId: "",
     tags: [{ id: "", text: "" }],
-  });
+  };
+  const [recipe, setRecipe] = useState(initialState);
   const [categories, setCategories] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const [members, setMembers] = useState([]);
@@ -46,6 +47,10 @@ export default function UpdateRecipe() {
   const { showError, errors, hideError, showErrorModal } = useError();
   const { showLoading, hideLoading } = useLoading();
   const [oldPictureName, setOldPictureName] = useState("");
+  const [title, setTitle] = useState("");
+  const [subtitle, setSubtitle] = useState("");
+  const [tags, setTags] = useState([]);
+  const [recipeCategory, setRecipeCategory] = useState(null);
 
   const [newPicture, setNewPicture] = useState(null);
   const [newPictureName, setNewPictureName] = useState("");
@@ -65,33 +70,33 @@ export default function UpdateRecipe() {
 
   const [error, setError] = useState("");
 
-  async function fetchRecipe() {
+  async function fetchAllData() {
     showLoading();
-    const response = await RecipeService.getById("recipe", routeParams.id);
-    if (!response.ok) {
+    const [recipeResponse, categoriesResponse] = await Promise.all([
+      RecipeService.getById("recipe", routeParams.id),
+      CategoriesService.readAll("category"),
+    ]);
+
+    if (!recipeResponse.ok || !categoriesResponse.ok) {
       hideLoading();
       showError(response.data);
-      return;
     }
-    setRecipe(response.data);
-    setMembers(response.data.members);
 
-    setSelectedCategoryId(response.data.categoryId);
-    setOldPictureName(response.data.pictureName);
-    setImageFromGallery({ location: response.data.pictureLocation });
+    setRecipe(recipeResponse.data);
+    setTitle(recipeResponse.data.title);
+    setSubtitle(recipeResponse.data.subtitle);
+    setMembers(recipeResponse.data.members);
+    setTags(recipeResponse.data.tags);
+    setRecipeCategory(recipeResponse.data.categoryId);
+    setCategories(categoriesResponse.data.items);
+    setOldPictureName(recipeResponse.data.pictureName);
+    setImageFromGallery({ location: recipeResponse.data.pictureLocation });
     hideLoading();
   }
 
-  async function fetchCategories() {
-    try {
-      const response = await CategoriesService.readAll("category");
-      if (response.ok) {
-        setCategories(response.data.items);
-      }
-    } catch (error) {
-      alert(error.message);
-    }
-  }
+  useEffect(() => {
+    fetchAllData();
+  }, []);
 
   async function SearchByCondition(input) {
     try {
@@ -103,11 +108,6 @@ export default function UpdateRecipe() {
       alert(error.message);
     }
   }
-
-  useEffect(() => {
-    fetchRecipe();
-    fetchCategories();
-  }, []);
 
   function handleCancel() {
     navigate(RouteNames.RECIPES);
@@ -155,9 +155,9 @@ export default function UpdateRecipe() {
 
     const information = new FormData(e.target);
 
-    const authorIds = recipe.members.map((member) => member.id);
+    const authorIds = members.map((member) => member.id);
 
-    const postTagIds = recipe.tags.map((tag) => tag.id);
+    const postTagIds = tags.map((tag) => tag.id);
 
     if (!newPictureName || newPictureName.trim() === "") {
       setNewPictureName(oldPictureName);
@@ -167,8 +167,8 @@ export default function UpdateRecipe() {
       title: information.get("Title"),
       subtitle: information.get("Subtitle"),
       text: recipe.text,
-      categoryId: parseInt(selectedCategoryId),
-      memberIds: authorIds,
+      categoryId: parseInt(selectedCategoryId) || recipeCategory,
+      memberIds: authorIds, 
       tagIds: postTagIds,
       pictureName: newPictureName || oldPictureName,
       pictureBlob: newPicture || null,
@@ -176,11 +176,10 @@ export default function UpdateRecipe() {
   }
 
   function assignMemberToRecipe(member) {
-    const updatedMembers = Array.isArray(recipe.members)
-      ? [...recipe.members, member]
-      : [member];
-
-    setRecipe({ ...recipe, members: updatedMembers });
+    if (!recipe.members.some((m) => m.id === member.id)) {
+      const updatedMembers = [...members, member];
+      setMembers(updatedMembers);
+    }
     setFoundMembers([]);
   }
 
@@ -224,8 +223,8 @@ export default function UpdateRecipe() {
 
   const assignTagToRecipe = (tag) => {
     if (!recipe.tags.some((t) => t.id === tag.id)) {
-      const updatedTags = [...recipe.tags, tag];
-      setRecipe({ ...recipe, tags: updatedTags });
+      const updatedTags = [...tags, tag];
+      setTags(updatedTags);
     }
     setFoundTags([]);
   };
@@ -244,7 +243,7 @@ export default function UpdateRecipe() {
                 <Col>
                   <SelectionDropdown
                     atribute="Select category"
-                    initValue={selectedCategoryId}
+                    initValue={recipeCategory}
                     entities={categories}
                     onChanged={(e) => {
                       setSelectedCategoryId(e.target.value);
@@ -303,7 +302,7 @@ export default function UpdateRecipe() {
               </Row>
               <Row>
                 <Col>
-                  <InputText atribute="Title" value={recipe.title}></InputText>
+                  <InputText atribute="Title" value={title}></InputText>
                 </Col>
                 <Col>
                   <Table>
@@ -315,10 +314,8 @@ export default function UpdateRecipe() {
                       </tr>
                     </thead>
                     <tbody>
-                      {recipe.members &&
-                      recipe.members.length > 0 &&
-                      members.length > 0 ? (
-                        recipe.members.map((member) => {
+                      {members && members.length > 0 ? (
+                        members.map((member) => {
                           if (member) {
                             return (
                               <tr key={member.id}>
@@ -351,8 +348,8 @@ export default function UpdateRecipe() {
                 <Col>
                   <h5 className="mt-3">Recipe tags:</h5>
                   <ListGroup>
-                    {recipe.tags && recipe.tags.length > 0 ? (
-                      recipe.tags.map((tag) => {
+                    {tags && tags.length > 0 ? (
+                      tags.map((tag) => {
                         return (
                           <ListGroup.Item key={tag.id}>
                             {tag.text}
@@ -369,10 +366,7 @@ export default function UpdateRecipe() {
               </Row>
               <Row>
                 <Col>
-                  <InputText
-                    atribute="Subtitle"
-                    value={recipe.subtitle}
-                  ></InputText>
+                  <InputText atribute="Subtitle" value={subtitle}></InputText>
                 </Col>
                 <Col></Col>
                 <Col></Col>

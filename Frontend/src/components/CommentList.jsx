@@ -16,7 +16,7 @@ export default function CommentList({ recipeId }) {
     rating: 0,
   };
   const [comments, setComments] = useState([]);
-  const [openComentId, setOpenComentId] = useState(null);
+  const [openCommentId, setOpenCommentId] = useState(null);
   const [editCommentId, setEditCommentId] = useState(null);
   const [editedText, setEditedText] = useState({});
   const [editedRating, setEditedRating] = useState({});
@@ -24,7 +24,7 @@ export default function CommentList({ recipeId }) {
   const { showLoading, hideLoading } = useLoading();
   const { showError, showErrormodal, errors, hideError } = useError();
 
-  const { userId, userFirstName, userLastName } = useUser();
+  const { userId, userRole, userFirstName, userLastName } = useUser();
 
   const routeParams = useParams();
 
@@ -41,7 +41,8 @@ export default function CommentList({ recipeId }) {
 
   async function deleteComment(id) {
     const response = await CommentService.setNotActive(
-      "comment/softDelete/" + id
+      "comment/softDelete",
+      id
     );
     if (!response.ok) {
       hideLoading();
@@ -108,7 +109,7 @@ export default function CommentList({ recipeId }) {
   };
 
   const toggleText = (id) => {
-    setOpenComentId(openComentId === id ? null : id);
+    setOpenCommentId(openCommentId === id ? null : id);
   };
 
   const handleEdit = (comment) => {
@@ -120,8 +121,8 @@ export default function CommentList({ recipeId }) {
     }));
   };
 
-  const handleDelete = (id) => {
-    deleteComment(id);
+  const handleDelete = (comment) => {
+    deleteComment(comment.id);
   };
 
   const handleSave = (comment) => {
@@ -171,12 +172,12 @@ export default function CommentList({ recipeId }) {
                 variant="link"
                 onClick={() => toggleText(comment.id)}
                 aria-controls={`text-${comment.id}`}
-                aria-expanded={openComentId === comment.id}
+                aria-expanded={openCommentId === comment.id}
               >
-                {openComentId === comment.id ? "Hide comment" : "Show comment"}
+                {openCommentId === comment.id ? "Hide comment" : "Show comment"}
               </Button>
 
-              <Collapse in={openComentId === comment.id}>
+              <Collapse in={openCommentId === comment.id}>
                 <div id={`Comment${comment.id}`} style={{ marginTop: "1 %" }}>
                   <textarea
                     className="comment-textarea"
@@ -191,26 +192,28 @@ export default function CommentList({ recipeId }) {
                     }
                   ></textarea>
 
-                  {comment.memberFirstName === userFirstName &&
-                    comment.memberLastName === userLastName && (
-                      <div className="comment-icons">
-                        {editCommentId === comment.id ? (
-                          <FaSave
-                            className="comment-icon cmt-save-icon"
-                            onClick={() => handleSave(comment)}
-                          />
-                        ) : (
-                          <FaEdit
-                            className="comment-icon cmt-edit-icon"
-                            onClick={() => handleEdit(comment)}
-                          />
-                        )}
-                        <FaTrashAlt
-                          className="comment-icon cmt-delete-icon"
-                          onClick={() => handleDelete(comment.id)}
+                  {(comment.memberFirstName === userFirstName &&
+                    comment.memberLastName === userLastName) ||
+                  userRole === "Moderator" ||
+                  userRole === "Admin" ? (
+                    <div className="comment-icons">
+                      {editCommentId === comment.id ? (
+                        <FaSave
+                          className="comment-icon cmt-save-icon"
+                          onClick={() => handleSave(comment)}
                         />
-                      </div>
-                    )}
+                      ) : (
+                        <FaEdit
+                          className="comment-icon cmt-edit-icon"
+                          onClick={() => handleEdit(comment)}
+                        />
+                      )}
+                      <FaTrashAlt
+                        className="comment-icon cmt-delete-icon"
+                        onClick={() => handleDelete(comment)}
+                      />
+                    </div>
+                  ) : null}
                 </div>
               </Collapse>
             </ListGroup.Item>

@@ -24,6 +24,8 @@ import "./createForm.css";
 import Sidebar from "../AdminPanel/Sidebar";
 import TagsService from "../../services/TagsService";
 import useError from "../../hooks/useError";
+import useLoading from "../../hooks/useLoading";
+import ErrorModal from "../../components/ErrorModal";
 
 export default function CreateRecipe() {
   const [recipe, setRecipe] = useState({
@@ -48,7 +50,7 @@ export default function CreateRecipe() {
   const [tags, setTags] = useState([]);
   const [foundTags, setFoundTags] = useState([]);
 
-  const [error, setError] = useState("");
+  const { showLoading, hideLoading } = useLoading();
 
   const { showError, showErrorModal, errors, hideError } = useError();
 
@@ -68,15 +70,16 @@ export default function CreateRecipe() {
   const [isImageGalleryOpen, setIsImageGalleryOpen] = useState(false);
 
   async function fetchCategories() {
-    try {
-      const response = await CategoriesService.readAll("category");
-      if (response.ok) {
-        setCategories(response.data.items);
-      }
-    } catch (error) {
-      setError(error.message);
-      alert(error);
+    showLoading();
+
+    const response = await CategoriesService.readAll("category");
+    if (!response.ok) {
+      hideLoading();
+      showError();
+      return;
     }
+    setCategories(response.data.items);
+    hideLoading();
   }
 
   async function SearchByCondition(input) {
@@ -409,6 +412,11 @@ export default function CreateRecipe() {
         </Col>
         <Col></Col>
       </Row>
+      <ErrorModal
+        show={showError}
+        onHide={hideError}
+        error={errors}
+      ></ErrorModal>
     </>
   );
 }

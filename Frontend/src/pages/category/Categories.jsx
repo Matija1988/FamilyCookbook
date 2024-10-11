@@ -58,34 +58,40 @@ export default function Categories() {
 
   return (
     <>
-      <Sidebar></Sidebar>
-      <Container className="primaryContainer">
-        <h1>CATEGORIES PAGE</h1>
-        <Row>
-          <Col>
-            <CustomButton
-              label="Create new"
-              variant="primary"
-              onClick={() => createCategory()}
-              className="create-new-btn"
-            ></CustomButton>
-          </Col>
-          <Col></Col>
-          <Col></Col>
-          <Col></Col>
-        </Row>
+      <Row>
+        <Col md={2}>
+          <Sidebar></Sidebar>
+        </Col>
+        <Col md={8}>
+          <Container className="primaryContainer">
+            <h1>CATEGORIES PAGE</h1>
+            <Row>
+              <Col>
+                <CustomButton
+                  label="Create new"
+                  variant="primary"
+                  onClick={() => createCategory()}
+                  className="create-new-btn"
+                ></CustomButton>
+              </Col>
+              <Col></Col>
+              <Col></Col>
+              <Col></Col>
+            </Row>
 
-        <GenericTable
-          dataArray={categories}
-          onDelete={(category) => (
-            setEntityToDelete(category), setShowDeleteModal(true)
-          )}
-          onUpdate={updateCategory}
-          cutRange={1}
-          cutRangeForIsActiveStart={2}
-          cutRangeForIsActiveEnd={3}
-        ></GenericTable>
-      </Container>
+            <GenericTable
+              dataArray={categories}
+              onDelete={(category) => (
+                setEntityToDelete(category), setShowDeleteModal(true)
+              )}
+              onUpdate={updateCategory}
+              cutRange={1}
+              cutRangeForIsActiveStart={2}
+              cutRangeForIsActiveEnd={3}
+            ></GenericTable>
+          </Container>
+        </Col>
+      </Row>
       <DeleteModal
         show={showDeleteModal}
         handleClose={() => setShowDeleteModal(false)}

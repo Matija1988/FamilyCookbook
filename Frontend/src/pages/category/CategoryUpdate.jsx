@@ -72,28 +72,34 @@ export default function CategoryUpdate() {
 
   return (
     <>
-      <Sidebar></Sidebar>
-      <Container className="primaryContainer">
-        <h1>CATEGORY UPDATE</h1>
-        <Form onSubmit={handleSubmit} className="createForm">
-          <InputText atribute="Name" value={category.name}></InputText>
-          <InputTextArea
-            atribute="Description"
-            rows={3}
-            value={category.description}
-          ></InputTextArea>
-          <CustomButton
-            label="SUBMIT"
-            type="submit"
-            variant="primary  m-3"
-          ></CustomButton>
-          <CustomButton
-            label="CANCEL"
-            onClick={handleCancel}
-            variant="secondary  m-3"
-          ></CustomButton>
-        </Form>
-      </Container>
+      <Row>
+        <Col md={2}>
+          <Sidebar></Sidebar>
+        </Col>
+        <Col md={8}>
+          <Container className="primaryContainer">
+            <h1>CATEGORY UPDATE</h1>
+            <Form onSubmit={handleSubmit} className="createForm">
+              <InputText atribute="Name" value={category.name}></InputText>
+              <InputTextArea
+                atribute="Description"
+                rows={3}
+                value={category.description}
+              ></InputTextArea>
+              <CustomButton
+                label="SUBMIT"
+                type="submit"
+                variant="primary  m-3"
+              ></CustomButton>
+              <CustomButton
+                label="CANCEL"
+                onClick={handleCancel}
+                variant="secondary  m-3"
+              ></CustomButton>
+            </Form>
+          </Container>
+        </Col>
+      </Row>
       <ErrorModal
         show={showErrorModal}
         onHide={hideError}

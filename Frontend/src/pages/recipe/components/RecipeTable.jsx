@@ -11,14 +11,16 @@ export default function RecipeTable({
   onUpdate,
 }) {
   const navigate = useNavigate();
-
   const [entityId, setEntityId] = useState();
+
+  const i = 0;
 
   return (
     <>
       <Table striped bordered hover responsive>
         <thead>
           <tr>
+            <th>No</th>
             <th>Title</th>
             <th>Subtitle</th>
             <th>Category</th>
@@ -28,8 +30,9 @@ export default function RecipeTable({
         </thead>
         <tbody>
           {recipes.length > 0 ? (
-            recipes.map((entity) => (
+            recipes.map((entity, index) => (
               <tr key={entity.id}>
+                <td>{index + 1}</td>
                 <td>{entity.title}</td>
                 <td>{entity.subtitle}</td>
                 <td>{entity.categoryName}</td>

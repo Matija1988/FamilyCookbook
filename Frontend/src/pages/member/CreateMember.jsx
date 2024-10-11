@@ -110,95 +110,101 @@ export default function CreateMember() {
 
   return (
     <>
-      <Sidebar></Sidebar>
-      <Container className="primaryContainer">
-        <h1>CREATE MEMBER</h1>
-        {submitted ? (
-          <div>
-            <h4>Member submitted successfully</h4>
+      <Row>
+        <Col md={2}>
+          <Sidebar></Sidebar>
+        </Col>
+        <Col md={8}>
+          <Container className="primaryContainer">
+            <h1>CREATE MEMBER</h1>
+            {submitted ? (
+              <div>
+                <h4>Member submitted successfully</h4>
 
-            <CustomButton
-              variant="primary"
-              label="ADD ANOTHER"
-              onClick={newMember}
-            ></CustomButton>
-            <CustomButton
-              variant="secondary"
-              label="RETURN"
-              onClick={handleReturn}
-            ></CustomButton>
-          </div>
-        ) : (
-          <Form onSubmit={handleSubmit} className="createForm">
-            <Row>
-              <Col>
-                <InputText
-                  atribute="First name"
-                  value=""
-                  required={true}
-                ></InputText>
-              </Col>
-              <Col>
-                <InputText
-                  atribute="Last name"
-                  value=""
-                  required={true}
-                ></InputText>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <DateAndTime
-                  atribute="Date of birth"
-                  propertyName="dateOfBirth"
-                  required={true}
-                ></DateAndTime>
-              </Col>
-              <Col>
-                <SelectionDropdown
-                  atribute="Select role"
-                  entities={roles || []}
-                  onChanged={(r) => setRoleId(r.target.value)}
-                ></SelectionDropdown>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <InputText
-                  atribute="Username"
-                  value=""
-                  required={true}
-                ></InputText>
-              </Col>
-              <Col>
-                <InputText
-                  atribute="Password"
-                  value=""
-                  required={true}
-                ></InputText>
-              </Col>
-            </Row>
-            <Row>
-              <Form.Label>Biography</Form.Label>
-              <Form.Control as="textarea" rows={3} name="Biography" />
-            </Row>
-            <Row>
-              <Col>
                 <CustomButton
-                  label="SUBMIT"
-                  type="submit"
-                  variant="primary  m-3"
+                  variant="primary"
+                  label="ADD ANOTHER"
+                  onClick={newMember}
                 ></CustomButton>
                 <CustomButton
-                  label="CANCEL"
-                  onClick={handleCancel}
-                  variant="secondary  m-3"
+                  variant="secondary"
+                  label="RETURN"
+                  onClick={handleReturn}
                 ></CustomButton>
-              </Col>
-            </Row>
-          </Form>
-        )}
-      </Container>
+              </div>
+            ) : (
+              <Form onSubmit={handleSubmit} className="createForm">
+                <Row>
+                  <Col>
+                    <InputText
+                      atribute="First name"
+                      value=""
+                      required={true}
+                    ></InputText>
+                  </Col>
+                  <Col>
+                    <InputText
+                      atribute="Last name"
+                      value=""
+                      required={true}
+                    ></InputText>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <DateAndTime
+                      atribute="Date of birth"
+                      propertyName="dateOfBirth"
+                      required={true}
+                    ></DateAndTime>
+                  </Col>
+                  <Col>
+                    <SelectionDropdown
+                      atribute="Select role"
+                      entities={roles || []}
+                      onChanged={(r) => setRoleId(r.target.value)}
+                    ></SelectionDropdown>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <InputText
+                      atribute="Username"
+                      value=""
+                      required={true}
+                    ></InputText>
+                  </Col>
+                  <Col>
+                    <InputText
+                      atribute="Password"
+                      value=""
+                      required={true}
+                    ></InputText>
+                  </Col>
+                </Row>
+                <Row>
+                  <Form.Label>Biography</Form.Label>
+                  <Form.Control as="textarea" rows={3} name="Biography" />
+                </Row>
+                <Row>
+                  <Col>
+                    <CustomButton
+                      label="SUBMIT"
+                      type="submit"
+                      variant="primary  m-3"
+                    ></CustomButton>
+                    <CustomButton
+                      label="CANCEL"
+                      onClick={handleCancel}
+                      variant="secondary  m-3"
+                    ></CustomButton>
+                  </Col>
+                </Row>
+              </Form>
+            )}
+          </Container>
+        </Col>
+      </Row>
       <ErrorModal
         show={showErrorModal}
         onHide={hideError}

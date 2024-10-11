@@ -64,48 +64,54 @@ export default function CategoryCreate() {
 
   return (
     <>
-      <Sidebar></Sidebar>
-      <Container className="primaryContainer">
-        <h1>CATEGORY CREATE</h1>
+      <Row>
+        <Col md={2}>
+          <Sidebar></Sidebar>
+        </Col>
+        <Col md={8}>
+          <Container className="primaryContainer">
+            <h1>CATEGORY CREATE</h1>
 
-        {submited ? (
-          <div>
-            <h4>Category submitted successfully</h4>
-            <CustomButton
-              variant="primary"
-              label="ADD ANOTHER"
-              onClick={newCategory}
-            >
-              ADD ANTOHER
-            </CustomButton>
-            <CustomButton
-              label="RETURN"
-              onClick={handleReturn}
-              variant="secondary"
-              className="btn-secondary"
-            ></CustomButton>
-          </div>
-        ) : (
-          <Form onSubmit={handleSubmit} className="createForm">
-            <InputText atribute="Name" value="" required={true}></InputText>
-            <InputTextArea
-              atribute="Description"
-              rows={3}
-              value=""
-            ></InputTextArea>
-            <CustomButton
-              label="SUBMIT"
-              type="submit"
-              variant="primary  m-3"
-            ></CustomButton>
-            <CustomButton
-              label="CANCEL"
-              onClick={handleCancel}
-              variant="secondary  m-3"
-            ></CustomButton>
-          </Form>
-        )}
-      </Container>
+            {submited ? (
+              <div>
+                <h4>Category submitted successfully</h4>
+                <CustomButton
+                  variant="primary"
+                  label="ADD ANOTHER"
+                  onClick={newCategory}
+                >
+                  ADD ANTOHER
+                </CustomButton>
+                <CustomButton
+                  label="RETURN"
+                  onClick={handleReturn}
+                  variant="secondary"
+                  className="btn-secondary"
+                ></CustomButton>
+              </div>
+            ) : (
+              <Form onSubmit={handleSubmit} className="createForm">
+                <InputText atribute="Name" value="" required={true}></InputText>
+                <InputTextArea
+                  atribute="Description"
+                  rows={3}
+                  value=""
+                ></InputTextArea>
+                <CustomButton
+                  label="SUBMIT"
+                  type="submit"
+                  variant="primary  m-3"
+                ></CustomButton>
+                <CustomButton
+                  label="CANCEL"
+                  onClick={handleCancel}
+                  variant="secondary  m-3"
+                ></CustomButton>
+              </Form>
+            )}
+          </Container>
+        </Col>
+      </Row>
       <ErrorModal
         show={showErrorModal}
         onHide={hideError}

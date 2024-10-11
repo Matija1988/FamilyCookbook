@@ -176,92 +176,100 @@ export default function Members() {
 
   return (
     <>
-      <Sidebar></Sidebar>
-      <Container className="primaryContainer">
-        <Row>
-          <h1>MEMBERS PAGE</h1>
-        </Row>
-        <Row>
-          <Col>
-            <CustomButton
-              label="Create new"
-              variant="primary"
-              onClick={() => createMember()}
-              className="create-new-btn"
-            ></CustomButton>
-          </Col>
-          <Col>
-            <PageSizeDropdown
-              onChanged={handlePageSizeChange}
-              initValue={pageSize}
-            ></PageSizeDropdown>
-          </Col>
-          <Col>
-            <ActivityStatusSelection
-              entities={statusOptions || []}
-              value={statusOptions.indexOf(1)}
-              onChanged={(e) => setActivityStatus(e.target.value)}
-              atribute="Search by activity status"
-            ></ActivityStatusSelection>
-          </Col>
-          <Col>
-            <GenericInputs
-              type="text"
-              atribute="Search by first name"
-              value=""
-              onChange={onChangeSearchFirstName}
-            ></GenericInputs>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <GenericInputs
-              type="text"
-              atribute="Search by last name"
-              value=""
-              onChange={onChangeSearchLastName}
-            ></GenericInputs>
-          </Col>
-          <Col>
-            <SelectionDropdown
-              atribute="Search by role"
-              entities={roles || []}
-              onChanged={(e) => setSearchByRoleId(e.target.value)}
-            ></SelectionDropdown>
-          </Col>
-          <Col>
-            <GenericInputs
-              type="text"
-              atribute="Search by bio"
-              value=""
-              onChange={onChangeSearchBio}
-            ></GenericInputs>
-          </Col>
-          <Col>
-            <CustomButton
-              label="Search"
-              onClick={paginateMembers}
-              className="search-btn-2"
-            ></CustomButton>
-          </Col>
-        </Row>
+      <Row>
+        <Col md={2}>
+          <Sidebar></Sidebar>
+        </Col>
+        <Col md={8}>
+          <Container className="primaryContainer">
+            <Row>
+              <h1>MEMBERS PAGE</h1>
+            </Row>
+            <Row>
+              <Col>
+                <CustomButton
+                  label="Create new"
+                  variant="primary"
+                  onClick={() => createMember()}
+                  className="create-new-btn"
+                ></CustomButton>
+              </Col>
+              <Col>
+                <PageSizeDropdown
+                  onChanged={handlePageSizeChange}
+                  initValue={pageSize}
+                ></PageSizeDropdown>
+              </Col>
+              <Col>
+                <ActivityStatusSelection
+                  entities={statusOptions || []}
+                  value={statusOptions.indexOf(1)}
+                  onChanged={(e) => setActivityStatus(e.target.value)}
+                  atribute="Search by activity status"
+                ></ActivityStatusSelection>
+              </Col>
+              <Col>
+                <GenericInputs
+                  type="text"
+                  atribute="Search by first name"
+                  value=""
+                  onChange={onChangeSearchFirstName}
+                ></GenericInputs>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <GenericInputs
+                  type="text"
+                  atribute="Search by last name"
+                  value=""
+                  onChange={onChangeSearchLastName}
+                ></GenericInputs>
+              </Col>
+              <Col>
+                <SelectionDropdown
+                  atribute="Search by role"
+                  entities={roles || []}
+                  onChanged={(e) => setSearchByRoleId(e.target.value)}
+                ></SelectionDropdown>
+              </Col>
+              <Col>
+                <GenericInputs
+                  type="text"
+                  atribute="Search by bio"
+                  value=""
+                  onChange={onChangeSearchBio}
+                ></GenericInputs>
+              </Col>
+              <Col>
+                <CustomButton
+                  label="Search"
+                  onClick={paginateMembers}
+                  className="search-btn-2"
+                ></CustomButton>
+              </Col>
+            </Row>
 
-        <GenericTable
-          dataArray={members}
-          onDelete={(member) => (
-            setEntityToDelete(member), setShowDeleteModal(true)
-          )}
-          onUpdate={handleUpdate}
-          cutRange={2}
-          className="gen-tbl"
-        ></GenericTable>
+            <GenericTable
+              dataArray={members}
+              onDelete={(member) => (
+                setEntityToDelete(member), setShowDeleteModal(true)
+              )}
+              onUpdate={handleUpdate}
+              cutRange={2}
+              cutRangeForIsActiveStart={3}
+              cutRangeForIsActiveEnd={3}
+              className="gen-tbl"
+            ></GenericTable>
 
-        <CustomPagination
-          pageNumber={pageNumber}
-          totalPages={totalPages}
-          handlePageChange={handlePageChange}
-        ></CustomPagination>
-      </Container>
+            <CustomPagination
+              pageNumber={pageNumber}
+              totalPages={totalPages}
+              handlePageChange={handlePageChange}
+            ></CustomPagination>
+          </Container>
+        </Col>
+      </Row>
       <ErrorModal
         show={showErrorModal}
         onHide={hideError}

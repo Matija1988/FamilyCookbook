@@ -23,7 +23,7 @@ namespace FamilyCookbook.Model
 
         public DateTime DateOfBirth { get; set; }
 
-        public string Bio { get; set; }
+        public string? Bio { get; set; }
 
         public bool IsActive { get; set; }
 
