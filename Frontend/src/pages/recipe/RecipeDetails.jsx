@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import {
   Button,
+  Col,
   Collapse,
   Container,
   Form,
   ListGroup,
   ListGroupItem,
+  Row,
 } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import RecipeService from "../../services/RecipeService";
@@ -65,41 +67,62 @@ export default function RecipeDetails() {
 
   return (
     <>
-      <Container className="recDetails">
-        <h2>{recipe.title}</h2>
-        <h4>{recipe.subtitle}</h4>
-        <h6 className="category">CATEGORY: {recipe.categoryName}</h6>
-        <h6 className="category-desc">{recipe.categoryDescription}</h6>
-        <img src={URL + recipe.pictureLocation} />
-        <div dangerouslySetInnerHTML={{ __html: recipe.text }}></div>
-        <ListGroup>
-          {members.map((member) => (
-            <ListGroup.Item className="lg-item" key={member.id}>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <div>Author: {member.firstName + " " + member.lastName}</div>
+      <Row>
+        <Col style={{ flex: "0 0 20%" }}></Col>
+        <Col style={{ flex: "0 0 60%" }}>
+          <Container className="recDetails">
+            <h2>{recipe.title}</h2>
+            <h4>{recipe.subtitle}</h4>
+            <h6 className="category">CATEGORY: {recipe.categoryName}</h6>
+            <h6 className="category-desc">{recipe.categoryDescription}</h6>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <img
+                src={URL + recipe.pictureLocation}
+                style={{ width: "60%", height: "60%", alignContent: "center" }}
+              />
+            </div>
+            <div dangerouslySetInnerHTML={{ __html: recipe.text }}></div>
+            <ListGroup>
+              {members.map((member) => (
+                <ListGroup.Item className="lg-item" key={member.id}>
+                  <div
+                    style={{ display: "flex", justifyContent: "space-between" }}
+                  >
+                    <div>
+                      Author: {member.firstName + " " + member.lastName}
+                    </div>
 
-                <Button
-                  variant="link"
-                  onClick={() => toggleBiography(member.id)}
-                  aria-controls={`bio-${member.id}`}
-                  aria-expanded={openMemberId === member.id}
-                >
-                  {openMemberId === member.id ? "Hide Bio" : "Show Bio"}
-                </Button>
-              </div>
+                    <Button
+                      variant="link"
+                      onClick={() => toggleBiography(member.id)}
+                      aria-controls={`bio-${member.id}`}
+                      aria-expanded={openMemberId === member.id}
+                    >
+                      {openMemberId === member.id ? "Hide Bio" : "Show Bio"}
+                    </Button>
+                  </div>
 
-              <Collapse in={openMemberId === member.id}>
-                <div id={`bio-${member.id}`} style={{ marginTop: "10px" }}>
-                  <strong>Biography:</strong>
-                  <p>{member.bio}</p>
-                </div>
-              </Collapse>
-            </ListGroup.Item>
-          ))}
-        </ListGroup>
+                  <Collapse in={openMemberId === member.id}>
+                    <div id={`bio-${member.id}`} style={{ marginTop: "10px" }}>
+                      <strong>Biography:</strong>
+                      <p>{member.bio}</p>
+                    </div>
+                  </Collapse>
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
 
-        <CommentList recipeId={routeParams.id}></CommentList>
-      </Container>
+            <CommentList recipeId={routeParams.id}></CommentList>
+          </Container>
+        </Col>
+        <Col style={{ flex: "0 0 20%" }}></Col>
+      </Row>
       <ErrorModal
         show={showErrorModal}
         onHide={hideError}

@@ -14,7 +14,6 @@ namespace FamilyCookbook.Controllers
     [ApiController]
     [Route("api/v0/[controller]")]
     [EnableCors("CorsPolicy")]
-    [Authorize(Roles="Admin, Moderator, Contributor")]
     public class MemberController : AbstractController<Member, MemberRead, MemberCreate>
     {
         private readonly  IMemberService _service;
@@ -115,7 +114,7 @@ namespace FamilyCookbook.Controllers
             return Ok(response.Message.ToString());    
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin, Moderator, Contributor, Member")]
         [HttpGet]
         [Route("findByUsername/{username}")]
 

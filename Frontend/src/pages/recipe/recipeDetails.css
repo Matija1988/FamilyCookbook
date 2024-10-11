@@ -19,6 +19,10 @@ body {
   margin-bottom: 1%;
 }
 
+.recDetails h4 {
+  font-size: medium;
+}
+
 .recDetails img {
   border: 2% solid #444;
   border-radius: 2%;
@@ -77,4 +81,9 @@ body {
 .recDetails .category {
   margin-top: 1%;
   margin-bottom: 1%;
+  font-size: small;
+}
+
+.recDetails .category-desc {
+  font-size: small;
 }

@@ -31,6 +31,7 @@ export default function CommentCreate({ recipeId, fetchComments }) {
       showError(response.data);
       return;
     }
+    setOpenCommentCreate(false);
     fetchComments();
   }
 

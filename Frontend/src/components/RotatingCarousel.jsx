@@ -1,7 +1,7 @@
 import Carousel from "react-bootstrap/Carousel";
 import RecipeService from "../services/RecipeService";
 import { useEffect, useState } from "react";
-import { Form } from "react-bootstrap";
+import { Container, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { App, RouteNames } from "../constants/constants";
 
@@ -41,31 +41,33 @@ function RotatingCarousel({}) {
   }, [pageNumber, pageSize]);
 
   return (
-    <Carousel className="rotating-carousel">
-      {recipes.map((recipe) => (
-        <Carousel.Item key={recipe.id}>
-          <img
-            onClick={() => {
-              navigate(RouteNames.RECIPE_DETAILS.replace(":id", recipe.id));
-            }}
-            src={App.URL + recipe.pictureLocation}
-            alt={recipe.title}
-            style={{
-              height: "500px",
-              objectFit: "cover",
-              width: "70%",
-              justifyContent: "center",
-              marginLeft: "15%",
-              marginTop: "4%",
-            }}
-          />
-          <Carousel.Caption>
-            <h3 className="crsl-title">{recipe.title}</h3>
-            <p className="crsl-title">{recipe.subtitle}</p>
-          </Carousel.Caption>
-        </Carousel.Item>
-      ))}
-    </Carousel>
+    <Container className="crsl-container">
+      <Carousel className="rotating-carousel">
+        {recipes.map((recipe) => (
+          <Carousel.Item key={recipe.id}>
+            <img
+              onClick={() => {
+                navigate(RouteNames.RECIPE_DETAILS.replace(":id", recipe.id));
+              }}
+              src={App.URL + recipe.pictureLocation}
+              alt={recipe.title}
+              style={{
+                height: "22rem",
+                objectFit: "cover",
+                width: "70%",
+                justifyContent: "center",
+                marginLeft: "15%",
+                marginTop: "6%",
+              }}
+            />
+            <Carousel.Caption>
+              <h3 className="crsl-title">{recipe.title}</h3>
+              <p className="crsl-title">{recipe.subtitle}</p>
+            </Carousel.Caption>
+          </Carousel.Item>
+        ))}
+      </Carousel>
+    </Container>
   );
 }
 
