@@ -115,14 +115,15 @@ namespace FamilyCookbook.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (!PictureUpload.ValidatePictureSizeFunc
-                (string.IsNullOrEmpty(newRecipe.PictureBlob), newRecipe.PictureBlob))
+            if (!string.IsNullOrEmpty(newRecipe.PictureBlob) 
+                && PictureUpload.ValidatePictureSizeFunc(newRecipe.PictureBlob))
             {
                 return BadRequest("Invalid picture size. Keep the images under 1MB");
             }
 
             byte[] imageBytes = null;
             string fileExtension = "";
+            string relativePath = "";
 
             if (!string.IsNullOrEmpty(newRecipe.PictureBlob))
             {
@@ -130,49 +131,21 @@ namespace FamilyCookbook.Controllers
                 var mimeType = PictureUpload.GetMimeType(dataParts, 0);                    
                 fileExtension = PictureUpload.ValidateFileExtensionFunc(mimeType);
                 imageBytes = PictureUpload.ConvertBase64ToByteArray(dataParts, 1);
-
             }
 
-            string relativePath = "";
-
-            var uploadsFolder = Path.Combine(_enviroment.WebRootPath, "uploads");
-
-            if (!Directory.Exists(uploadsFolder))
-            {
-                Directory.CreateDirectory(uploadsFolder);
-            }
+            var uploadsFolder = PictureUpload.GetUploadsFolder(_enviroment.WebRootPath, "uploads");
 
             var pictures = await _pictureService.GetAllAsync();
 
             var image = pictures.Items.Find(pic => pic.Name == newRecipe.PictureName);
 
-            if (image is null && imageBytes != null)
-            {
-                var fileName = newRecipe.PictureName + fileExtension;
-                var filePath = Path.Combine(uploadsFolder, fileName);
-                relativePath = Path.Combine("uploads", fileName);
-
-                await System.IO.File.WriteAllBytesAsync(filePath, imageBytes);
-            }
-            else if (image is not null)
-            {
-                relativePath = image.Location;
-            }
-
-            var sanitizer = new HtmlSanitizer();
-
-            string sanitizedText = sanitizer.Sanitize(newRecipe.Text);
-
-            newRecipe.Text = sanitizedText;
+            newRecipe.Text = Sanitize.HtmlSanitize(newRecipe.Text);
 
             var recipe = _mapper.MapReadToCreateDTO(newRecipe);
 
-            Picture interMediaryPicture = new Picture();
-
-            interMediaryPicture.Name = newRecipe.PictureName;
-            interMediaryPicture.Location = relativePath;
-
-            recipe.Picture = interMediaryPicture;
+            recipe.Picture = PictureUpload.IntermediaryPicture(newRecipe.PictureName, 
+                await PictureUpload.ChcPictureNullThenUpload(image, newRecipe.PictureName, fileExtension,
+                uploadsFolder, relativePath, imageBytes));
 
             var response = await _service.CreateAsync(recipe);
 

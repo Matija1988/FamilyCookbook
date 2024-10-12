@@ -1,9 +1,11 @@
 ﻿using Autofac.Core;
+using FamilyCookbook.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -26,17 +28,13 @@ namespace FamilyCookbook.Common.Upload
             return new OkResult();
         }
 
-        public static Func<bool, string?, bool> ValidatePictureSizeFunc = (isNotEmpty, base64String) =>
+        public static Func<string, bool> ValidatePictureSizeFunc = (base64String) =>
         {
-            if (isNotEmpty) { 
-            var dataPrefix = "base64";
+            var dataPrefix = "base64,";
             var base64Data = base64String.Substring(base64String.IndexOf(dataPrefix)  + dataPrefix.Length);
             byte[] imageBytes = Convert.FromBase64String(base64Data);
-            return imageBytes.Length < MaxPictureSize;
-            }
-            return true;
+            return imageBytes.Length > MaxPictureSize;
         };
-
         public static IActionResult ValidateFileExtension(IFormFile picture)
         {
             var fileExtension = Path.GetExtension(picture.FileName).ToLower();
@@ -60,7 +58,6 @@ namespace FamilyCookbook.Common.Upload
             return Convert.FromBase64String(base64Data);
         };
 
-
         public static Func<string[], int, string> GetMimeType = (base64DataParts, index) =>
         {
             return base64DataParts[index];
@@ -78,9 +75,15 @@ namespace FamilyCookbook.Common.Upload
             return fileExtension;
         };
 
-
-
-
+        public static Func<string, string, string> GetUploadsFolder = (webRootPath, folderName) =>
+        {
+            var uploadsFolder = Path.Combine(webRootPath, folderName);
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+            return uploadsFolder;
+        };
         public static async Task<string> SavePictureAsync(IFormFile picture, string filePath)
         {
             using (var stream = new FileStream(filePath, FileMode.Create))
@@ -89,6 +92,33 @@ namespace FamilyCookbook.Common.Upload
             }
             return filePath;
         }
+        public static async Task<string> ChcPictureNullThenUpload(Picture? image, string pictureName, string fileExtension, string uploadsFolder, string relativePath, byte[]? imageBytes)
+        {
+            if (image is null && imageBytes != null)
+            {
+                var fileName = pictureName + fileExtension;
+                var filePath = Path.Combine(uploadsFolder, fileName);
+                relativePath = Path.Combine("uploads", fileName);
 
+                await System.IO.File.WriteAllBytesAsync(filePath, imageBytes);
+                return relativePath;
+            }
+            else if (image is not null)
+            {
+                relativePath = image.Location;
+                return relativePath;
+            }
+
+            return relativePath;
+        }
+        public static Picture IntermediaryPicture(string pictureName, string relativePath)
+        {
+            Picture intermeadiaryPicture = new Picture();
+
+            intermeadiaryPicture.Name = pictureName;
+            intermeadiaryPicture.Location = relativePath;
+
+            return intermeadiaryPicture;
+        }
     }
 }
