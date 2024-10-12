@@ -6,6 +6,7 @@ using FamilyCookbook.REST_Models.Category;
 using FamilyCookbook.REST_Models.Member;
 using FamilyCookbook.REST_Models.Picture;
 using FamilyCookbook.REST_Models.Recipe;
+using static FamilyCookbook.REST_Models.Banner.BannerDTO;
 using static FamilyCookbook.REST_Models.Comment.CommentModels;
 
 namespace FamilyCookbook
@@ -28,6 +29,9 @@ namespace FamilyCookbook
 
             builder.RegisterType<RecipeMapperWrapper>()
                 .As<IMapperExtended<Recipe, RecipeRead, RecipeCreate, RecipeCreateDTO>>()
+                .InstancePerDependency();
+
+            builder.RegisterType<BannerMapperWrapper>().As<IMapper<Banner, BannerRead, BannerCreate>>()
                 .InstancePerDependency();
         }
     }

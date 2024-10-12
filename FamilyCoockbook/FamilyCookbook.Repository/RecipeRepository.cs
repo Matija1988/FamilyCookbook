@@ -139,12 +139,14 @@ namespace FamilyCookbook.Repository
 
             return query.Append("SELECT a.Id, a.Title, a.Subtitle, a.Text, a.CategoryId, " +
                     "c.Id, c.FirstName, c.LastName, c.Bio, " +
-                    "d.Id, d.Name, e.*, f.* " +
+                    "d.Id, d.Name, e.*, g.* " +
                     "FROM Recipe a " +
                     "JOIN MemberRecipe b on a.Id = b.RecipeId " +
                     "JOIN Member c on b.MemberId = c.Id " +
                     "LEFT JOIN Category d on d.Id = a.CategoryId " +
                     "JOIN Picture e on e.Id = a.PictureId " +
+                    "JOIN RecipeTags f on f.RecipeId = a.Id " +
+                    "JOIN Tag g on g.Id = f.TagId " +
                     "WHERE a.IsActive = 1 " +
                     "order by a.DateCreated;");
         }

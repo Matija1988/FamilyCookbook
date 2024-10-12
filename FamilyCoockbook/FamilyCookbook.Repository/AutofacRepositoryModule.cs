@@ -37,6 +37,9 @@ namespace FamilyCookbook.Repository
             builder.RegisterType<SearchRepository>().As<ISearchRepository>()
                 .InstancePerLifetimeScope();
 
+            builder.RegisterType<BannerRespository>().As<IBannerRepository>()
+                .InstancePerLifetimeScope();
+
 
         }
     }

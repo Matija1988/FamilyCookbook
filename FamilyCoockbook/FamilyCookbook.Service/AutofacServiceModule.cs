@@ -29,7 +29,7 @@ namespace FamilyCookbook.Service
 
             builder.RegisterType<SearchService>().As<ISearchService>().InstancePerDependency(); 
 
-
+            builder.RegisterType<BannerService>().As<IBannerService>().InstancePerDependency();
         }
 
 

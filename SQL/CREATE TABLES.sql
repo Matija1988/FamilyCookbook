@@ -90,6 +90,19 @@ TagId int,
 RecipeId int,
 );
 
+
+create table Banner(
+Id int primary key identity (1,1),
+Location varchar(255),
+Destination varchar(255),
+DestinationName varchar(30),
+DateCreated datetime,
+DateUpdated datetime,
+IsActive bit, 
+BannerType varchar(20)
+);
+
+
 ----------------------------------- ALTERS --------------------------
 
 

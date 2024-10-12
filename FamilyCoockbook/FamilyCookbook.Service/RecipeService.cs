@@ -1,16 +1,9 @@
-﻿using AngleSharp.Dom;
-using FamilyCookbook.Common;
+﻿using FamilyCookbook.Common;
 using FamilyCookbook.Model;
 using FamilyCookbook.Repository.Common;
 using FamilyCookbook.Service.Common;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Primitives;
-using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace FamilyCookbook.Service
 {
@@ -195,11 +188,12 @@ namespace FamilyCookbook.Service
         {
             var response = await _repository.GetByIdAsync(id);
 
-            if(response.Success)
+            if(!response.Success)
             {
-                response.Items.AverageRating = await CalculateAverageRating(id);
+                return response;
             }
 
+            response.Items.AverageRating = await CalculateAverageRating(id);
             var distinctMembers = response.Items.Members.GroupBy(m => m.Id).Select(g => g.First()).ToList();
             response.Items.Members = distinctMembers;
 
@@ -209,18 +203,18 @@ namespace FamilyCookbook.Service
             return response; 
         }
 
-
         protected override async Task<RepositoryResponse<List<Recipe>>> ReturnEntities()
         {
             var recipeResponse = await _repository.GetAllAsync();
 
-            double averageRatting = 0.0;
+            if (!recipeResponse.Success || recipeResponse.Items.Count == 0)
+            {
+                return recipeResponse;
+            }
 
             foreach (var recipe in recipeResponse.Items) 
             {
-                averageRatting = await CalculateAverageRating(recipe.Id);
-
-                recipe.AverageRating = averageRatting;
+                recipe.AverageRating = await CalculateAverageRating(recipe.Id); ;
             }
 
             return recipeResponse;
