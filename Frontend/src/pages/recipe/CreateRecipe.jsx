@@ -52,6 +52,8 @@ export default function CreateRecipe() {
 
   const { showLoading, hideLoading } = useLoading();
 
+  const [error, setError] = useState(null);
+
   const { showError, showErrorModal, errors, hideError } = useError();
 
   const [imageFromGallery, setImageFromGallery] = useState(null);
@@ -413,9 +415,9 @@ export default function CreateRecipe() {
         <Col></Col>
       </Row>
       <ErrorModal
-        show={showError}
+        show={showErrorModal}
         onHide={hideError}
-        error={errors}
+        errors={errors}
       ></ErrorModal>
     </>
   );

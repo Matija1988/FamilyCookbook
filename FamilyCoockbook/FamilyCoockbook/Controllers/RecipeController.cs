@@ -115,40 +115,25 @@ namespace FamilyCookbook.Controllers
                 return BadRequest(ModelState);
             }
 
+            if (!PictureUpload.ValidatePictureSizeFunc
+                (string.IsNullOrEmpty(newRecipe.PictureBlob), newRecipe.PictureBlob))
+            {
+                return BadRequest("Invalid picture size. Keep the images under 1MB");
+            }
 
             byte[] imageBytes = null;
             string fileExtension = "";
+
+            if (!string.IsNullOrEmpty(newRecipe.PictureBlob))
+            {
+                var dataParts = PictureUpload.Base64DataParts(newRecipe.PictureBlob);
+                var mimeType = PictureUpload.GetMimeType(dataParts, 0);                    
+                fileExtension = PictureUpload.ValidateFileExtensionFunc(mimeType);
+                imageBytes = PictureUpload.ConvertBase64ToByteArray(dataParts, 1);
+
+            }
+
             string relativePath = "";
-
-            try
-            {
-                if (!string.IsNullOrEmpty(newRecipe.PictureBlob))
-                {   
-                    var base64DataParts = newRecipe.PictureBlob.Split(',');
-                    var mimeType = base64DataParts[0];
-                    var base64Data = base64DataParts[1];
-
-                    imageBytes = Convert.FromBase64String(base64Data);
-
-                    fileExtension = mimeType switch
-                    {
-                        "data:image/jpeg;base64" => ".jpg",
-                        "data:image/jpg;base64" => ".jpg",
-                        "data:image/png;base64" => ".png",
-                        _ => ""
-                    };
-
-
-                    if (string.IsNullOrEmpty(fileExtension))
-                    {
-                        return BadRequest("Unsported file type. Use JPEG, JPG or PNG!");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Failed to create image: {ex.Message}");
-            }
 
             var uploadsFolder = Path.Combine(_enviroment.WebRootPath, "uploads");
 
@@ -224,6 +209,8 @@ namespace FamilyCookbook.Controllers
             {
                 return BadRequest(ModelState);
             }
+
+
 
             byte[] imageBytes = null;
             string fileExtension = "";
