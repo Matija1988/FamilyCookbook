@@ -1,4 +1,5 @@
 ﻿using FamilyCookbook.Model;
+using FamilyCookbook.REST_Models.Banner;
 using Riok.Mapperly.Abstractions;
 using static FamilyCookbook.REST_Models.Banner.BannerDTO;
 

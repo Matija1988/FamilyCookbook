@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FamilyCookbook.Model;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
 namespace FamilyCookbook.REST_Models.Recipe
 {
-    public class RecipeCreate
+    public class RecipeCreate : ImageDTO
     {
         [StringLength(200, ErrorMessage ="Maximum allowed number of characters: 200")]
         public string Title { get; set; }
@@ -22,9 +23,6 @@ namespace FamilyCookbook.REST_Models.Recipe
 
         public int[]? TagIds { get; set; }
 
-        public string PictureName { get; set; }
-
-        public string? PictureBlob { get; set; }
  
 
     }

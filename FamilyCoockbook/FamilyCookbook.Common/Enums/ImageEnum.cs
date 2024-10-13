@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FamilyCookbook.Common
+namespace FamilyCookbook.Common.Enums
 {
-    public enum BannerTypes
+    public enum ImageEnum
     {
-        SmallBox,
-        MediumBox,
-        LargeBanner,
+        Picture,
+        Banner
     }
 }

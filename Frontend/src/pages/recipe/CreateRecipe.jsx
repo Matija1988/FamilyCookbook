@@ -168,8 +168,8 @@ export default function CreateRecipe() {
       text: recipe.text,
       categoryId: parseInt(selectedCategoryId),
       memberIds: authorIds,
-      pictureName: pictureName,
-      pictureBlob: uploadedPicture,
+      imageName: pictureName,
+      imageBlob: uploadedPicture,
       tagIds: postTagIds,
     });
   }

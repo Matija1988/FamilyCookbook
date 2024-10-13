@@ -1,4 +1,5 @@
 ﻿using FamilyCookbook.Model;
+using FamilyCookbook.REST_Models.Banner;
 using static FamilyCookbook.REST_Models.Banner.BannerDTO;
 
 namespace FamilyCookbook.Mapping.MapperWrappers

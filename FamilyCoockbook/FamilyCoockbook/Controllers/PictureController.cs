@@ -72,13 +72,13 @@ namespace FamilyCookbook.Controllers
                 return BadRequest(ModelState);
             }
 
-            var sizeValidation = PictureUpload.ValidatePictureSize(file);
+            var sizeValidation = ImageUtilities.ValidatePictureSize(file, 1);
             if(sizeValidation is not OkResult)
             {
                 return sizeValidation;
             }
 
-            var extensionValidation = PictureUpload.ValidateFileExtension(file);
+            var extensionValidation = ImageUtilities.ValidateFileExtension(file);
             if (extensionValidation is not OkResult) 
             { 
                 return extensionValidation;
@@ -95,7 +95,7 @@ namespace FamilyCookbook.Controllers
             var filePath = Path.Combine(uploadsFolder, fileName);
             var relativePath = Path.Combine("uploads", fileName);
 
-            await PictureUpload.SavePictureAsync(file, filePath);
+            await ImageUtilities.SavePictureAsync(file, filePath);
 
             var mapper = new PictureMapping();
 

@@ -200,8 +200,8 @@ namespace FamilyCookbook.Repository
                     " JOIN Member c on b.MemberId = c.Id " +
                     "LEFT JOIN Category d on d.Id = a.CategoryId " +
                     "JOIN Picture e on e.Id = a.PictureId " +
-                    " JOIN RecipeTags f on f.RecipeId = a.Id " +
-                    " JOIN Tag g on g.Id = f.TagId " +
+                    "LEFT JOIN RecipeTags f on f.RecipeId = a.Id " +
+                    "LEFT JOIN Tag g on g.Id = f.TagId " +
                     "WHERE a.Id = @Id ");
         }
 
