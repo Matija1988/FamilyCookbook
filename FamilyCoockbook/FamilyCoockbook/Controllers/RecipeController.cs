@@ -109,14 +109,13 @@ namespace FamilyCookbook.Controllers
         [Route("create")]
         public async Task<IActionResult> CreateAsync(RecipeCreate newRecipe)
         {
-
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+            bool chkBlob = string.IsNullOrEmpty(newRecipe.PictureBlob);
 
-            if (!string.IsNullOrEmpty(newRecipe.PictureBlob) 
-                && PictureUpload.ValidatePictureSizeFunc(newRecipe.PictureBlob))
+            if (PictureUpload.ValidatePictureSizeFunc(chkBlob, newRecipe.PictureBlob))
             {
                 return BadRequest("Invalid picture size. Keep the images under 1MB");
             }
@@ -125,7 +124,7 @@ namespace FamilyCookbook.Controllers
             string fileExtension = "";
             string relativePath = "";
 
-            if (!string.IsNullOrEmpty(newRecipe.PictureBlob))
+            if (!chkBlob)
             {
                 var dataParts = PictureUpload.Base64DataParts(newRecipe.PictureBlob);
                 var mimeType = PictureUpload.GetMimeType(dataParts, 0);                    

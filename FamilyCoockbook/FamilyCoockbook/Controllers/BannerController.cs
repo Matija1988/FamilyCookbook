@@ -19,5 +19,12 @@ namespace FamilyCookbook.Controllers
             _service = service;
             _mapper = mapper;
         }
+
+        [HttpPost]
+        [Route("create")]
+        public async Task<IActionResult> CreateAsync(BannerCreate banner)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

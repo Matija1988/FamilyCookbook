@@ -14,6 +14,7 @@ namespace FamilyCookbook.REST_Models.Banner
             string Destination,
             [Required, StringLength(30, ErrorMessage = "The input exceeds maximum allowed number of characters: 30")]
             string DestinationName,
+            string PictureBlob,
             [Required]
             int BannerType);
     }

@@ -122,18 +122,19 @@ export default function CreateRecipe() {
   }
 
   async function postRecipe(entity, isMultiPart = false) {
-    try {
-      const response = await RecipeService.create(
-        "recipe/create",
-        entity,
-        isMultiPart
-      );
-      if (response.ok) {
-        navigate(RouteNames.RECIPES);
-      }
-    } catch (error) {
-      alert(error.message);
+    showLoading();
+    const response = await RecipeService.create(
+      "recipe/create",
+      entity,
+      isMultiPart
+    );
+    if (!response.ok) {
+      hideLoading();
+      showError(response.data);
+      return;
     }
+    hideLoading();
+    navigate(RouteNames.RECIPES);
   }
 
   useEffect(() => {

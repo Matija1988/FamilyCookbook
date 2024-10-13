@@ -28,12 +28,15 @@ namespace FamilyCookbook.Common.Upload
             return new OkResult();
         }
 
-        public static Func<string, bool> ValidatePictureSizeFunc = (base64String) =>
+        public static Func<bool, string?, bool> ValidatePictureSizeFunc = (isNullOrEmpty, base64String) =>
         {
-            var dataPrefix = "base64,";
-            var base64Data = base64String.Substring(base64String.IndexOf(dataPrefix)  + dataPrefix.Length);
+            if(!isNullOrEmpty) { 
+            string dataPrefix = "base64,";
+            string base64Data = base64String?.Substring(base64String.IndexOf(dataPrefix)  + dataPrefix.Length);
             byte[] imageBytes = Convert.FromBase64String(base64Data);
             return imageBytes.Length > MaxPictureSize;
+            }
+            return false; 
         };
         public static IActionResult ValidateFileExtension(IFormFile picture)
         {

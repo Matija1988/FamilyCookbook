@@ -1,12 +1,12 @@
-﻿--use master;
---go
---drop database if exists "FamilyCookbook";
---go
---create database "FamilyCookbook";
---go
---alter database "FamilyCookbook" collate CROATIAN_CI_AS;
---go
---use "FamilyCookbook";
+﻿use master;
+go
+drop database if exists "FamilyCookbook";
+go
+create database "FamilyCookbook";
+go
+alter database "FamilyCookbook" collate CROATIAN_CI_AS;
+go
+use "FamilyCookbook";
 
 
 ------------------------- TABLES --------------------------
@@ -102,7 +102,6 @@ IsActive bit,
 BannerType varchar(20)
 );
 
-
 ----------------------------------- ALTERS --------------------------
 
 
@@ -118,7 +117,7 @@ alter table MemberRecipe add foreign key (RecipeId) references Recipe(Id);
 alter table Comment add foreign key(MemberId) references Member(Id);
 alter table Comment add foreign key(RecipeId) references Recipe(Id);
 
-alter table RecipeTags add foreign key (TagId) references Tags(Id);
+alter table RecipeTags add foreign key (TagId) references Tag(Id);
 alter table RecipeTags add foreign key (RecipeId) references Recipe(Id);
 
 ----------------------------- CONSTRAINTS ------------------------------
@@ -150,42 +149,17 @@ insert into Member(
 					Password, 
 					RoleId) 
 values
---('d7b19efe-39aa-4d25-b802-21ac8fa0b0f4',
---'Izmisljeni',
---'Korisnik',
---'10-05-1999',
---'Temp bio',
---'1',
---'08-07-2024',
---'08-07-2024',
---'samsung',
---'$2a$12$LfIczJbu.Akfa0/Pkt1ANe42gSguBgvcoqVIFJ0UUJ5P6WphzQv1a',
---'4'),
-('a86823ad-f120-4a8c-94ff-d3d37330653a',
-'Test',
-'Tester',
-'10-07-2001',
+('d7b19efe-39aa-4d25-b802-21ac8fa0b0f4',
+'Izmisljeni',
+'Korisnik',
+'10-05-1999',
 'Temp bio',
 '1',
-'12-07-2024',
-'12-07-2024',
-'apple',
-'iPhone14',
-'1');
-
-
-insert into Picture(Name, Location,IsActive) VALUES 
-('Test', 'Test', 1);
-
-
-insert into MemberRecipe(MemberId, RecipeId) values (1,1),(1,2);
-
-insert into Comment(MemberId, RecipeId, Text, DateCreated, DateUpdated, Rating,IsActive) 
-Values
-(1,1, 'Not bad, not terrible', '11-09-2023', '11-09-2023', 3, 1),
-(2,1, 'Can pass', '11-10-2023','11-10-2023', 2, 1),
-(1,2, 'Childhood memories', '11-11-2023','11-11-2023', 5,1),
-(2,2, 'Zer gutt', '11-11-2023','11-11-2023', 4,1);
+'08-07-2024',
+'08-07-2024',
+'samsung',
+'$2a$12$LfIczJbu.Akfa0/Pkt1ANe42gSguBgvcoqVIFJ0UUJ5P6WphzQv1a',
+'4');
 
 insert into Tag(Text) VALUES 
 ('riba'), 
@@ -195,19 +169,3 @@ insert into Tag(Text) VALUES
 ('domaće'), 
 ('fish'),
 ('šaran'); 
-
-insert into RecipeTags(TagId, RecipeId) VALUES (1,8), (6,8), (4, 7);
-
-select a.*, c.Id, c.Text from Recipe a 
-join RecipeTags b on b.RecipeId = a.Id
-join Tag c on c.Id = b.TagId
-where c.Text = 'riba';
-
-select * from Tag;
-select * from RecipeTags;
-
-sp_rename 'Tags', 'Tag'; 
-
-ALTER TABLE Tags RENAME Tag;
-
-select * from Comment;
