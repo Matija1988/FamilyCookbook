@@ -1,9 +1,10 @@
-﻿using FamilyCookbook.Model;
+﻿using FamilyCookbook.Common.Enums;
+using FamilyCookbook.Model;
 
 namespace FamilyCookbook.Strategy
 {
     public interface IImageStrategy
     {
-        Task<Picture> UploadImage(ImageDTO image, Picture picture, string webRootPath);
+        Task<Image> UploadImage(ImageDTO image, Image? picture, string webRootPath, ImageEnum imageType, long imageSize);
     }
 }

@@ -18,5 +18,16 @@ namespace FamilyCookbook.Service
             _repository = repository;
         }
 
+        public async Task<MessageResponse> CreateAsync(Banner banner)
+        {
+            banner.DateCreated = DateTime.Now;
+            banner.DateUpdated = DateTime.Now;
+            banner.IsActive = true;
+            
+            var response = await _repository.CreateAsync(banner);
+
+            return response;
+        }
+
     }
 }

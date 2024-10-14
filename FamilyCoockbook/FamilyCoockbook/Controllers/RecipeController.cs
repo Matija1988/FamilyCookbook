@@ -1,5 +1,6 @@
 ﻿using AngleSharp.Dom;
 using FamilyCookbook.Common;
+using FamilyCookbook.Common.Enums;
 using FamilyCookbook.Common.Upload;
 using FamilyCookbook.Common.Validations;
 using FamilyCookbook.Mapping;
@@ -24,14 +25,14 @@ namespace FamilyCookbook.Controllers
         ICategoryService categoryService,
         IPictureService pictureService,
         IMapperExtended<Recipe, RecipeRead, RecipeCreate, RecipeCreateDTO> mapper,
-        IImageStrategy imageStrategy) : ControllerBase
+        IImageProcessor imageProcessor) : ControllerBase
     {
         private readonly IRecipeService _service = service;
         private readonly IWebHostEnvironment _enviroment = environment;
         private readonly ICategoryService _categoryService = categoryService;
         private readonly IPictureService _pictureService = pictureService;
         private readonly IMapperExtended<Recipe, RecipeRead, RecipeCreate, RecipeCreateDTO> _mapper = mapper;
-        private readonly IImageStrategy _imageStrategy = imageStrategy;
+        private readonly IImageProcessor _imageProcessor = imageProcessor;
 
         [Authorize, Authorize(Roles = "Admin")]
         [HttpGet]
@@ -124,7 +125,8 @@ namespace FamilyCookbook.Controllers
             
             var recipe = _mapper.MapReadToCreateDTO(newRecipe);
 
-            recipe.Picture = await _imageStrategy.UploadImage(newRecipe, existingPictures, _enviroment.WebRootPath);
+            recipe.Picture = (Picture?) await _imageProcessor
+                .DelegateStrategy(newRecipe, existingPictures, _enviroment.WebRootPath, ImageEnum.Picture);
 
             var response = await _service.CreateAsync(recipe);
 

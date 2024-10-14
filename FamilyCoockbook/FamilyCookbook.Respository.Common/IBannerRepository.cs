@@ -10,5 +10,6 @@ namespace FamilyCookbook.Repository.Common
 {
     public interface IBannerRepository : IRepository<Banner>
     {
+        Task<MessageResponse> CreateAsync(Banner banner);
     }
 }

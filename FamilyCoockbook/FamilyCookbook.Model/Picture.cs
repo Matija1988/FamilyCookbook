@@ -7,14 +7,10 @@ using System.Threading.Tasks;
 
 namespace FamilyCookbook.Model
 {
-    public class Picture
+    public class Picture : Image
     {
         [Key]
         public int Id { get; set; }
-
-        public string Name { get; set; }
-
-        public string Location { get; set; }
 
         public bool IsActive { get; set; }
     }

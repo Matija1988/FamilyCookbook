@@ -1,4 +1,5 @@
-﻿using FamilyCookbook.Mapping.MapperWrappers;
+﻿using FamilyCookbook.Common.Enums;
+using FamilyCookbook.Mapping.MapperWrappers;
 using FamilyCookbook.Model;
 using FamilyCookbook.REST_Models.Banner;
 using FamilyCookbook.Service.Common;
@@ -32,8 +33,17 @@ namespace FamilyCookbook.Controllers
 
             bool chkBlob = string.IsNullOrEmpty(banner.ImageBlob);
 
+            var newBanner = _mapper.MapToEntity(banner);
+            newBanner.Name = banner.ImageName;
+            
+            var response = await _service.CreateAsync(newBanner);
 
-            throw new NotImplementedException();
+            if (!response.IsSuccess) 
+            { 
+                return BadRequest(response.Message.ToString()); 
+            }
+            
+            return Ok(response.Message.ToString());
         }
     }
 }

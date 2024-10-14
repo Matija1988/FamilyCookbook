@@ -1,5 +1,7 @@
-﻿using FamilyCookbook.Common.Upload;
+﻿using FamilyCookbook.Common.Enums;
+using FamilyCookbook.Common.Upload;
 using FamilyCookbook.Model;
+using FamilyCookbook.REST_Models.Banner;
 using FamilyCookbook.REST_Models.Picture;
 using FamilyCookbook.REST_Models.Recipe;
 
@@ -7,17 +9,21 @@ namespace FamilyCookbook.Strategy
 {
     public class PictureStrategy : IImageStrategy
     {
-        public async Task<Picture> UploadImage(ImageDTO imageToUpload, Picture? chkPicture, string webRootPath)
+        public async Task<Image>
+            UploadImage(ImageDTO imageToUpload, Image? chkPicture, string webRootPath, ImageEnum imageType, long imageSize)
         {
-            var dto = imageToUpload as RecipeCreate;
-            var folderName = "uploads";
+            
+            var dto = imageToUpload;
+
             var fileExtension = "";
             var relativePath = "";
             byte[] imageBytes = null;
 
             bool chkBlob = string.IsNullOrEmpty(dto.ImageBlob);
 
-            if (ImageUtilities.ValidatePictureSizeFunc(chkBlob, dto.ImageBlob, 1))
+            var folderName = ImageUtilities.DetermineUploadFolder(imageType);
+
+            if (ImageUtilities.ValidatePictureSizeFunc(chkBlob, dto.ImageBlob, imageSize))
             {
                 return null;
             }
@@ -39,5 +45,7 @@ namespace FamilyCookbook.Strategy
             return intermediaryPicture;
 
         }
+
+       
     }
 }

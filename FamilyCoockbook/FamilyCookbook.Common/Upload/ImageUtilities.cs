@@ -1,4 +1,5 @@
 ﻿using Autofac.Core;
+using FamilyCookbook.Common.Enums;
 using FamilyCookbook.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -47,7 +48,7 @@ namespace FamilyCookbook.Common.Upload
             }
             return filePath;
         }
-        public static async Task<string> ChcPictureNullThenUpload(Picture? chkPicture, string pictureName, string fileExtension, string uploadsFolder, string relativePath, byte[]? imageBytes)
+        public static async Task<string> ChcPictureNullThenUpload(Image? chkPicture, string pictureName, string fileExtension, string uploadsFolder, string relativePath, byte[]? imageBytes)
         {
             if (chkPicture is null && imageBytes != null)
             {
@@ -76,19 +77,29 @@ namespace FamilyCookbook.Common.Upload
             return intermeadiaryPicture;
         }
 
-        public static Func<bool, string?, int, bool> ValidatePictureSizeFunc = (isNullOrEmpty, base64String, size) =>
+        public static Func<bool, string?, long, bool> ValidatePictureSizeFunc = (isNullOrEmpty, base64String, size) =>
         {
             if (!isNullOrEmpty)
             {
-                decimal maxPictureSize = size * 1024 * 1024;
                 string dataPrefix = "base64,";
                 string base64Data = base64String?.Substring(base64String.IndexOf(dataPrefix) + dataPrefix.Length);
                 byte[] imageBytes = Convert.FromBase64String(base64Data);
-                return imageBytes.Length > maxPictureSize;
+                return imageBytes.Length > size;
             }
             return false;
         };
 
+        public static Func<ImageEnum, string> DetermineUploadFolder = (imageType) =>
+        {
+            var folderName = imageType switch
+            {
+                ImageEnum.Picture => "uploads",
+                ImageEnum.SmallBox => "boxbanners",
+                ImageEnum.LargeBanner => "largeBanners",
+                _ => throw new NotImplementedException("Cannot deterime upload folder!!!")
+            };
+            return folderName;
+        };
 
         public static Func<string?, string[]?> Base64DataParts = (base64String) =>
         {
@@ -128,6 +139,7 @@ namespace FamilyCookbook.Common.Upload
             }
             return uploadsFolder;
         };
+
 
     }
 }

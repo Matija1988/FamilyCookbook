@@ -17,6 +17,8 @@ export const RouteNames = {
   SEARCH_RESULTS: "/found-recipes",
   REGISTER: "/register",
   IMPRESUM: "/impresum",
+  BANNER: "/banners",
+  BANNER_CREATE: "/createbanner",
 };
 
 export const App = {

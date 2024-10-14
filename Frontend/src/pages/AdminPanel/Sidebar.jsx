@@ -22,6 +22,11 @@ export default function Sidebar() {
               MEMBER
             </Nav.Link>
           )}
+          {userRole === "Admin" && (
+            <Nav.Link onClick={() => navigate(RouteNames.BANNER)}>
+              BANNER
+            </Nav.Link>
+          )}
           {(userRole === "Admin" || userRole === "Moderator") && (
             <Nav.Link onClick={() => navigate(RouteNames.CATEGORIES)}>
               CATEGORY

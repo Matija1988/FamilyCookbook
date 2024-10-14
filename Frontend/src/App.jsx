@@ -29,6 +29,8 @@ import Tags from "./pages/Tags/Tags";
 import SearchResult from "./pages/SearchResult";
 import Register from "./pages/logIn/Register";
 import Impresum from "./pages/Impersum/Impesum";
+import Banner from "./pages/Banner/Banner";
+import BannerCreate from "./pages/Banner/BannerCreate";
 function App() {
   const { errors, showErrorModal, hideErrorModal } = useError();
 
@@ -54,6 +56,11 @@ function App() {
           <Route
             path={RouteNames.MEMBER_UPDATE}
             element={<UpdateMember />}
+          ></Route>
+          <Route path={RouteNames.BANNER} element={<Banner />}></Route>
+          <Route
+            path={RouteNames.BANNER_CREATE}
+            element={<BannerCreate />}
           ></Route>
         </Route>
         <Route

@@ -37,6 +37,8 @@ namespace FamilyCookbook
                 .InstancePerDependency();
 
             builder.RegisterType<PictureStrategy>().As<IImageStrategy>().InstancePerDependency();
+
+            builder.RegisterType<ImageProcessor>().As<IImageProcessor>().InstancePerDependency();
         }
     }
 }

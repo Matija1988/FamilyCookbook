@@ -41,16 +41,14 @@
 
 .article-card .card-category {
   position: absolute;
-  bottom: 11%;
+  bottom: 15%;
   right: 5%;
   font-size: 0.7rem;
   font-weight: bold;
   color: #0970df;
   background-color: rgba(3, 48, 97, 0.1); /* Light blue background */
   padding: 0.2rem 0.5rem;
-  border-radius: 4px;
-
-  margin-top: auto;
+  margin-bottom: auto;
 }
 
 .article-card .card-text {

@@ -47,9 +47,9 @@ function ArticleCard({ recipe }) {
     <Card key={recipe.id} className="article-card">
       <Card.Img variant="top" src={URL + recipe.pictureLocation} />
       <Card.Body>
+        <Card.Text className="card-category">{recipe.categoryName}</Card.Text>
         <Card.Title>{recipe.title}</Card.Title>
         <Card.Text className="card-subtitle">{recipe.subtitle}</Card.Text>
-        <Card.Text className="card-category">{recipe.categoryName}</Card.Text>
         <div>{renderStars(recipe.averageRating)}</div>
         <div className="card-button">
           <Button
