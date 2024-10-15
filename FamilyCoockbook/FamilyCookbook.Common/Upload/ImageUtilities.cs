@@ -96,7 +96,7 @@ namespace FamilyCookbook.Common.Upload
                 ImageEnum.Picture => "uploads",
                 ImageEnum.SmallBox => "boxbanners",
                 ImageEnum.LargeBanner => "largeBanners",
-                _ => throw new NotImplementedException("Cannot deterime upload folder!!!")
+                _ => throw new NotImplementedException("Cannot determine upload folder!!!")
             };
             return folderName;
         };
@@ -140,6 +140,13 @@ namespace FamilyCookbook.Common.Upload
             return uploadsFolder;
         };
 
+        public static Func<string, string, Banner> IntermediaryBanner = (bannerName, relativePath) =>
+        {
+            Banner banner = new();
+            banner.Name = bannerName;
+            banner.Location = relativePath;
+            return banner;
+        };
 
     }
 }

@@ -40,6 +40,8 @@ namespace FamilyCookbook.Repository
             builder.RegisterType<BannerRespository>().As<IBannerRepository>()
                 .InstancePerLifetimeScope();
 
+            builder.RegisterType<BannerPositionRepository>().As<IBannerPositionRepository>()
+                .InstancePerLifetimeScope();
 
         }
     }

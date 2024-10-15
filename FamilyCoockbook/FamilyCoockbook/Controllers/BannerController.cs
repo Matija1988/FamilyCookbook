@@ -3,6 +3,7 @@ using FamilyCookbook.Mapping.MapperWrappers;
 using FamilyCookbook.Model;
 using FamilyCookbook.REST_Models.Banner;
 using FamilyCookbook.Service.Common;
+using FamilyCookbook.Strategy;
 using Microsoft.AspNetCore.Mvc;
 using static FamilyCookbook.REST_Models.Banner.BannerDTO;
 
@@ -14,29 +15,41 @@ namespace FamilyCookbook.Controllers
     {
         private readonly IBannerService _service;
         private readonly IMapper<Banner, BannerRead, BannerCreate> _mapper;
+        private readonly IImageProcessor _imageProcessor;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public BannerController(IBannerService service, IMapper<Banner, BannerRead, BannerCreate> mapper) 
+        public BannerController(IWebHostEnvironment webHostEnvironment,
+            IBannerService service, IMapper<Banner, BannerRead, BannerCreate> mapper,
+            IImageProcessor imageProcessor) 
             : base(service,mapper)
         {
             _service = service;
             _mapper = mapper;
+            _imageProcessor = imageProcessor;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         [HttpPost]
         [Route("create")]
-        public async Task<IActionResult> CreateAsync(BannerCreate banner)
+        public async Task<IActionResult> CreateAsync(BannerCreate newBanner)
         {
             if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            bool chkBlob = string.IsNullOrEmpty(banner.ImageBlob);
+            bool chkBlob = string.IsNullOrEmpty(newBanner.ImageBlob);
 
-            var newBanner = _mapper.MapToEntity(banner);
-            newBanner.Name = banner.ImageName;
+            var existingBanner = await _service.GetAllAsync().ContinueWith(b => 
+            b.Result.Items.Find(x => x.Name == newBanner.ImageName));
+
+            var banner = (Banner?)await _imageProcessor
+                .DelegateStrategy(newBanner, existingBanner, _webHostEnvironment.WebRootPath, ImageEnum.SmallBox);
+
+            banner.Destination = newBanner.Destination;
+            banner.BannerType = (int)ImageEnum.SmallBox;
             
-            var response = await _service.CreateAsync(newBanner);
+            var response = await _service.CreateAsync(banner);
 
             if (!response.IsSuccess) 
             { 

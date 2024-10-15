@@ -30,8 +30,8 @@ namespace FamilyCookbook.Service
             builder.RegisterType<SearchService>().As<ISearchService>().InstancePerDependency(); 
 
             builder.RegisterType<BannerService>().As<IBannerService>().InstancePerDependency();
+
+            builder.RegisterType<BannerPositionService>().As<IBannerPositionService>().InstancePerDependency();
         }
-
-
     }
 }

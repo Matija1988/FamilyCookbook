@@ -12,7 +12,6 @@ namespace FamilyCookbook.Strategy
         public async Task<Image>
             UploadImage(ImageDTO imageToUpload, Image? chkPicture, string webRootPath, ImageEnum imageType, long imageSize)
         {
-            
             var dto = imageToUpload;
 
             var fileExtension = "";
@@ -27,25 +26,35 @@ namespace FamilyCookbook.Strategy
             {
                 return null;
             }
-                
-            if(!chkBlob) 
+
+            if (!chkBlob)
             {
                 var dataParts = ImageUtilities.Base64DataParts(dto.ImageBlob);
                 var mimeType = ImageUtilities.GetMimeType(dataParts, 0);
                 fileExtension = ImageUtilities.ValidateFileExtensionFunc(mimeType);
                 imageBytes = ImageUtilities.ConvertBase64ToByteArray(dataParts, 1);
             }
-            
+
             var uploadsFolder = ImageUtilities.GetUploadsFolder(webRootPath, folderName);
 
-            var intermediaryPicture = ImageUtilities.IntermediaryPicture(imageToUpload.ImageName, 
-                await ImageUtilities.ChcPictureNullThenUpload(chkPicture, 
-                imageToUpload.ImageName, fileExtension, uploadsFolder, relativePath, imageBytes));
+            if (imageType is ImageEnum.Picture)
+            {
+                var intermediaryPicture = ImageUtilities.IntermediaryPicture(imageToUpload.ImageName,
+                    await ImageUtilities.ChcPictureNullThenUpload(chkPicture,
+                    imageToUpload.ImageName, fileExtension, uploadsFolder, relativePath, imageBytes));
+                return intermediaryPicture;
+            }
+            if (imageType is ImageEnum.SmallBox)
+            {
+                var imtermediaryBanner = ImageUtilities.IntermediaryBanner(imageToUpload.ImageName,
+                    await ImageUtilities.ChcPictureNullThenUpload(chkPicture, imageToUpload.ImageName,
+                    fileExtension, uploadsFolder, relativePath, imageBytes));
+                return imtermediaryBanner;
+            }
 
-            return intermediaryPicture;
-
+            return null;
         }
 
-       
+
     }
 }
