@@ -23,6 +23,11 @@ namespace FamilyCookbook.Service
             return await _repository.AssignBannerToPosition(bannerPosition);
         }
 
+        public async Task<RepositoryResponse<List<BannerPosition>>> GetAllBannerPositions()
+        {
+            return await _repository.GetAllBannerPositions();
+        }
+
         public async Task<RepositoryResponse<Banner>> GetBannerForPosition(int position)
         {
             return await _repository.GetBannerForPosition(position);

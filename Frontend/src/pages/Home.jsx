@@ -7,6 +7,7 @@ import { useState } from "react";
 import RecipeService from "../services/RecipeService";
 import HomeArticleList from "./homeComponents/homeArticleList.jsx";
 import PlaceholderRight from "./homeComponents/PlaceholderRight.jsx";
+import PlaceholderLeft from "./homeComponents/PlaceholderLeft.jsx";
 
 export default function Home() {
   return (
@@ -19,7 +20,9 @@ export default function Home() {
         <Col style={{ flex: "0 0 10%" }}></Col>
       </Row>
       <Row>
-        <Col style={{ flex: "0 0 14%" }}></Col>
+        <Col style={{ flex: "0 0 14%" }}>
+          <PlaceholderLeft></PlaceholderLeft>
+        </Col>
         <Col style={{ flex: "0 0 70%" }}>
           <Container>
             <HomeArticleList></HomeArticleList>

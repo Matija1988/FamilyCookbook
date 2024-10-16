@@ -21,5 +21,6 @@ namespace FamilyCookbook.Model
         public bool IsActive { get; set; }
 
         public int BannerType { get; set; }
+
     }
 }

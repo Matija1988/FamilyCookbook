@@ -65,7 +65,7 @@ namespace FamilyCookbook.Repository
 
         private StringBuilder QueryBuilder(Paging paging, BannerFilter filter)
         {
-            StringBuilder query = new StringBuilder("SELECT * FROM Banner WHERE 1 = 1 ");
+            StringBuilder query = new StringBuilder("SELECT * FROM Banner a WHERE 1 = 1 ");
 
             StringBuilder countQuery = new StringBuilder("SELECT COUNT(DISTINCT a.Id) FROM Banner a " +
                 "WHERE 1 = 1 ");

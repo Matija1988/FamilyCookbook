@@ -53,5 +53,21 @@ namespace FamilyCookbook.Controllers
 
             return Ok(banner);
         }
+
+        [HttpGet]
+        [Route("getBannerPositions")]
+
+        public async Task<IActionResult> GetBannerPositions()
+        {
+            var response = await _service.GetAllBannerPositions();
+
+            if(!response.Success)
+            {
+                return BadRequest(response.Message.ToString());
+            }
+
+            return Ok(response);
+        }
+
     }
 }

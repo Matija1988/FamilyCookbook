@@ -13,6 +13,7 @@ import { RouteNames } from "../../constants/constants";
 import PageSizeDropdown from "../../components/PageSizeDropdown";
 import CustomPagination from "../../components/CustomPagination";
 import InputText from "../../components/InputText";
+import BannerSpan from "../Banner/bannerComponents/BannerSpan";
 
 export default function Banner() {
   const [banners, setBanners] = useState([]);
@@ -157,14 +158,13 @@ export default function Banner() {
                 <br></br>
               </Row>
             </Row>
-            <GenericTable
-              onUpdate={handleUpdate}
-              onDelete={(banner) => {
-                setEntityToDelete(banner), setShowDeleteModal(true);
-              }}
-              dataArray={banners}
-              cutRange={1}
-            ></GenericTable>
+            <Row>
+              <BannerSpan
+                banners={banners}
+                onUpdate={handleUpdate}
+                onDelete={deleteBanner}
+              ></BannerSpan>
+            </Row>
             <CustomPagination
               pageNumber={pageNumber}
               totalPages={totalPages}

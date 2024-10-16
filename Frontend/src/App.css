@@ -299,3 +299,77 @@
 .cmt-create-div {
   background-color: transparent;
 }
+
+.banner-table {
+  width: 100%;
+  max-width: 1200px;
+  margin: 20px auto;
+  font-family: Arial, sans-serif;
+}
+
+.banner-row {
+  display: flex; /* Flexbox to align items in a row */
+  align-items: center;
+  justify-content: space-between; /* Space out the items */
+  padding: 15px;
+  border-bottom: 1px solid #ccc;
+}
+
+.banner-image img {
+  width: 30%;
+  height: 30%;
+  height: auto;
+  margin-right: 1%;
+}
+
+.banner-info {
+  flex: 1; /* Flex-grow for more space */
+  display: flex;
+  flex-direction: column;
+  margin-right: 10%;
+  margin-left: 10%;
+}
+
+.banner-name {
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.banner-type {
+  flex: 1; /* Flex-grow for equal spacing */
+  margin-right: 20px;
+}
+
+.banner-position select {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  flex: 1;
+  margin-right: 20px;
+}
+
+.banner-actions {
+  flex: 1;
+  display: flex;
+  gap: 10px;
+}
+
+.update-button,
+.delete-button {
+  padding: 5px 10px;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.update-button {
+  background-color: #28a745;
+  color: white;
+}
+
+.delete-button {
+  background-color: #dc3545;
+  color: white;
+}

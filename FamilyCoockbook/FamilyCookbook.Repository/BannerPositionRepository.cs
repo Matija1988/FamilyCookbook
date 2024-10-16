@@ -16,8 +16,8 @@ namespace FamilyCookbook.Repository
         private readonly IErrorMessages _errorMessages;
         private readonly ISuccessResponses _successResponses;
 
-        public BannerPositionRepository(DapperDBContext dapperDBContext, 
-            IErrorMessages errorMessages, 
+        public BannerPositionRepository(DapperDBContext dapperDBContext,
+            IErrorMessages errorMessages,
             ISuccessResponses successResponses)
         {
             _dbContext = dapperDBContext;
@@ -51,14 +51,14 @@ namespace FamilyCookbook.Repository
                 return response;
 
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 response.IsSuccess = false;
                 response.Message = _errorMessages.ErrorAccessingDb("BannerPosition");
                 return response;
             }
-            finally 
-            { 
+            finally
+            {
                 _dbContext.CreateConnection().Close();
             }
 
@@ -71,13 +71,13 @@ namespace FamilyCookbook.Repository
             try
             {
                 StringBuilder query = new("SELECT TOP 1 a.* FROM Banner a JOIN BannerPosition b " +
-                    $"ON a.Id = b.BannerId WHERE b.Position = {position} ORDER BY a.DateCreated DESC;");    
-                
+                    $"ON a.Id = b.BannerId WHERE b.Position = {position} ORDER BY a.DateCreated DESC;");
+
                 var connection = _dbContext.CreateConnection();
 
                 var entity = await connection.QueryFirstOrDefaultAsync<Banner>(query.ToString(), position);
 
-                if(entity == null)
+                if (entity == null)
                 {
                     response.Success = false;
                     response.Message = new StringBuilder($"No banner for possition {position} found!!!");
@@ -90,17 +90,45 @@ namespace FamilyCookbook.Repository
                 return response;
 
             }
-            catch (Exception ex) 
-            { 
+            catch (Exception ex)
+            {
                 response.Success = false;
                 response.Message = _errorMessages.ErrorAccessingDb("Banner", ex);
                 return response;
             }
-            finally 
-            { 
+            finally
+            {
                 _dbContext.CreateConnection().Close();
             }
 
+        }
+
+        public async Task<RepositoryResponse<List<BannerPosition>>> GetAllBannerPositions()
+        {
+            var response = new RepositoryResponse<List<BannerPosition>>();
+            try
+            {
+                StringBuilder query = new ("SELECT * FROM BannerPosition;");
+
+                using var connection = _dbContext.CreateConnection();   
+
+                var entities = await connection.QueryAsync<BannerPosition>(query.ToString());
+
+                response.Success = true;
+                response.Items = entities.ToList();
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                response.Success= false;
+                response.Message = _errorMessages.ErrorAccessingDb("BannerPosition");
+                return response;
+            }
+            finally
+            {
+                _dbContext.CreateConnection().Close();
+            }
         }
     }
 }
