@@ -54,7 +54,7 @@ namespace FamilyCookbook.Common.Upload
             {
                 var fileName = pictureName + fileExtension;
                 var filePath = Path.Combine(uploadsFolder, fileName);
-                relativePath = Path.Combine("uploads", fileName);
+                relativePath = Path.Combine(relativePath, fileName);
 
                 await System.IO.File.WriteAllBytesAsync(filePath, imageBytes);
                 return relativePath;

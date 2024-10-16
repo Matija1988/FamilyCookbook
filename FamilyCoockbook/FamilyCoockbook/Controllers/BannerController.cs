@@ -1,4 +1,6 @@
-﻿using FamilyCookbook.Common.Enums;
+﻿using FamilyCookbook.Common;
+using FamilyCookbook.Common.Enums;
+using FamilyCookbook.Common.Filters;
 using FamilyCookbook.Mapping.MapperWrappers;
 using FamilyCookbook.Model;
 using FamilyCookbook.REST_Models.Banner;
@@ -57,6 +59,31 @@ namespace FamilyCookbook.Controllers
             }
             
             return Ok(response.Message.ToString());
+        }
+
+        [HttpGet]
+        [Route("paginate")]
+
+        public async Task<IActionResult> PaginateAsync([FromQuery] Paging paging, [FromQuery] BannerFilter filter)
+        {
+            var response = await _service.PaginateAsync(paging, filter);
+
+            if(!response.Success)
+            {
+                return NotFound(response.Message.ToString());
+            }
+
+            var banners = _mapper.MapToReadList(response.Items);
+
+            var finalResponse = new PaginatedList<List<BannerRead>>
+            {
+                Items = banners,
+                TotalCount = response.TotalCount,
+                PageCount = response.PageCount
+            };
+
+            return Ok(finalResponse);
+
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using FamilyCookbook.Model;
+﻿using FamilyCookbook.Common;
+using FamilyCookbook.Common.Filters;
+using FamilyCookbook.Model;
 using FamilyCookbook.Repository.Common;
 using FamilyCookbook.Service.Common;
 using System;
@@ -29,5 +31,14 @@ namespace FamilyCookbook.Service
             return response;
         }
 
+        public async Task<RepositoryResponse<List<Banner>>> PaginateAsync(Paging paging, BannerFilter filter)
+        {
+            var response = await _repository.PaginateAsync(paging, filter);
+
+            response.PageCount = (int)Math.Ceiling(response.TotalCount / (double)paging.PageSize);
+
+            return response;
+
+        }
     }
 }

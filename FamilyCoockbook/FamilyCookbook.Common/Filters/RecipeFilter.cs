@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FamilyCookbook.Common
+namespace FamilyCookbook.Common.Filters
 {
     public class RecipeFilter
     {
@@ -13,13 +13,13 @@ namespace FamilyCookbook.Common
 
         public string? SearchBySubtitle { get; set; }
 
-        public int? SearchByActivityStatus {  get; set; }
+        public int? SearchByActivityStatus { get; set; }
 
         public DateTime? SearchByDateCreated { get; set; }
 
         public int? SearchByCategory { get; set; }
 
-        public string? SearchByAuthorName {  get; set; }
+        public string? SearchByAuthorName { get; set; }
 
         public string? SearchByAuthorSurname { get; set; }
     }

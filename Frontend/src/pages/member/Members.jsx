@@ -258,7 +258,7 @@ export default function Members() {
               onUpdate={handleUpdate}
               cutRange={2}
               cutRangeForIsActiveStart={3}
-              cutRangeForIsActiveEnd={3}
+              cutRangeForIsActiveEnd={6}
               className="gen-tbl"
             ></GenericTable>
 

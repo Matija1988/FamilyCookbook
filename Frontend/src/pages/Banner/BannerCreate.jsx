@@ -23,8 +23,8 @@ export default function BannerCreate() {
 
   const maxPictureSize = (1 * 1024 * 1024) / 4;
   const bannerTypes = [
-    { id: 1, name: "Small box" },
-    { id: 2, name: "Large banner" },
+    { id: 1, name: "Small box right" },
+    { id: 2, name: "Small box left" },
   ];
 
   const [error, setError] = useState(null);
@@ -170,7 +170,6 @@ export default function BannerCreate() {
           </Container>
         </Col>
       </Row>
-
       <ErrorModal
         show={showErrorModal}
         onHide={hideError}

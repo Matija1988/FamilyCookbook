@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FamilyCookbook.Common
+namespace FamilyCookbook.Common.Filters
 {
     public class MemberFilter
     {

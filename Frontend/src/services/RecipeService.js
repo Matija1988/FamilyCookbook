@@ -11,12 +11,12 @@ import {
 
 async function removeMemberFromRecipe(memberId, recipeId) {
   return await httpService
-    .delete("recipe/RemoveMemberFromRecipe/" + memberId + "/" + recipeId)
+    .delete("/recipe/RemoveMemberFromRecipe/" + memberId + "/" + recipeId)
     .then((res) => {
       return handleSuccess(res);
     })
     .catch((e) => {
-      processError(e);
+      return processError(e);
     });
 }
 

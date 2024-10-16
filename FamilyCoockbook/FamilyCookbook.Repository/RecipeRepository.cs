@@ -2,6 +2,7 @@
 using Azure.Core;
 using Dapper;
 using FamilyCookbook.Common;
+using FamilyCookbook.Common.Filters;
 using FamilyCookbook.Model;
 using FamilyCookbook.Repository.Common;
 using Microsoft.IdentityModel.Tokens;
@@ -301,7 +302,7 @@ namespace FamilyCookbook.Repository
                     PageSize = incrrasedPageSize,
                 });
 
-                IEnumerable<Recipe> entities =  multipleQuery.Read<Recipe, Member, Category, Picture, Recipe>
+                IEnumerable<Recipe> entities = multipleQuery.Read<Recipe, Member, Category, Picture, Recipe>
                     ((recipe, member, category, picture) =>
                     {
                         if (!entityDictionary.TryGetValue(recipe.Id, out var existingEntity))
@@ -332,7 +333,7 @@ namespace FamilyCookbook.Repository
 
                 response.Success = true;
                 response.Items = entityDictionary.Values.Take(paging.PageSize).ToList();    
-                response.TotalCount = multipleQuery.ReadSingle<int>();
+                response.TotalCount = await multipleQuery.ReadSingleAsync<int>();
                 
                 return response;
 

@@ -11,7 +11,7 @@ import {
 
 async function getRecipeComments(recipeId) {
   return await httpService
-    .get("comment/recipeComments/" + recipeId)
+    .get("/comment/recipeComments/" + recipeId)
     .then((res) => {
       return handleSuccess(res);
     })

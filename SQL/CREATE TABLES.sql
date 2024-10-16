@@ -95,12 +95,19 @@ create table Banner(
 Id int primary key identity (1,1),
 Location varchar(255),
 Destination varchar(255),
-DestinationName varchar(30),
+Name varchar(30),
 DateCreated datetime,
 DateUpdated datetime,
 IsActive bit, 
-BannerType varchar(20)
+BannerType int,
 );
+
+create table BannerPosition(
+Id int primary key identity(1,1),
+Position int,
+BannerId int
+);
+
 
 ----------------------------------- ALTERS --------------------------
 
@@ -125,7 +132,6 @@ alter table RecipeTags add foreign key (RecipeId) references Recipe(Id);
 ALTER table Recipe add constraint Rating check (Rating >= 0.0 And Rating <= 5.0);
 
 ALTER table Comment add constraint Comment_Rating check (Rating >= 0 and Rating <= 5);
-
 
 ------------------------------ INSERTS ----------------------------------
 
@@ -169,3 +175,54 @@ insert into Tag(Text) VALUES
 ('domaće'), 
 ('fish'),
 ('šaran'); 
+
+insert into BannerPosition(Position) Values (1), (2);
+
+select * distinct Name from Picture;
+
+WITH DistinctPictures AS
+(
+    SELECT *,
+           ROW_NUMBER() OVER (PARTITION BY Name ORDER BY Name) AS RowNum
+    FROM Picture
+)
+SELECT *
+FROM DistinctPictures
+WHERE RowNum = 1;
+
+SELECT *
+FROM Picture p
+WHERE p.Id IN (
+    SELECT MIN(p2.Id)
+    FROM Picture p2
+    GROUP BY p2.Name
+) Order by Name;
+
+
+select * from Banner;
+
+Delete FROM Banner where Id = 4;
+
+EXEC sp_rename 'dbo.Banner.DestinationName', 'Name', 'COLUMN';
+
+select top 1 * from Picture order by Id desc;
+
+ALTER TABLE Banner ALTER COLUMN BannerType int;  
+
+ALTER TABLE Banner
+ADD CONSTRAINT chk_BANNER_TYPE CHECK (BannerType > 0);
+
+select * from BannerPosition where position = 1;
+
+select * from Banner;
+
+insert into BannerPosition (BannerId, Position) values (11,1);
+
+select top 1 b.* from BannerPosition a join Banner b on b.Id = a.BannerId 
+where a.Position = 1 order by b.DateCreated desc;
+
+select top 1 a.* from Banner a join BannerPosition b on a.Id = b.BannerId
+where b.Position = 1 ORDER BY a.DateCreated DESC;
+
+select COUNT(DISTINCT a.Id) FROM Banner a where 1 = 1 and a.Name like '%web%';
+

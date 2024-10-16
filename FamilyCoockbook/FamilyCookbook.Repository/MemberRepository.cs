@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using FamilyCookbook.Common;
+using FamilyCookbook.Common.Filters;
 using FamilyCookbook.Common.Validations;
 using FamilyCookbook.Model;
 using FamilyCookbook.Repository.Common;

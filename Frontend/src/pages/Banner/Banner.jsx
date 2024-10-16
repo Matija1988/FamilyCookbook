@@ -10,33 +10,74 @@ import DeleteModal from "../../components/DeleteModal";
 import CustomButton from "../../components/CustomButton";
 import { useNavigate } from "react-router-dom";
 import { RouteNames } from "../../constants/constants";
+import PageSizeDropdown from "../../components/PageSizeDropdown";
+import CustomPagination from "../../components/CustomPagination";
+import InputText from "../../components/InputText";
 
 export default function Banner() {
   const [banners, setBanners] = useState([]);
   const [entityToDelete, setEntityToDelete] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
+  const [pageSize, setPageSize] = useState(10);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [pageCount, setPageCount] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const statusOptions = [
+    { id: 1, name: "Active" },
+    { id: 2, name: "Not active" },
+  ];
+
+  const [activityStatus, setActivityStatus] = useState(1);
+  const [searchByDestination, setSearchByDestination] = useState("");
+  const [searchByName, setSearchByName] = useState("");
+
   const { showLoading, hideLoading } = useLoading();
 
   const { showError, showErrorModal, hideError, errors } = useError();
   const navigate = useNavigate();
 
-  async function fetchBanners() {
+  const getRequestParams = (pageSize, pageNumber, activityStatus) => {
+    let params = {};
+
+    if (pageSize) {
+      params["PageSize"] = pageSize;
+    }
+    if (pageNumber > 0) {
+      params["PageNumber"] = pageNumber;
+    }
+    if (activityStatus) {
+      params["SearchByActivityStatus"] = activityStatus;
+    }
+    if (searchByDestination) {
+      params["SearchByDestination"] = searchByDestination;
+    }
+    if (searchByName) {
+      params["SearchByName"] = searchByName;
+    }
+    return params;
+  };
+
+  async function paginateBanners() {
     showLoading();
-    const response = await BannerService.readAll("banner");
+    const params = getRequestParams(pageSize, pageNumber, activityStatus);
+    const response = await BannerService.paginate(params);
+
     if (!response.ok) {
       hideLoading();
       showError(response.data);
-      return;
     }
-    setBanners(response.data.items);
+    const { items, pageCount } = response.data;
+    setBanners(items);
+    setTotalPages(pageCount);
     hideLoading();
   }
+
   async function deleteBanner(id) {}
 
   useEffect(() => {
-    fetchBanners();
-  }, []);
+    paginateBanners();
+  }, [pageNumber, pageSize]);
 
   function createBanner() {
     navigate(RouteNames.BANNER_CREATE);
@@ -45,6 +86,24 @@ export default function Banner() {
   async function deleteTag() {}
 
   const handleUpdate = () => {};
+
+  const handlePageSizeChange = (e) => {
+    setPageSize(e.target.value);
+    setPageNumber(1);
+  };
+  const handlePageChange = (value) => {
+    setPageNumber(value);
+  };
+
+  const onSearchByDestination = (e) => {
+    const destinationSearch = e.target.value;
+    setSearchByDestination(destinationSearch);
+  };
+
+  const onSearchByName = (e) => {
+    const nameSearch = e.target.value;
+    setSearchByName(nameSearch);
+  };
 
   return (
     <>
@@ -61,8 +120,42 @@ export default function Banner() {
                   label="Create new"
                   variant="primary"
                   onClick={() => createBanner()}
+                  className="create-new-btn"
                 ></CustomButton>
               </Col>
+              <Col>
+                <InputText
+                  atribute="Search by destination..."
+                  type="text"
+                  value=""
+                  onChange={onSearchByDestination}
+                ></InputText>
+              </Col>
+              <Col>
+                <InputText
+                  atribute="Search by name"
+                  type="text"
+                  value=""
+                  onChange={onSearchByName}
+                ></InputText>
+              </Col>
+              <Col>
+                <PageSizeDropdown
+                  onChanged={handlePageSizeChange}
+                  initValue={pageSize}
+                ></PageSizeDropdown>
+              </Col>
+              <Col>
+                <br></br>
+                <CustomButton
+                  label="Search"
+                  onClick={paginateBanners}
+                  className="search-btn"
+                ></CustomButton>
+              </Col>
+              <Row>
+                <br></br>
+              </Row>
             </Row>
             <GenericTable
               onUpdate={handleUpdate}
@@ -72,6 +165,11 @@ export default function Banner() {
               dataArray={banners}
               cutRange={1}
             ></GenericTable>
+            <CustomPagination
+              pageNumber={pageNumber}
+              totalPages={totalPages}
+              handlePageChange={handlePageChange}
+            ></CustomPagination>
           </Container>
         </Col>
       </Row>

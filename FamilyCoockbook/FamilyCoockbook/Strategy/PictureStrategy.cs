@@ -15,7 +15,6 @@ namespace FamilyCookbook.Strategy
             var dto = imageToUpload;
 
             var fileExtension = "";
-            var relativePath = "";
             byte[] imageBytes = null;
 
             bool chkBlob = string.IsNullOrEmpty(dto.ImageBlob);
@@ -41,14 +40,14 @@ namespace FamilyCookbook.Strategy
             {
                 var intermediaryPicture = ImageUtilities.IntermediaryPicture(imageToUpload.ImageName,
                     await ImageUtilities.ChcPictureNullThenUpload(chkPicture,
-                    imageToUpload.ImageName, fileExtension, uploadsFolder, relativePath, imageBytes));
+                    imageToUpload.ImageName, fileExtension, uploadsFolder, folderName, imageBytes));
                 return intermediaryPicture;
             }
             if (imageType is ImageEnum.SmallBox)
             {
                 var imtermediaryBanner = ImageUtilities.IntermediaryBanner(imageToUpload.ImageName,
                     await ImageUtilities.ChcPictureNullThenUpload(chkPicture, imageToUpload.ImageName,
-                    fileExtension, uploadsFolder, relativePath, imageBytes));
+                    fileExtension, uploadsFolder, folderName, imageBytes));
                 return imtermediaryBanner;
             }
 

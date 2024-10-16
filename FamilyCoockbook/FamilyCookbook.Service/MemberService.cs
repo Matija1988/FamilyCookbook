@@ -1,6 +1,7 @@
 ﻿using AngleSharp.Css.Dom;
 using BCrypt.Net;
 using FamilyCookbook.Common;
+using FamilyCookbook.Common.Filters;
 using FamilyCookbook.Model;
 using FamilyCookbook.Repository.Common;
 using FamilyCookbook.Respository.Common;

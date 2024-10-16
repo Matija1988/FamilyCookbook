@@ -12,27 +12,20 @@ export default function Home() {
   return (
     <>
       <Row>
-        <Col style={{ flex: "0 0 10%" }}>
-          <div>
-            <h4>Your banner can be here</h4>
-            <h4>Your banner can be here</h4>
-            <h4>Your banner can be here</h4>
-            <h4>Your banner can be here</h4>
-          </div>
-        </Col>
+        <Col style={{ flex: "0 0 10%" }}></Col>
         <Col style={{ flex: "0 0 80%" }}>
           <RotatingCarousel></RotatingCarousel>
         </Col>
         <Col style={{ flex: "0 0 10%" }}></Col>
       </Row>
       <Row>
-        <Col style={{ flex: "0 0 15%" }}></Col>
+        <Col style={{ flex: "0 0 14%" }}></Col>
         <Col style={{ flex: "0 0 70%" }}>
           <Container>
             <HomeArticleList></HomeArticleList>
           </Container>
         </Col>
-        <Col style={{ flex: "0 0 15%" }}>
+        <Col style={{ flex: "0 0 14%" }}>
           <PlaceholderRight></PlaceholderRight>
         </Col>
       </Row>
