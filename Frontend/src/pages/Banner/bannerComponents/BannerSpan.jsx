@@ -16,6 +16,13 @@ export default function BannerSpan({ banners, onUpdate, onDelete }) {
     { id: 2, name: "Left no 1" },
   ];
 
+  const bannerType = [
+    {
+      id: 1,
+      name: "Small box",
+    },
+  ];
+
   const { showLoading, hideLoading } = useLoading();
 
   const { showError, showErrorModal, hideError, errors } = useError();
@@ -36,11 +43,20 @@ export default function BannerSpan({ banners, onUpdate, onDelete }) {
   }, []);
 
   const getCurrentPosition = (bannerId) => {
-    const foundPosition = bannerPositions.find((position) => {
-      position.BannerId === bannerId;
-    });
-    return foundPosition ? foundPosition.Position : 0;
+    const foundPosition = bannerPositions.find(
+      (pos) => pos.bannerId === bannerId
+    );
+
+    return foundPosition ? foundPosition.position : 0;
   };
+
+  useEffect(() => {
+    const intialPositions = {};
+    bannerPositions.forEach((pos) => {
+      intialPositions[pos.bannerId] = pos.Position;
+    });
+    setSelectedPosition(intialPositions);
+  }, [bannerPositions]);
 
   const URL = App.URL;
   const handlePositionChange = (bannerId, newPosition) => {
@@ -91,7 +107,8 @@ export default function BannerSpan({ banners, onUpdate, onDelete }) {
             <div className="banner-position">
               <select
                 value={
-                  selectedPosition[banner.id] ?? getCurrentPosition(banner.id)
+                  setSelectedPosition[banner.id] ??
+                  getCurrentPosition(banner.id)
                 }
                 onChange={(e) =>
                   handlePositionChange(banner.id, parseInt(e.target.value))
