@@ -284,6 +284,8 @@ namespace FamilyCookbook.Repository
 
             try
             {
+                StringBuilder query = PaginateQueryBuilder(paging, filter);
+
 
                 return response;
             }
@@ -396,6 +398,14 @@ namespace FamilyCookbook.Repository
 
 
         #region PROTECTED VIRTUAL METHODS
+
+
+        protected StringBuilder PaginateQueryBuilder(Paging paging, Filter? filter)
+        {
+            throw new NotImplementedException();
+        }
+
+
 
         protected virtual StringBuilder BuildSoftDeleteQuery(string tableName, int id)
         {
