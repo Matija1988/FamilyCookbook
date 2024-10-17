@@ -59,7 +59,10 @@ export default function Categories() {
   async function paginateCategory() {
     showLoading();
     const params = getRequestParams(pageSize, pageNumber, activityStatus);
-    const response = await CategoriesService.paginate(params);
+    const response = await CategoriesService.paginate(
+      "category/paging",
+      params
+    );
     if (!response.ok) {
       hideLoading();
       showError(response.data);

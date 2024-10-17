@@ -43,7 +43,7 @@ export default function HomeArticleList() {
       searchByActivityStatus
     );
     showLoading();
-    const response = await RecipeService.paginate(params);
+    const response = await RecipeService.paginate("recipe/paginate", params);
     if (!response.ok) {
       hideLoading();
       showError(response.data);

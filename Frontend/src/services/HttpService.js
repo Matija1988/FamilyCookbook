@@ -98,6 +98,17 @@ export async function deleteEntity(name, id) {
     });
 }
 
+export async function paginate(name, params) {
+  return await httpService
+    .get("/" + name, { params })
+    .then((res) => {
+      return handleSuccess(res);
+    })
+    .catch((e) => {
+      return processError(e);
+    });
+}
+
 export function processError(e) {
   if (!e.response) {
     return {

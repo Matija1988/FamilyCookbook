@@ -7,22 +7,12 @@ import {
   update,
   setNotActive,
   processError,
+  paginate,
 } from "./HttpService";
 
 async function searchMemberByCondition(input) {
   return await httpService
     .get("/member/search/" + input)
-    .then((res) => {
-      return handleSuccess(res);
-    })
-    .catch((e) => {
-      return processError(e);
-    });
-}
-
-async function paginate(params) {
-  return await httpService
-    .get("/member/members", { params })
     .then((res) => {
       return handleSuccess(res);
     })

@@ -47,7 +47,7 @@ export default function Tags() {
   async function paginateTags() {
     const params = getRequestParams(pageSize, pageNumber, searchByText);
 
-    const response = await TagsService.paginate(params);
+    const response = await TagsService.paginate("tag/tags", params);
     showLoading();
     if (!response.ok) {
       hideLoading();

@@ -8,18 +8,8 @@ import {
   setNotActive,
   processError,
   deleteEntity,
+  paginate,
 } from "./HttpService";
-
-async function paginate(params) {
-  return await httpService
-    .get("/tag/tags", { params })
-    .then((res) => {
-      return handleSuccess(res);
-    })
-    .catch((e) => {
-      return processError(e);
-    });
-}
 
 async function getByText(input) {
   return await httpService

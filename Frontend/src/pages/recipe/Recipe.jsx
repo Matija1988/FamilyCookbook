@@ -88,7 +88,7 @@ export default function Recipe() {
   async function paginateRecipes() {
     showLoading();
     const params = getRequestParams(pageSize, pageNumber, activityStatus);
-    const response = await RecipeService.paginate(params);
+    const response = await RecipeService.paginate("recipe/paginate", params);
 
     if (!response.ok) {
       hideLoading();

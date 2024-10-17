@@ -22,7 +22,7 @@ export const RouteNames = {
 };
 
 export const App = {
-  //URL: "https://localhost:7170/",
-  URL: "http://matijapavkovic-001-site2.dtempurl.com/",
+  URL: "https://localhost:7170/",
+  // URL: "http://matijapavkovic-001-site2.dtempurl.com/",
   DEV: false,
 };

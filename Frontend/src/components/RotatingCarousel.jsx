@@ -27,7 +27,7 @@ function RotatingCarousel({}) {
   async function fectchRecipes() {
     const params = getRequestParams(pageSize, pageNumber, activityStatus);
     try {
-      const response = await RecipeService.paginate(params);
+      const response = await RecipeService.paginate("recipe/paginate", params);
       const { items, pageCount } = response.data;
       setRecipes(items);
       setTotalPages(pageCount);

@@ -62,7 +62,7 @@ export default function Banner() {
   async function paginateBanners() {
     showLoading();
     const params = getRequestParams(pageSize, pageNumber, activityStatus);
-    const response = await BannerService.paginate(params);
+    const response = await BannerService.paginate("Banner/paginate", params);
 
     if (!response.ok) {
       hideLoading();

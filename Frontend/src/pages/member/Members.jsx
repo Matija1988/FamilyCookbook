@@ -82,7 +82,7 @@ export default function Members() {
   async function paginateMembers() {
     const params = getRequestParams(pageSize, pageNumber, activityStatus);
 
-    const response = await MembersService.paginate(params);
+    const response = await MembersService.paginate("Member/members", params);
     showLoading();
     if (!response.ok) {
       hideLoading();
