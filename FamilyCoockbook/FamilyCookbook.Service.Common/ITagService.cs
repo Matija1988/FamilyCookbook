@@ -1,4 +1,5 @@
 ﻿using FamilyCookbook.Common;
+using FamilyCookbook.Common.Filters;
 using FamilyCookbook.Model;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace FamilyCookbook.Service.Common
 {
-    public interface ITagService : IService<Tag>
+    public interface ITagService : IService<Tag, TagFilter>
     {
 
         Task<MessageResponse> CreateAsync(List<Tag> entities);
@@ -18,7 +19,6 @@ namespace FamilyCookbook.Service.Common
 
         Task<MessageResponse> ConnectRecipeAndTag(RecipeTagArray dto);
 
-        Task<RepositoryResponse<List<Tag>>> PaginateAsync(Paging paging, string text);
 
         Task<MessageResponse> UpdateAsync(int id, Tag tag);
 

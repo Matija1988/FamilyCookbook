@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace FamilyCookbook.Repository
 {
-    public class BannerRespository : AbstractRepository<Banner>, IBannerRepository
+    public class BannerRespository : AbstractRepository<Banner, BannerFilter>, IBannerRepository
     {
         private readonly DapperDBContext _dbContext;
         private readonly IErrorMessages _errorMessages;

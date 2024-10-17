@@ -7,7 +7,7 @@ using System.Text;
 
 namespace FamilyCookbook.Service.Common
 {
-    public interface IMemberService : IService<Member>
+    public interface IMemberService : IService<Member, MemberFilter>
     {
         Task<MessageResponse> CreateAsync(Member entity);
         Task<RepositoryResponse<Member>> GetByGuidAsync(Guid uniqueId);

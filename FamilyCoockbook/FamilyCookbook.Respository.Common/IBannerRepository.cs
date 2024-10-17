@@ -10,10 +10,9 @@ using System.Threading.Tasks;
 
 namespace FamilyCookbook.Repository.Common
 {
-    public interface IBannerRepository : IRepository<Banner>
+    public interface IBannerRepository : IRepository<Banner, BannerFilter>
     {
         Task<MessageResponse> CreateAsync(Banner banner);
 
-        Task<RepositoryResponse<List<Banner>>> PaginateAsync(Paging paging, BannerFilter filter);
     }
 }

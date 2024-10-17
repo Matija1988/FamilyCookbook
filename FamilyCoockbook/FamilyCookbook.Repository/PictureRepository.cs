@@ -1,11 +1,12 @@
 ﻿using FamilyCookbook.Common;
+using FamilyCookbook.Common.Filters;
 using FamilyCookbook.Model;
 using FamilyCookbook.Repository.Common;
 using System.Text;
 
 namespace FamilyCookbook.Repository
 {
-    public sealed class PictureRepository : AbstractRepository<Picture>, IPictureRespository
+    public sealed class PictureRepository : AbstractRepository<Picture, PictureFilter>, IPictureRespository
     {
         
         public PictureRepository(DapperDBContext context, IErrorMessages errorMessages, ISuccessResponses successResponses) 

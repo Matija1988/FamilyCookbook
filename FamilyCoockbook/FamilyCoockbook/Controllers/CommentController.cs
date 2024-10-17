@@ -1,4 +1,5 @@
 ﻿using Autofac.Core;
+using FamilyCookbook.Common.Filters;
 using FamilyCookbook.Mapping.MapperWrappers;
 using FamilyCookbook.Model;
 using FamilyCookbook.Service.Common;
@@ -9,7 +10,7 @@ namespace FamilyCookbook.Controllers
 {
     [ApiController]
     [Route("api/v0/comment")]
-    public sealed class CommentController : AbstractController<Comment, CommentRead, CommentCreate>
+    public sealed class CommentController : AbstractController<Comment, CommentRead, CommentCreate, CommentFilter>
     {
         private readonly ICommentService _commentService;
         private readonly IMapper<Comment, CommentRead, CommentCreate> _mapper;

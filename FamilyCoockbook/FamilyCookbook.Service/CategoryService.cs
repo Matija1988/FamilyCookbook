@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace FamilyCookbook.Service
 {
-    public sealed class CategoryService : AbstractService<Category>, ICategoryService
+    public sealed class CategoryService : AbstractService<Category, CategoryFilter>, ICategoryService
     {
         private new readonly ICategoryRepository _repository;
         private readonly IRecipeRepository _recipeRepository;

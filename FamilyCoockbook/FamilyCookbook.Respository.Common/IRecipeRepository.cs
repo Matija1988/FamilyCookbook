@@ -7,7 +7,7 @@ using System.Collections.Immutable;
 
 namespace FamilyCookbook.Repository.Common
 {
-    public interface IRecipeRepository : IRepository<Recipe>
+    public interface IRecipeRepository : IRepository<Recipe, RecipeFilter>
     {
 
         Task<RepositoryResponse<Recipe>> RemoveMemberFromRecipeAsync(int memberId, int recipeId);  
@@ -16,13 +16,9 @@ namespace FamilyCookbook.Repository.Common
 
         Task<MessageResponse> CreateAsyncTransaction(RecipeCreateDTO entity);
 
-
         Task<MessageResponse> UpdateAsync(int id, RecipeCreateDTO entity);
-
-
+        
         Task<RepositoryResponse<List<Recipe>>> GetRecipesWithoutAuthors();
-
-        Task<RepositoryResponse<List<Recipe>>> PaginateAsync(Paging paging, RecipeFilter filter);
 
         Task<RepositoryResponse<Recipe>> AddPictureToRecipeAsync(int pictureId, int recipeId);
 

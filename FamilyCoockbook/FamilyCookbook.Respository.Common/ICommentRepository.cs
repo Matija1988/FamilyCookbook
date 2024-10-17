@@ -1,4 +1,5 @@
-﻿using FamilyCookbook.Model;
+﻿using FamilyCookbook.Common.Filters;
+using FamilyCookbook.Model;
 using FamilyCookbook.Respository.Common;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace FamilyCookbook.Repository.Common
 {
-    public interface ICommentRepository : IRepository<Comment>
+    public interface ICommentRepository : IRepository<Comment, CommentFilter>
     {
         Task<MessageResponse> CreateAsync(Comment comment);
 

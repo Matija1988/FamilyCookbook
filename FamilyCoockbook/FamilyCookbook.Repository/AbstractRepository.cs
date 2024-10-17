@@ -18,13 +18,12 @@ using static Dapper.SqlMapper;
 
 namespace FamilyCookbook.Repository
 {
-    public abstract class AbstractRepository<T> : IRepository<T> where T : class
+    public abstract class AbstractRepository<T, Filter> : IRepository<T, Filter> where T : class
     {
         private readonly DapperDBContext _context;
         private readonly IErrorMessages _errorMessages;
         private readonly ISuccessResponses _successResponses;
-        
-        
+
         public AbstractRepository(DapperDBContext context, IErrorMessages errorMessages, ISuccessResponses successResponses)
         {
             _context = context;
@@ -277,6 +276,13 @@ namespace FamilyCookbook.Repository
 
         }
 
+        public async Task<RepositoryResponse<Lazy<List<T>>>> PaginateAsync(Paging paging, Filter filter)
+        {
+            var response = new RepositoryResponse<Lazy<List<T>>>();
+
+            return response;
+
+        }
 
         #region PRIVATE METHODS
 
@@ -325,10 +331,6 @@ namespace FamilyCookbook.Repository
             }
             return null;
         }
-
-
-
-
 
         private string GetPropertyNames(bool excludeKey)
         {

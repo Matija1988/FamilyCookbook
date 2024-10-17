@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 
 namespace FamilyCookbook.Service
 {
-    public sealed class MemberService : AbstractService<Member>, IMemberService
+    public sealed class MemberService : AbstractService<Member, MemberFilter>, IMemberService
     {
         private readonly IMemberRepository _repository;
         private readonly IRecipeRepository _recipeRepository;

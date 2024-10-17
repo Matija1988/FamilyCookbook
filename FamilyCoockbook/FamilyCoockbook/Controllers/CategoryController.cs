@@ -13,7 +13,7 @@ namespace FamilyCookbook.Controllers
 {
     [ApiController]
     [Route("api/v0/category")]
-    public sealed class CategoryController : AbstractController<Category, CategoryRead, CategoryCreate>
+    public sealed class CategoryController : AbstractController<Category, CategoryRead, CategoryCreate, CategoryFilter>
     {
         private readonly ICategoryService _service;
         private readonly IMapper<Category, CategoryRead, CategoryCreate> _mapper;

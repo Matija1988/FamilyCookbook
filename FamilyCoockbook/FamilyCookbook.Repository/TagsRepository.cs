@@ -1,6 +1,7 @@
 ﻿using Azure;
 using Dapper;
 using FamilyCookbook.Common;
+using FamilyCookbook.Common.Filters;
 using FamilyCookbook.Model;
 using FamilyCookbook.Repository.Common;
 using System;
@@ -13,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace FamilyCookbook.Repository
 {
-    public sealed class TagsRepository : AbstractRepository<Tag>, ITagRepository
+    public sealed class TagsRepository : AbstractRepository<Tag, TagFilter>, ITagRepository
     {
         IErrorMessages _errorMessages;
         ISuccessResponses _successResponses;

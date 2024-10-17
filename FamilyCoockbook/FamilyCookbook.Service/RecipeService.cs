@@ -8,7 +8,7 @@ using System.Text;
 
 namespace FamilyCookbook.Service
 {
-    public sealed class RecipeService : AbstractService<Recipe>, IRecipeService
+    public sealed class RecipeService : AbstractService<Recipe, RecipeFilter>, IRecipeService
     {
         private readonly IRecipeRepository _repository;
         private readonly ICommentRepository _commentRepository;
@@ -84,13 +84,13 @@ namespace FamilyCookbook.Service
             return resposne;
         }
 
-        public async Task<RepositoryResponse<List<Recipe>>> PaginateAsync(Paging paging, RecipeFilter filter)
+        public async Task<RepositoryResponse<Lazy<List<Recipe>>>> PaginateAsync(Paging paging, RecipeFilter filter)
         {
             var response = await _repository.PaginateAsync(paging, filter);
 
             response.PageCount = (int)Math.Ceiling(response.TotalCount / (double)paging.PageSize);
 
-            foreach (var item in response.Items)
+            foreach (var item in response.Items.Value)
             {
                 item.AverageRating = await CalculateAverageRating(item.Id);
             }

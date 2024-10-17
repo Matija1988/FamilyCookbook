@@ -1,18 +1,21 @@
 ﻿using FamilyCookbook.Mapping.MapperWrappers;
 using FamilyCookbook.Model;
+using FamilyCookbook.REST_Models.Category;
 using FamilyCookbook.Service.Common;
 using Microsoft.AspNetCore.Mvc;
 using Riok.Mapperly.Abstractions;
 
 namespace FamilyCookbook.Controllers
 {
-    public class AbstractController<T, TDR, TDI> : ControllerBase where T : class
+    public class AbstractController<T, TDR, TDI, Filter> : ControllerBase where T : class
     {
-        protected readonly IService<T> _service;
+        protected readonly IService<T, Filter> _service;
 
         protected readonly IMapper<T, TDR, TDI> _mapper;
+        private ICategoryService service;
+        private IMapper<Category, CategoryRead, CategoryCreate> mapper;
 
-        public AbstractController(IService<T> service, IMapper<T, TDR, TDI> mapper)
+        public AbstractController(IService<T, Filter> service, IMapper<T, TDR, TDI> mapper)
         {
             _mapper = mapper;
             _service = service;

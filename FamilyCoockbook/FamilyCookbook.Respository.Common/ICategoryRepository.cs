@@ -10,15 +10,13 @@ using System.Threading.Tasks;
 
 namespace FamilyCookbook.Repository.Common
 {
-    public interface ICategoryRepository : IRepository<Category>
+    public interface ICategoryRepository : IRepository<Category, CategoryFilter>
     {
         Task<MessageResponse> CreateAsync(Category entity);
 
 
         Task<MessageResponse> UpdateAsync(int id, Category entity);
 
-
-        Task<RepositoryResponse<Lazy<List<Category>>>> PaginateAsync(Paging paging, CategoryFilter filter);
 
     }
 }

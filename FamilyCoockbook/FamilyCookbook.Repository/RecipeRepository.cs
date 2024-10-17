@@ -19,7 +19,7 @@ using static Dapper.SqlMapper;
 
 namespace FamilyCookbook.Repository
 {
-    public sealed partial class RecipeRepository : AbstractRepository<Recipe>, IRecipeRepository
+    public sealed partial class RecipeRepository : AbstractRepository<Recipe, RecipeFilter>, IRecipeRepository
     {
         private readonly DapperDBContext _context;
         private readonly IErrorMessages _errorMessages;

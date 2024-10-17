@@ -1,4 +1,5 @@
 ﻿using FamilyCookbook.Common;
+using FamilyCookbook.Common.Filters;
 using FamilyCookbook.Model;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace FamilyCookbook.Service.Common
 {
-    public interface IService<T> where T : class
+    public interface IService<T, Filter> where T : class
     {
         Task<RepositoryResponse<List<T>>> GetAllAsync();
 
@@ -18,7 +19,9 @@ namespace FamilyCookbook.Service.Common
 
         Task<MessageResponse> DeleteAsync(int id);
 
-        Task<RepositoryResponse<T>> SoftDeleteAsync(int id);    
+        Task<RepositoryResponse<T>> SoftDeleteAsync(int id);
+
+        Task<RepositoryResponse<Lazy<List<T>>>> PaginateAsync(Paging paging, Filter filter);
 
     }
 }
