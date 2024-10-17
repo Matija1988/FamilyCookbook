@@ -16,7 +16,7 @@ export default function BannerSpan({ banners, onUpdate, onDelete }) {
     { id: 2, name: "Left no 1" },
   ];
 
-  const bannerType = [
+  const bannerTypes = [
     {
       id: 1,
       name: "Small box",
@@ -83,6 +83,11 @@ export default function BannerSpan({ banners, onUpdate, onDelete }) {
     return <p>No data to load</p>;
   }
 
+  const formatBannerTypeName = (bannerTypeId) => {
+    const bt = bannerTypes.find((bt) => bt.id === parseInt(bannerTypeId));
+    return bt ? bt.name : "This could be an error";
+  };
+
   return (
     <>
       <div className="banner-table">
@@ -102,7 +107,9 @@ export default function BannerSpan({ banners, onUpdate, onDelete }) {
                 {banner.destination}
               </a>
             </div>
-            <div className="banner-type">Type: {banner.bannerType}</div>
+            <div className="banner-type">
+              Type: {formatBannerTypeName(banner.bannerType)}
+            </div>
 
             <div className="banner-position">
               <select
@@ -116,7 +123,7 @@ export default function BannerSpan({ banners, onUpdate, onDelete }) {
               >
                 {positions.map((pos) => (
                   <option key={pos.id} value={pos.id}>
-                    Postion {pos.name}
+                    Position {pos.name}
                   </option>
                 ))}
               </select>

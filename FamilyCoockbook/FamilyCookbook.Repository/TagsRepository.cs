@@ -93,7 +93,6 @@ namespace FamilyCookbook.Repository
 
                 response.Success = true;
                 response.Items = entities.ToList();
-
                 return response;
 
             }

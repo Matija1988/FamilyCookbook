@@ -72,20 +72,20 @@ namespace FamilyCookbook.Repository
 
             if(!string.IsNullOrWhiteSpace(filter.SearchByName))
             {
-                query.Append($"AND Name LIKE '%{filter.SearchByName}%' ");
+                query.Append(@$"AND Name LIKE '%{filter.SearchByName}%' ");
                 countQuery.Append($"AND Name LIKE '%{filter.SearchByName}%' ");
             }
 
             if(!string.IsNullOrEmpty(filter.SearchByDestination))
             {
-                query.Append($"AND Destination LIKE '%{filter.SearchByDestination}%' ");
-                countQuery.Append($"AND Destination LIKE '%{filter.SearchByDestination}%' ");
+                query.Append(@$"AND Destination LIKE '%{filter.SearchByDestination}%' ");
+                countQuery.Append(@$"AND Destination LIKE '%{filter.SearchByDestination}%' ");
             }
 
             if (!filter.SearchByActivityStatus.Equals(null))
             {
-                query.Append($"AND IsActive = {filter.SearchByActivityStatus} ");
-                countQuery.Append($"AND IsActive = {filter.SearchByActivityStatus} ");
+                query.Append(@$"AND IsActive = {filter.SearchByActivityStatus} ");
+                countQuery.Append(@$"AND IsActive = {filter.SearchByActivityStatus} ");
             }
 
             query.Append("ORDER BY DateCreated DESC ");

@@ -22,10 +22,7 @@ export default function BannerCreate() {
   const [uploadedBanner, setUploadedBanner] = useState(null);
 
   const maxPictureSize = (1 * 1024 * 1024) / 4;
-  const bannerTypes = [
-    { id: 1, name: "Small box right" },
-    { id: 2, name: "Small box left" },
-  ];
+  const bannerTypes = [{ id: 1, name: "Small box right" }];
 
   const [error, setError] = useState(null);
   const { showLoading, hideLoading } = useLoading();

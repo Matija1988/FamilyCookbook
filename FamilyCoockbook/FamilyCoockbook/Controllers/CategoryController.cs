@@ -1,5 +1,6 @@
 ﻿
 using FamilyCookbook.Common;
+using FamilyCookbook.Common.Filters;
 using FamilyCookbook.Mapping;
 using FamilyCookbook.Mapping.MapperWrappers;
 using FamilyCookbook.Model;
@@ -36,10 +37,7 @@ namespace FamilyCookbook.Controllers
                 return BadRequest(ModelState);
             }
 
-            var category = new Category();
-
-            var mapper = new CategoryMapper();
-            category = mapper.CategoryCreateToCategory(entity);
+            var category = _mapper.MapToEntity(entity);
 
             var response = await _service.CreateAsync(category);
 
@@ -48,6 +46,31 @@ namespace FamilyCookbook.Controllers
                 return BadRequest(response.Message.ToString());     
             }
             return Ok(response.Message.ToString());
+        }
+
+        [HttpGet]
+        [Route("paging")]
+        public async Task<IActionResult> PaginateAsync([FromQuery]Paging paging, [FromQuery]CategoryFilter filter)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var response = await _service.PaginateAsync(paging, filter);
+
+            if(!response.Success)
+            {
+                return BadRequest(response.Message.ToString());
+            }
+
+            var finalResponse = new PaginatedList<List<CategoryRead>>();
+
+            finalResponse.Items = _mapper.MapToReadList(response.Items.Value);
+            finalResponse.PageCount = response.PageCount;
+            finalResponse.TotalCount = response.TotalCount;
+
+            return Ok(finalResponse);
         }
 
     }

@@ -22,5 +22,6 @@ namespace FamilyCookbook.Model
 
         public int BannerType { get; set; }
 
+
     }
 }

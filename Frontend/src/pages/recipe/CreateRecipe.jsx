@@ -34,7 +34,7 @@ export default function CreateRecipe() {
     text: "",
     categoryId: null,
     memberIds: [],
-    pictureName: "",
+    imageName: "",
     tagIds: [],
   });
 

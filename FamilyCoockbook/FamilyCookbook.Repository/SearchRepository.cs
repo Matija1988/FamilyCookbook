@@ -41,7 +41,7 @@ namespace FamilyCookbook.Repository
                     "JOIN Picture e on e.Id = a.PictureId " +
                     "JOIN RecipeTags f on f.RecipeId = a.Id " +
                     "JOIN Tag g on g.Id = f.TagId " +
-                    $"WHERE g.Text LIKE '%{searchText}%' " +
+                    @$"WHERE g.Text LIKE '%{searchText}%' " +
                     "AND a.IsActive = 1 " +
                     "ORDER BY a.DateCreated DESC");
 

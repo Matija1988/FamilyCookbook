@@ -1,4 +1,5 @@
 ﻿using FamilyCookbook.Common;
+using FamilyCookbook.Common.Filters;
 using FamilyCookbook.Model;
 using FamilyCookbook.Repository.Common;
 using FamilyCookbook.Respository.Common;
@@ -71,5 +72,13 @@ namespace FamilyCookbook.Service
             return await _repository.SoftDeleteAsync(id);
         }
 
+        public async Task<RepositoryResponse<Lazy<List<Category>>>> PaginateAsync(Paging paging, CategoryFilter filter)
+        {
+            var response = await _repository.PaginateAsync(paging, filter);
+
+            response.TotalCount = (int)Math.Ceiling(response.TotalCount / (double)paging.PageSize);
+
+            return response;
+        }
     }
 }

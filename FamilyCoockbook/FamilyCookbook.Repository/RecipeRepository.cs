@@ -356,11 +356,11 @@ namespace FamilyCookbook.Repository
             StringBuilder sb = new StringBuilder();
 
             StringBuilder countQuery = new StringBuilder(
-                $" SELECT COUNT(DISTINCT a.Id) FROM Recipe a " +
-                $" JOIN MemberRecipe b ON a.Id = b.RecipeId " +
-                $" JOIN Member c on b.MemberId = c.Id " +
-                $" LEFT JOIN Category d ON d.Id = a.CategoryId " +
-                $" JOIN Picture e on e.Id = a.PictureId " +
+                " SELECT COUNT(DISTINCT a.Id) FROM Recipe a " +
+                " JOIN MemberRecipe b ON a.Id = b.RecipeId " +
+                " JOIN Member c on b.MemberId = c.Id " +
+                " LEFT JOIN Category d ON d.Id = a.CategoryId " +
+                " JOIN Picture e on e.Id = a.PictureId " +
                 $" WHERE a.IsActive = {filter.SearchByActivityStatus} ");
 
             sb.Append("SELECT  " +
@@ -386,52 +386,52 @@ namespace FamilyCookbook.Repository
 
             if (!string.IsNullOrWhiteSpace(filter.SearchByTitle)) 
             {
-                sb.Append($"AND a.Title LIKE '%{filter.SearchByTitle}%' ");
-                countQuery.Append($" AND a.Title LIKE '%{filter.SearchByTitle}%' ");
+                sb.Append(@$"AND a.Title LIKE '%{filter.SearchByTitle}%' ");
+                countQuery.Append(@$" AND a.Title LIKE '%{filter.SearchByTitle}%' ");
             }
 
             if (!string.IsNullOrWhiteSpace(filter.SearchBySubtitle)) 
             {
-                sb.Append($"AND a.Subtitle LIKE '%{filter.SearchBySubtitle}%' ");
-                countQuery.Append($" AND a.Subtitle LIKE '%{filter.SearchBySubtitle}%' ");
+                sb.Append(@$"AND a.Subtitle LIKE '%{filter.SearchBySubtitle}%' ");
+                countQuery.Append(@$" AND a.Subtitle LIKE '%{filter.SearchBySubtitle}%' ");
             }
 
 
             if (filter.SearchByCategory > 0)
             {
-                sb.Append($"AND a.CategoryId = {filter.SearchByCategory} ");
-                countQuery.Append($" AND a.CategoryId = {filter.SearchByCategory} ");
+                sb.Append(@$"AND a.CategoryId = {filter.SearchByCategory} ");
+                countQuery.Append(@$" AND a.CategoryId = {filter.SearchByCategory} ");
             }
 
             if (!filter.SearchByActivityStatus.Equals(null))
             {
-                sb.Append($"AND a.IsActive = {filter.SearchByActivityStatus} ");
-                countQuery.Append($" AND a.IsActive = {filter.SearchByActivityStatus} ");
+                sb.Append(@$"AND a.IsActive = {filter.SearchByActivityStatus} ");
+                countQuery.Append(@$" AND a.IsActive = {filter.SearchByActivityStatus} ");
             }
 
             if (filter.SearchByDateCreated.HasValue)
             {
-                sb.Append($"AND a.DateCreated = {filter.SearchByDateCreated} ");
-                countQuery.Append($" AND a.DateCreate = {filter.SearchByDateCreated} ");
+                sb.Append(@$"AND a.DateCreated = {filter.SearchByDateCreated} ");
+                countQuery.Append(@$" AND a.DateCreate = {filter.SearchByDateCreated} ");
             }
 
             if (!string.IsNullOrWhiteSpace(filter.SearchByAuthorName)) 
             {
-                sb.Append($" AND c.FirstName LIKE '%{filter.SearchByAuthorName}%' ");
-                countQuery.Append($" AND c.FirstName LIKE '%{filter.SearchByAuthorName}%' ");
+                sb.Append(@$" AND c.FirstName LIKE '%{filter.SearchByAuthorName}%' ");
+                countQuery.Append(@$" AND c.FirstName LIKE '%{filter.SearchByAuthorName}%' ");
                 
             }
 
             if(!string.IsNullOrWhiteSpace(filter.SearchByAuthorSurname))
             {
-                sb.Append($"AND c.LastName LIKE '%{filter.SearchByAuthorSurname}%'");
-                countQuery.Append($" AND c.LastName LIKE '%{filter.SearchByAuthorSurname}% '");
+                sb.Append(@$"AND c.LastName LIKE '%{filter.SearchByAuthorSurname}%'");
+                countQuery.Append(@$" AND c.LastName LIKE '%{filter.SearchByAuthorSurname}% '");
             }
 
 
             sb.Append("ORDER BY a.DateCreated DESC ");
-            sb.Append($"OFFSET @Offset ROWS ");
-            sb.Append($"FETCH NEXT @PageSize ROWS ONLY;");
+            sb.Append("OFFSET @Offset ROWS ");
+            sb.Append("FETCH NEXT @PageSize ROWS ONLY;");
            
             sb.Append(countQuery);
 

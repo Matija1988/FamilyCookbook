@@ -168,10 +168,10 @@ export default function UpdateRecipe() {
       subtitle: information.get("Subtitle"),
       text: recipe.text,
       categoryId: parseInt(selectedCategoryId) || recipeCategory,
-      memberIds: authorIds, 
+      memberIds: authorIds,
       tagIds: postTagIds,
-      pictureName: newPictureName || oldPictureName,
-      pictureBlob: newPicture || null,
+      imageName: newPictureName || oldPictureName,
+      imageBlob: newPicture || null,
     });
   }
 

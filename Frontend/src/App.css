@@ -310,15 +310,18 @@
 .banner-row {
   display: flex; /* Flexbox to align items in a row */
   align-items: center;
-  justify-content: space-between; /* Space out the items */
+  justify-content: start; /* Space out the items */
   padding: 15px;
   border-bottom: 1px solid #ccc;
+}
+
+.banner-image {
+  flex-shrink: 1;
 }
 
 .banner-image img {
   width: 30%;
   height: 30%;
-  height: auto;
   margin-right: 1%;
 }
 
@@ -326,8 +329,11 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  margin-right: 10%;
-  margin-left: 10%;
+  justify-content: center;
+  align-items: center;
+  text-align: left;
+  margin-right: 15%;
+  margin-left: 1%;
 }
 
 .banner-name {

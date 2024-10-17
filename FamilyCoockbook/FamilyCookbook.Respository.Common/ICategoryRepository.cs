@@ -1,4 +1,6 @@
-﻿using FamilyCookbook.Model;
+﻿using FamilyCookbook.Common;
+using FamilyCookbook.Common.Filters;
+using FamilyCookbook.Model;
 using FamilyCookbook.Respository.Common;
 using System;
 using System.Collections.Generic;
@@ -14,6 +16,9 @@ namespace FamilyCookbook.Repository.Common
 
 
         Task<MessageResponse> UpdateAsync(int id, Category entity);
+
+
+        Task<RepositoryResponse<Lazy<List<Category>>>> PaginateAsync(Paging paging, CategoryFilter filter);
 
     }
 }
