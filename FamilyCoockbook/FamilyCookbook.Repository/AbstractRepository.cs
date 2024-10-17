@@ -280,7 +280,24 @@ namespace FamilyCookbook.Repository
         {
             var response = new RepositoryResponse<Lazy<List<T>>>();
 
-            return response;
+            string tableName = GetTableName();
+
+            try
+            {
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = _errorMessages.ErrorAccessingDb(tableName);
+                return response;
+            }
+            finally
+            {
+                _context.CreateConnection().Close();
+            }
+
 
         }
 
