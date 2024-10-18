@@ -3,6 +3,7 @@ using FamilyCookbook.Mapping;
 using FamilyCookbook.Model;
 using FamilyCookbook.REST_Models.Tags;
 using FamilyCookbook.Service.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Immutable;
@@ -28,6 +29,8 @@ namespace FamilyCookbook.Controllers
 
             return response.Success ? Ok(response) : BadRequest(response.Message.ToString());
         }
+
+        [Authorize(Roles ="Admin, Moderator, Contributor")]
         [HttpPost]
         public async Task<IActionResult> CreateAsync(List<TagCreate> entites)
         {
@@ -51,6 +54,7 @@ namespace FamilyCookbook.Controllers
             
         }
 
+        [Authorize(Roles ="Admin, Moderator, Contributor")]
         [HttpPost]
         [Route("connectRecipeAndTags")]
 
@@ -81,6 +85,7 @@ namespace FamilyCookbook.Controllers
 
         }
 
+        [Authorize(Roles = "Admin, Moderator, Contributor")]
         [HttpGet]
         [Route("tags")]
 
@@ -102,6 +107,7 @@ namespace FamilyCookbook.Controllers
             return Ok(finalResponse);
         }
 
+        [Authorize(Roles = "Admin, Moderator, Contributor")]
         [HttpDelete]
         [Route("delete/{id:int}")]
 
@@ -117,6 +123,7 @@ namespace FamilyCookbook.Controllers
             return Ok(resposne.Message.ToString());
         }
 
+        [Authorize(Roles = "Admin, Moderator, Contributor")]
         [HttpPut]
         [Route("update/{id:int}")]
         public async Task<IActionResult> UpdateAsync(int id, TagCreate tag)

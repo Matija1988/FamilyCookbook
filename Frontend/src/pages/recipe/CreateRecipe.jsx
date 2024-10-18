@@ -416,7 +416,7 @@ export default function CreateRecipe() {
           </Container>
         </Col>
         <Col>
-        <TagList></TagList>
+          <TagList></TagList>
         </Col>
       </Row>
       <ErrorModal

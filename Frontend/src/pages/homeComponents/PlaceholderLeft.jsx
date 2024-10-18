@@ -24,10 +24,6 @@ export default function PlaceholderLeft() {
     }
   }
 
-  console.log("Banner location: " + URL + banner.location);
-
-  console.log("BANNER:", banner);
-
   useEffect(() => {
     getBanner(1);
   }, []);

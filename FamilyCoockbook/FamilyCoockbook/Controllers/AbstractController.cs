@@ -1,6 +1,7 @@
 ﻿using FamilyCookbook.Mapping.MapperWrappers;
 using FamilyCookbook.Model;
 using FamilyCookbook.Service.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Riok.Mapperly.Abstractions;
 
@@ -82,9 +83,9 @@ namespace FamilyCookbook.Controllers
             
         }
 
+        [Authorize(Roles ="Admin, Moderator")]
         [HttpPut]
         [Route("softDelete/{id:int}")]
-
         public async Task<IActionResult> SoftDeleteAsync(int id)
         {
             var response = await _service.SoftDeleteAsync(id);
@@ -97,6 +98,7 @@ namespace FamilyCookbook.Controllers
             return Ok(response.Message.ToString());
         }
 
+        [Authorize("Admin")]
         [HttpDelete]
         [Route("delete/{id:int}")]
         public async Task<IActionResult> DeleteAsync(int id)

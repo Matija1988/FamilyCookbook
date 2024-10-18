@@ -19,6 +19,8 @@ import ErrorModal from "../../components/ErrorModal";
 import useError from "../../hooks/useError";
 import useLoading from "../../hooks/useLoading";
 import { App } from "../../constants/constants";
+import PlaceholderLeft from "../homeComponents/PlaceholderLeft";
+import PlaceholderRight from "../homeComponents/PlaceholderRight";
 
 export default function RecipeDetails() {
   const recipeState = {
@@ -68,7 +70,12 @@ export default function RecipeDetails() {
   return (
     <>
       <Row>
-        <Col style={{ flex: "0 0 20%" }}></Col>
+        <Col style={{ flex: "0 0 20%" }}>
+          <br></br>
+          <br></br>
+          <br></br>
+          <PlaceholderLeft></PlaceholderLeft>
+        </Col>
         <Col style={{ flex: "0 0 60%" }}>
           <Container className="recDetails">
             <h2>{recipe.title}</h2>
@@ -121,7 +128,12 @@ export default function RecipeDetails() {
             <CommentList recipeId={routeParams.id}></CommentList>
           </Container>
         </Col>
-        <Col style={{ flex: "0 0 20%" }}></Col>
+        <Col style={{ flex: "0 0 20%" }}>
+          <br></br>
+          <br></br>
+          <br></br>
+          <PlaceholderRight> </PlaceholderRight>
+        </Col>
       </Row>
       <ErrorModal
         show={showErrorModal}

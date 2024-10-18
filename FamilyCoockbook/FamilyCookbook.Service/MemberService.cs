@@ -36,6 +36,7 @@ namespace FamilyCookbook.Service
 
         public async Task<MessageResponse> CreateAsync(Member entity)
         {
+            var response = new MessageResponse();
             entity.UniqueId = Guid.NewGuid();
             entity.IsActive = true;
             entity.DateCreated = DateTime.Now;
@@ -43,9 +44,18 @@ namespace FamilyCookbook.Service
 
             var passwordHash = BCrypt.Net.BCrypt.HashPassword(entity.Password, 12);
 
+            var chkUser = await _repository.FindByUsernameAsync(entity.Username);
+
+            if (chkUser.Items.Value != null) 
+            {
+                response.IsSuccess = false;
+                response.Message = new StringBuilder("Username is in use!");
+                return response;
+            }
+
             entity.Password = passwordHash;
 
-            var response = await _repository.CreateAsync(entity);
+            response = await _repository.CreateAsync(entity);
 
             return response;
         }

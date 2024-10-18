@@ -6,6 +6,7 @@ using FamilyCookbook.Model;
 using FamilyCookbook.REST_Models.Banner;
 using FamilyCookbook.Service.Common;
 using FamilyCookbook.Strategy;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static FamilyCookbook.REST_Models.Banner.BannerDTO;
 
@@ -31,6 +32,7 @@ namespace FamilyCookbook.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [Route("create")]
         public async Task<IActionResult> CreateAsync(BannerCreate newBanner)
@@ -61,6 +63,7 @@ namespace FamilyCookbook.Controllers
             return Ok(response.Message.ToString());
         }
 
+        [Authorize(Roles ="Admin")]
         [HttpGet]
         [Route("paginate")]
 

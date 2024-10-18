@@ -130,18 +130,18 @@ export default function UpdateRecipe() {
   }
 
   async function UpdateRecipe(entity) {
-    try {
-      const response = await RecipeService.update(
-        "recipe/update",
-        routeParams.id,
-        entity
-      );
-      if (response.ok) {
-        navigate(RouteNames.RECIPES);
-      }
-    } catch (error) {
-      alert(error.message);
+    showLoading();
+    const response = await RecipeService.update(
+      "recipe/update",
+      routeParams.id,
+      entity
+    );
+    if (!response.ok) {
+      hideLoading();
+      showError(response.data);
     }
+    hideLoading();
+    navigate(RouteNames.RECIPES);
   }
 
   async function tagSearchCondition(input) {

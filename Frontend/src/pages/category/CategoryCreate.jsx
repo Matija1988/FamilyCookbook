@@ -1,4 +1,4 @@
-import { Container, Form } from "react-bootstrap";
+import { Container, Form, Row, Col } from "react-bootstrap";
 import InputText from "../../components/InputText";
 import InputTextArea from "../../components/InputTextArea";
 import CustomButton from "../../components/CustomButton";

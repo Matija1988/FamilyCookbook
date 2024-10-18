@@ -2,6 +2,7 @@
 using FamilyCookbook.Model;
 using FamilyCookbook.REST_Models.Banner;
 using FamilyCookbook.Service.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection.Metadata.Ecma335;
@@ -23,6 +24,7 @@ namespace FamilyCookbook.Controllers
             _mapper = mapper;
         }
 
+        [Authorize(Roles ="Admin")]
         [HttpPut]
         [Route("setBannerPosition")]
 
