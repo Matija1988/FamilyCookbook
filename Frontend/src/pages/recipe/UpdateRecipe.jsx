@@ -18,6 +18,8 @@ import TagsService from "../../services/TagsService";
 import useError from "../../hooks/useError";
 import useLoading from "../../hooks/useLoading";
 import ErrorModal from "../../components/ErrorModal";
+import PaginationForTags from "./components/PaginationForTags";
+import TagList from "./components/TagList";
 
 export default function UpdateRecipe() {
   const initialState = {
@@ -458,6 +460,9 @@ export default function UpdateRecipe() {
               </Row>
             </Form>
           </Container>
+        </Col>
+        <Col>
+          <TagList></TagList>
         </Col>
       </Row>
       <ImageGallery

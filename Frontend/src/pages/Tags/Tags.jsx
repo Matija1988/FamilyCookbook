@@ -24,6 +24,8 @@ export default function Tags() {
   const [entityToDelete, setEntityToDelete] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(null);
   const [selectedTag, setSelectedTag] = useState(null);
+  const [totalCount, setTotalCount] = useState(0);
+
   const navigate = useNavigate();
 
   const { showLoading, hideLoading } = useLoading();
@@ -45,18 +47,19 @@ export default function Tags() {
   };
 
   async function paginateTags() {
-    const params = getRequestParams(pageSize, pageNumber, searchByText);
-
-    const response = await TagsService.paginate("tag/tags", params);
     showLoading();
+    const params = getRequestParams(pageSize, pageNumber, searchByText);
+    const response = await TagsService.paginate("tag/tags", params);
+
     if (!response.ok) {
       hideLoading();
       showError(response.data);
     }
-    const { items, pageCount } = response.data;
+    const { items, pageCount, totalCount } = response.data;
 
     setTags(items);
     setTotalPages(pageCount);
+    setTotalCount(totalCount);
     hideLoading();
   }
 
@@ -118,12 +121,16 @@ export default function Tags() {
                 ></GenericInputs>
               </Col>
               <Col>
+                <br></br>
                 <CustomButton
                   label="Search"
                   onClick={paginateTags}
                   className="search-btn"
                 ></CustomButton>
               </Col>
+            </Row>
+            <Row>
+              <p className="totalCount">Total count: {totalCount}</p>
             </Row>
             <Row>
               <Col>

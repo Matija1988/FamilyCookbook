@@ -37,6 +37,7 @@ export default function Members() {
   const [searchByLastName, setSearchByLastName] = useState("");
   const [searchByRoleId, setSearchByRoleId] = useState();
   const [searchByBio, setSearchByBio] = useState("");
+  const [totalCount, setTotalCount] = useState(0);
   const statusOptions = [
     { id: 1, name: "Active" },
     { id: 0, name: "Not active" },
@@ -88,7 +89,7 @@ export default function Members() {
       hideLoading();
       showError(response.data);
     }
-    const { items, pageCount } = response.data;
+    const { items, pageCount, totalCount } = response.data;
 
     const formattedItems = items.map((member) => ({
       ...member,
@@ -97,6 +98,7 @@ export default function Members() {
 
     setMembers(formattedItems);
     setTotalPages(pageCount);
+    setTotalCount(totalCount);
     hideLoading();
   }
 
@@ -248,6 +250,14 @@ export default function Members() {
                   className="search-btn-2"
                 ></CustomButton>
               </Col>
+            </Row>
+            <Row>
+              <Col>
+                <p className="totalCount">Total count: {totalCount}</p>
+              </Col>
+              <Col></Col>
+              <Col></Col>
+              <Col></Col>
             </Row>
 
             <GenericTable

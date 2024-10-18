@@ -28,6 +28,7 @@ export default function Categories() {
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
   const [countPage, setCountPage] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -67,9 +68,10 @@ export default function Categories() {
       hideLoading();
       showError(response.data);
     }
-    const { items, pageCount } = response.data;
+    const { items, pageCount, totalCount } = response.data;
     setCategories(items);
     setTotalPages(pageCount);
+    setTotalCount(totalCount);
     hideLoading();
   }
 
@@ -152,7 +154,9 @@ export default function Categories() {
               </Col>
             </Row>
             <Row>
-              <Col></Col>
+              <Col>
+                <p className="totalCount">Total count: {totalCount}</p>
+              </Col>
               <Col></Col>
               <Col></Col>
               <Col>

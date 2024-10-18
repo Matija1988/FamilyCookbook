@@ -379,3 +379,46 @@
   background-color: #dc3545;
   color: white;
 }
+
+.totalCount {
+  margin-top: 1rcap;
+  font-weight: 500;
+  font-style: italic;
+  color: black;
+}
+
+.tag-list-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 3%;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border: 1%;
+  max-width: 300px;
+  margin: 1%;
+  margin-top: 5rcap;
+}
+
+.tag-list-group {
+  width: 100%;
+  list-style-type: none;
+  padding: 0;
+}
+
+.tag-list-group-item {
+  padding: 1%;
+  background-color: white;
+  border-bottom: 1px solid #ddd;
+}
+
+.tag-list-group:last-child {
+  border-bottom: none;
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}

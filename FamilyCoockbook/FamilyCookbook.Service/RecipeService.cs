@@ -90,11 +90,14 @@ namespace FamilyCookbook.Service
 
             response.PageCount = (int)Math.Ceiling(response.TotalCount / (double)paging.PageSize);
 
-            foreach (var item in response.Items)
+            if (response.Items.Count > 0)
             {
-                item.AverageRating = await CalculateAverageRating(item.Id);
+                foreach (var item in response.Items)
+                {
+                    item.AverageRating = await CalculateAverageRating(item.Id);
+                }
             }
-
+            
             return response;
         }
 

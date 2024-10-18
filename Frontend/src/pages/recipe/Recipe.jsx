@@ -43,6 +43,7 @@ export default function Recipe() {
   const [entityId, setEntityId] = useState();
   const [activityStatus, setActivityStatus] = useState(1);
   const [entityToDelete, setEntityToDelete] = useState(null);
+  const [totalCount, setTotalCount] = useState(0);
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { showError, showErrorModal, errors, hideError } = useError();
@@ -94,9 +95,10 @@ export default function Recipe() {
       hideLoading();
       showError(response.data);
     }
-    const { items, pageCount } = response.data;
+    const { items, pageCount, totalCount } = response.data;
     setRecipes(items);
     setTotalPages(pageCount);
+    setTotalCount(totalCount);
     hideLoading();
   }
 
@@ -233,7 +235,9 @@ export default function Recipe() {
               </Col>
             </Row>
             <Row>
-              <Col></Col>
+              <Col>
+                <p className="totalCount">Total count: {totalCount}</p>
+              </Col>
               <Col></Col>
               <Col></Col>
               <Col>

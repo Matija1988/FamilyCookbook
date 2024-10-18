@@ -26,6 +26,7 @@ import TagsService from "../../services/TagsService";
 import useError from "../../hooks/useError";
 import useLoading from "../../hooks/useLoading";
 import ErrorModal from "../../components/ErrorModal";
+import TagList from "./components/TagList";
 
 export default function CreateRecipe() {
   const [recipe, setRecipe] = useState({
@@ -405,6 +406,7 @@ export default function CreateRecipe() {
                   ></CustomButton>
                 </Col>
               </Row>
+              <Col></Col>
             </Form>
             <ImageGallery
               isOpen={isImageGalleryOpen}
@@ -413,7 +415,9 @@ export default function CreateRecipe() {
             ></ImageGallery>
           </Container>
         </Col>
-        <Col></Col>
+        <Col>
+        <TagList></TagList>
+        </Col>
       </Row>
       <ErrorModal
         show={showErrorModal}

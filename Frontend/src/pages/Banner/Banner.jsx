@@ -24,6 +24,7 @@ export default function Banner() {
   const [pageNumber, setPageNumber] = useState(1);
   const [pageCount, setPageCount] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
   const statusOptions = [
     { id: 1, name: "Active" },
     { id: 2, name: "Not active" },
@@ -68,9 +69,10 @@ export default function Banner() {
       hideLoading();
       showError(response.data);
     }
-    const { items, pageCount } = response.data;
+    const { items, pageCount, totalCount } = response.data;
     setBanners(items);
     setTotalPages(pageCount);
+    setTotalCount(totalCount);
     hideLoading();
   }
 
@@ -155,7 +157,9 @@ export default function Banner() {
                 ></CustomButton>
               </Col>
               <Row>
-                <br></br>
+                <Col>
+                  <p className="totalCount">Total count: {totalCount}</p>
+                </Col>
               </Row>
             </Row>
             <Row>
