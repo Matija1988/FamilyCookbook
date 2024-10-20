@@ -422,3 +422,10 @@
   justify-content: center;
   margin-top: 20px;
 }
+
+.banner-placeholder {
+  width: 10rcap;
+  height: 10rcap;
+  margin-left: auto;
+  margin-right: auto;
+}

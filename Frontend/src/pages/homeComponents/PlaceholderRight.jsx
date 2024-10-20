@@ -30,7 +30,7 @@ export default function PlaceholderRight() {
 
   return (
     <>
-      <div>
+      <div className="banner-placeholder">
         <img
           src={URL + banner.location}
           style={{ cursor: "pointer" }}

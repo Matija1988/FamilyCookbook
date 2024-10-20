@@ -6,9 +6,8 @@ body {
   background-color: #343a40;
   color: white;
   padding: 5%;
-  border-radius: 5%;
   box-shadow: 0% 2% 4% rgba(0, 0, 0, 0.6);
-  margin-top: 2%;
+  margin-top: 8%;
 }
 
 .recDetails h2,
