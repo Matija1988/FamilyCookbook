@@ -514,6 +514,7 @@ namespace FamilyCookbook.Repository
 
 
 
+
         protected virtual StringBuilder BuildSoftDeleteQuery(string tableName, int id)
         {
             StringBuilder query = new();
