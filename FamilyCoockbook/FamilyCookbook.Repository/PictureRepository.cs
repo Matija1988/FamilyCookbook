@@ -15,8 +15,9 @@ namespace FamilyCookbook.Repository
         }
         protected override StringBuilder BuildQueryReadAll()
         {
-            return new StringBuilder("SELECT* FROM Picture p " +
-                "WHERE p.Id IN (SELECT MIN(p2.Id) FROM Picture p2 GROUP BY p2.Name) Order by Id DESC;");
+            StringBuilder query = new("SELECT* FROM Picture p WHERE p.Id IN ");
+            query.Append("(SELECT MIN(p2.Id) FROM Picture p2 GROUP BY p2.Name) Order by Id DESC;");
+            return query;
         }
     }
 }

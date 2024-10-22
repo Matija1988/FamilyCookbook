@@ -127,6 +127,8 @@ alter table Comment add foreign key(RecipeId) references Recipe(Id);
 alter table RecipeTags add foreign key (TagId) references Tag(Id);
 alter table RecipeTags add foreign key (RecipeId) references Recipe(Id);
 
+alter table BannerPosition add foreign key(BannerId) references Banner(Id);
+
 ----------------------------- CONSTRAINTS ------------------------------
 
 ALTER table Recipe add constraint Rating check (Rating >= 0.0 And Rating <= 5.0);
@@ -178,6 +180,7 @@ insert into Tag(Text) VALUES
 
 insert into BannerPosition(Position) Values (1), (2);
 
+
 select * distinct Name from Picture;
 
 WITH DistinctPictures AS
@@ -199,23 +202,21 @@ WHERE p.Id IN (
 ) Order by Name;
 
 
-select * from Banner;
-
-Delete FROM Banner where Id = 4;
 
 EXEC sp_rename 'dbo.Banner.DestinationName', 'Name', 'COLUMN';
 
-select top 1 * from Picture order by Id desc;
 
 ALTER TABLE Banner ALTER COLUMN BannerType int;  
 
 ALTER TABLE Banner
 ADD CONSTRAINT chk_BANNER_TYPE CHECK (BannerType > 0);
 
-select * from BannerPosition where position = 1;
+select * from BannerPosition;
 
-select * from Banner;
+select * from Category;
 
+insert into BannerPosition (Position) values (2);
+ 
 insert into BannerPosition (BannerId, Position) values (11,1);
 
 select top 1 b.* from BannerPosition a join Banner b on b.Id = a.BannerId 
@@ -226,3 +227,8 @@ where b.Position = 1 ORDER BY a.DateCreated DESC;
 
 select COUNT(DISTINCT a.Id) FROM Banner a where 1 = 1 and a.Name like '%web%';
 
+select * from Role WHERE 1 = 1;
+
+select a.*, b.Position from Banner a LEFT JOIN BannerPosition b ON a.Id = b.BannerId;
+
+	

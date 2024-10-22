@@ -23,10 +23,9 @@ namespace FamilyCookbook.Repository
             {
                 try
                 {
-
-                    var insertPictureQuery = @"INSERT INTO Picture (Name, Location, IsActive) " +
-                                              "VALUES (@Name, @Location, @IsActive);" +
-                                              "SELECT SCOPE_IDENTITY();";
+                    StringBuilder insertPictureQuery = new("INSERT INTO Picture (Name, Location, IsActive) ");
+                    insertPictureQuery.Append("VALUES (@Name, @Location, @IsActive); ");
+                    insertPictureQuery.Append("SELECT SCOPE_IDENTITY();");
 
                     var pictureParamaters = new
                     {
@@ -36,14 +35,12 @@ namespace FamilyCookbook.Repository
                     };
 
                     var pictureId =
-                        await connection.QuerySingleAsync<int>(insertPictureQuery, pictureParamaters, transaction);
+                        await connection.QuerySingleAsync<int>(insertPictureQuery.ToString(), pictureParamaters, transaction);
 
-                    var insertRecipeQuery = @"INSERT INTO Recipe " +
-                            "(Title, Subtitle, Text, CategoryId, PictureId, IsActive, DateCreated, DateUpdated) " +
-                            "VALUES" +
-                            "(@Title, @Subtitle, @Text, @CategoryId, @PictureId, @IsActive, " +
-                            "@DateCreated, @DateUpdated);" +
-                            "SELECT SCOPE_IDENTITY();";
+                    StringBuilder insertRecipeQuery = new("INSERT INTO Recipe ");
+                    insertRecipeQuery.Append("(Title, Subtitle, Text, CategoryId, PictureId, IsActive, DateCreated, DateUpdated) ");
+                    insertRecipeQuery.Append("VALUES (@Title, @Subtitle, @Text, @CategoryId, @PictureId, @IsActive, ");
+                    insertRecipeQuery.Append("@DateCreated, @DateUpdated); SELECT SCOPE_IDENTITY();");
 
                     var recipeParameters = new
                     {
@@ -58,11 +55,11 @@ namespace FamilyCookbook.Repository
                     };
 
                     var recipeId =
-                        await connection.QuerySingleAsync<int>(insertRecipeQuery, recipeParameters, transaction);
+                        await connection.QuerySingleAsync<int>(insertRecipeQuery.ToString(), recipeParameters, transaction);
 
-                    var insertMemberRecipeQuery = @"INSERT INTO MemberRecipe(RecipeId, MemberId) " +
-                                                   "VALUES(@RecipeId, @MemberId);" +
-                                                   "SELECT SCOPE_IDENTITY();";
+                    StringBuilder insertMemberRecipeQuery = new("INSERT INTO MemberRecipe(RecipeId, MemberId) ");
+                    insertMemberRecipeQuery.Append("VALUES(@RecipeId, @MemberId);");
+                    insertMemberRecipeQuery.Append("SELECT SCOPE_IDENTITY();");
 
                     if (entity.MemberIds == null)
                     {
@@ -80,16 +77,15 @@ namespace FamilyCookbook.Repository
                         };
 
                         await connection
-                            .ExecuteAsync(insertMemberRecipeQuery, memberRecipeParametes, transaction);
+                            .ExecuteAsync(insertMemberRecipeQuery.ToString(), memberRecipeParametes, transaction);
 
                     }
 
 
                     if (entity.TagIds != null)
                     {
-
-                        var insertRecipeTagsQuery = "INSERT INTO RecipeTags(TagId, RecipeId) " +
-                            " VALUES (@TagId, @RecipeId); SELECT SCOPE_IDENTITY();";
+                        StringBuilder insertRecipeTagsQuery = new("INSERT INTO RecipeTags(TagId, RecipeId) ");
+                        insertRecipeTagsQuery.Append(" VALUES (@TagId, @RecipeId); SELECT SCOPE_IDENTITY();");
 
                         foreach (var tagId in entity.TagIds)
                         {
@@ -98,7 +94,7 @@ namespace FamilyCookbook.Repository
                                 TagId = tagId,
                                 RecipeId = recipeId
                             };
-                            await connection.ExecuteAsync(insertRecipeTagsQuery, recipeTagParameters, transaction);
+                            await connection.ExecuteAsync(insertRecipeTagsQuery.ToString(), recipeTagParameters, transaction);
                         }
 
                     }

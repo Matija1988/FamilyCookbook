@@ -80,10 +80,9 @@ namespace FamilyCookbook.Repository
 
         protected override StringBuilder BuildQueryReadSingle(int id)
         {
-            StringBuilder query = new();
+            StringBuilder query = new("SELECT a.*, b.Id, b.FirstName, b.LastName FROM Comment a JOIN ");
 
-            return query.Append("SELECT a.*, b.Id, b.FirstName, b.LastName FROM Comment a JOIN " +
-                $"Member b on b.Id = a.MemberId WHERE a.Id = {id}");
+            return query.Append($"Member b on b.Id = a.MemberId WHERE a.Id = {id}");
         }
 
 
@@ -115,8 +114,8 @@ namespace FamilyCookbook.Repository
         {
             StringBuilder query = new();
 
-            query.Append("INSERT INTO Comment (MemberId, RecipeId, Text, DateCreated, DateUpdated, Rating, IsActive) " +
-                          "VALUES (@MemberId, @RecipeId, @Text, @DateCreated, @DateUpdated, @Rating, @IsActive)");
+            query.Append("INSERT INTO Comment (MemberId, RecipeId, Text, DateCreated, DateUpdated, Rating, IsActive)");
+            query.Append(" VALUES (@MemberId, @RecipeId, @Text, @DateCreated, @DateUpdated, @Rating, @IsActive)");
 
             return query;
         }
@@ -148,12 +147,12 @@ namespace FamilyCookbook.Repository
 
             try
             {
-                StringBuilder query = new("SELECT a.*, b.Id, b.FirstName, b.LastName" +
-                    " FROM Comment a " +
-                    " JOIN Member b on b.Id = a.MemberId " +
-                    $" WHERE a.RecipeId = {id} " +
-                    $" AND a.IsActive = 1 " +
-                    $" ORDER BY a.DateCreated DESC");
+                StringBuilder query = new("SELECT a.*, b.Id, b.FirstName, b.LastName");
+                query.Append(" FROM Comment a ");
+                query.Append(" JOIN Member b on b.Id = a.MemberId ");
+                query.Append($" WHERE a.RecipeId = {id} ");
+                query.Append($" AND a.IsActive = 1 "); 
+                query.Append($" ORDER BY a.DateCreated DESC");
 
                 var entityDictionary = new Dictionary<int, Comment>();
 

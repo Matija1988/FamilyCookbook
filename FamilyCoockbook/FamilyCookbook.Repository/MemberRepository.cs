@@ -52,8 +52,8 @@ namespace FamilyCookbook.Repository
 
             try
             {
-                queryBuilder.Append(@"SELECT a.*, b.* FROM Member a JOIN Role b on a.RoleId = b.Id " +
-                    "WHERE a.IsActive = 1 AND a.Username = @username");
+                queryBuilder.Append(@"SELECT a.*, b.* FROM Member a JOIN Role b on a.RoleId = b.Id ");
+                queryBuilder.Append("WHERE a.IsActive = 1 AND a.Username = @username");
 
                 var entityDictionary = new Dictionary<int, Member>();
 
@@ -104,13 +104,11 @@ namespace FamilyCookbook.Repository
         #region GET ALL
         protected override StringBuilder BuildQueryReadAll()
         {
-            StringBuilder query = new();
+            StringBuilder query = new("SELECT a.*, b.Id AS RoleRoleId, b.* FROM Member a LEFT JOIN");
+            query.Append(" Role b on a.RoleId = b.Id ");
+            query.Append(" WHERE a.IsActive = 1;");
 
-            return query.Append("SELECT a.*, b.Id AS RoleRoleId, b.* FROM Member a LEFT JOIN" +
-                " Role b on a.RoleId = b.Id " +
-                " WHERE a.IsActive = 1;" +
-                " " +
-                "SELECT COUNT (*) FROM Member WHERE IsActive = 1;");
+            return query.Append(" SELECT COUNT (*) FROM Member WHERE IsActive = 1;");
         }
 
 
@@ -188,7 +186,6 @@ namespace FamilyCookbook.Repository
 
             try
             {
-
                 var query = "SELECT a.Id as MemberId," +
                     "a.*, " +
                     "b.Id AS RoleId, " +
@@ -311,19 +308,13 @@ namespace FamilyCookbook.Repository
         private string QueryBuilder(Paging paging, MemberFilter filter)
         {
             StringBuilder query = new StringBuilder();
-            StringBuilder countQuery = 
-                new StringBuilder(@$" SELECT COUNT(*) FROM Member a " +
-                $"LEFT JOIN Role b on a.RoleId = b.Id " +
-                $"WHERE " +
-                $"a.IsActive = {filter.SearchByActivityStatus} ");
+            StringBuilder countQuery = new StringBuilder(@$" SELECT COUNT(*) FROM Member a ");
+            countQuery.Append($"LEFT JOIN Role b on a.RoleId = b.Id ");
+            countQuery.Append($"WHERE a.IsActive = {filter.SearchByActivityStatus} ");
 
 
-            query.Append("SELECT  a.*, " +
-                "b.Id AS RoleRoleId, " +
-                "b.* " +
-                "FROM Member a " +
-                "LEFT JOIN Role b on a.RoleId = b.Id " +
-                "WHERE a.IsActive = 1 ");
+            query.Append("SELECT  a.*, b.Id AS RoleRoleId, b.* FROM Member a ");
+            query.Append("LEFT JOIN Role b on a.RoleId = b.Id WHERE a.IsActive = 1 ");
 
             if (!string.IsNullOrWhiteSpace(filter.SearchByFirstName))
             {

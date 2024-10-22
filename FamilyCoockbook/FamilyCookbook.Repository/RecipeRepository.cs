@@ -43,11 +43,11 @@ namespace FamilyCookbook.Repository
 
             try
             {
-                string query = "DELETE FROM MemberRecipe where MemberId = @memberId AND RecipeId = @recipeId" ;
+                StringBuilder query = new("DELETE FROM MemberRecipe where MemberId = @memberId AND RecipeId = @recipeId");
 
                 using var connection =_context.CreateConnection();
 
-                rowsAffected = await connection.ExecuteAsync(query, new {MemberId = memberId, RecipeId = recipeId});
+                rowsAffected = await connection.ExecuteAsync(query.ToString(), new {MemberId = memberId, RecipeId = recipeId});
 
                 response.Success = rowsAffected > 0;
                 response.Message = _successResponses.EntityDeleted(" member from recipe");
@@ -75,12 +75,12 @@ namespace FamilyCookbook.Repository
 
             try
             {
-                string query = "INSERT INTO MemberRecipe (MemberId, RecipeId)" +
-                    "VALUES(@MemberId, @RecipeId)";
+                StringBuilder query = new("INSERT INTO MemberRecipe (MemberId, RecipeId)");
+                query.Append(" VALUES(@MemberId, @RecipeId)");
 
                 using var connection = _context.CreateConnection();
 
-                rowsAffected = await connection.ExecuteAsync(query, entity);
+                rowsAffected = await connection.ExecuteAsync(query.ToString(), entity);
 
                 response.Success = rowsAffected > 0;
                 response.Message = _successResponses.EntityCreated();
@@ -88,19 +88,18 @@ namespace FamilyCookbook.Repository
                 return response;
 
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 response.Success = false;
                 response.Message = _errorMessages.ErrorAccessingDb("MemberRecipe");
                 return response;
-            } 
+            }
             finally
             {
                 _context.CreateConnection().Close();
             }
 
         }
-
         public async Task<RepositoryResponse<Recipe>> AddPictureToRecipeAsync(int pictureId, int recipeId)
         {
             var response = new RepositoryResponse<Recipe>();
@@ -109,9 +108,9 @@ namespace FamilyCookbook.Repository
             {
                 using var connection = _context.CreateConnection();
 
-                var query = $"UPDATE Recipe SET PictureId = {pictureId} WHERE Id = {recipeId}";
+                StringBuilder query = new($"UPDATE Recipe SET PictureId = {pictureId} WHERE Id = {recipeId}");
 
-                var updatedEntity = await connection.ExecuteScalarAsync(query);
+                var updatedEntity = await connection.ExecuteScalarAsync(query.ToString());
 
                 response.Success = true;
                 response.Message = _successResponses.EntityUpdated();
@@ -136,20 +135,14 @@ namespace FamilyCookbook.Repository
 
         protected override StringBuilder BuildQueryReadAll()
         {
-            StringBuilder query = new();
+            StringBuilder query = new("SELECT a.Id, a.Title, a.Subtitle, a.Text, a.CategoryId, ");
+            query.Append("c.Id, c.FirstName, c.LastName, c.Bio, d.Id, d.Name, e.*, g.* ");
+            query.Append("FROM Recipe a JOIN MemberRecipe b on a.Id = b.RecipeId ");
+            query.Append("JOIN Member c on b.MemberId = c.Id LEFT JOIN Category d on d.Id = a.CategoryId ");
+            query.Append("JOIN Picture e on e.Id = a.PictureId JOIN RecipeTags f on f.RecipeId = a.Id ");
+            query.Append("LEFT JOIN Tag g on g.Id = f.TagId WHERE a.IsActive = 1 ");
 
-            return query.Append("SELECT a.Id, a.Title, a.Subtitle, a.Text, a.CategoryId, " +
-                    "c.Id, c.FirstName, c.LastName, c.Bio, " +
-                    "d.Id, d.Name, e.*, g.* " +
-                    "FROM Recipe a " +
-                    "JOIN MemberRecipe b on a.Id = b.RecipeId " +
-                    "JOIN Member c on b.MemberId = c.Id " +
-                    "LEFT JOIN Category d on d.Id = a.CategoryId " +
-                    "JOIN Picture e on e.Id = a.PictureId " +
-                    "JOIN RecipeTags f on f.RecipeId = a.Id " +
-                    "JOIN Tag g on g.Id = f.TagId " +
-                    "WHERE a.IsActive = 1 " +
-                    "order by a.DateCreated;");
+            return query.Append("ORDER BY a.DateCreated;");
         }
 
         protected override async Task<List<Recipe>> BuildQueryCommand(string query, IDbConnection connection)
@@ -191,19 +184,18 @@ namespace FamilyCookbook.Repository
 
         protected override StringBuilder BuildQueryReadSingle(int id)
         {
-            return new StringBuilder("SELECT a.Id, a.Title, a.Subtitle, a.Text, a.CategoryId, " +
-                    "c.Id, c.FirstName, c.LastName, c.Bio, " +
-                    "d.Id, d.Name, d.Description, " +
-                    "e.*, " +
-                    "g.* " +
-                    "FROM Recipe a " +
-                    " JOIN MemberRecipe b on a.Id = b.RecipeId " +
-                    " JOIN Member c on b.MemberId = c.Id " +
-                    "LEFT JOIN Category d on d.Id = a.CategoryId " +
-                    "JOIN Picture e on e.Id = a.PictureId " +
-                    "LEFT JOIN RecipeTags f on f.RecipeId = a.Id " +
-                    "LEFT JOIN Tag g on g.Id = f.TagId " +
-                    "WHERE a.Id = @Id ");
+            StringBuilder query = new("SELECT a.Id, a.Title, a.Subtitle, a.Text, a.CategoryId, ");
+            query.Append("c.Id, c.FirstName, c.LastName, c.Bio, ");
+            query.Append("d.Id, d.Name, d.Description, e.*, g.* ");
+            query.Append("FROM Recipe a JOIN MemberRecipe b on a.Id = b.RecipeId ");
+            query.Append(" JOIN Member c on b.MemberId = c.Id ");
+            query.Append(" LEFT JOIN Category d on d.Id = a.CategoryId ");
+            query.Append("JOIN Picture e on e.Id = a.PictureId ");
+            query.Append("LEFT JOIN RecipeTags f on f.RecipeId = a.Id ");
+            query.Append("LEFT JOIN Tag g on g.Id = f.TagId ");
+            query.Append("WHERE a.Id = @Id ");
+
+            return query;
         }
 
         protected override async Task<Recipe> BuildQueryCommand(string query, IDbConnection connection, int id)
@@ -256,15 +248,14 @@ namespace FamilyCookbook.Repository
 
             try
             {
-                string query = "Select a.*, b.RecipeId, b.MemberId " +
-                    "FROM Recipe a " +
-                    "LEFT JOIN MemberRecipe b on a.Id = b.RecipeId " +
-                    "LEFT JOIN Member c on b.MemberId = c.Id " +
-                    "WHERE b.MemberId IS NULL";
-
+                StringBuilder query = new("Select a.*, b.RecipeId, b.MemberId FROM Recipe a ");
+                query.Append("LEFT JOIN MemberRecipe b on a.Id = b.RecipeId ");
+                query.Append("LEFT JOIN Member c on b.MemberId = c.Id ");
+                query.Append("WHERE b.MemberId IS NULL");
+                
                 using var connection = _context.CreateConnection();
 
-                IEnumerable<Recipe> recipes = (await connection.QueryAsync<Recipe>(query)).ToList();
+                IEnumerable<Recipe> recipes = (await connection.QueryAsync<Recipe>(query.ToString())).ToList();
 
                 response.Success = true;
                 response.Items = recipes.ToList();
@@ -355,34 +346,19 @@ namespace FamilyCookbook.Repository
         {
             StringBuilder sb = new StringBuilder();
 
-            StringBuilder countQuery = new StringBuilder(
-                " SELECT COUNT(DISTINCT a.Id) FROM Recipe a " +
-                " JOIN MemberRecipe b ON a.Id = b.RecipeId " +
-                " JOIN Member c on b.MemberId = c.Id " +
-                " LEFT JOIN Category d ON d.Id = a.CategoryId " +
-                " JOIN Picture e on e.Id = a.PictureId " +
-                $" WHERE a.IsActive = {filter.SearchByActivityStatus} ");
+            StringBuilder countQuery = new StringBuilder(" SELECT COUNT(DISTINCT a.Id) FROM Recipe a ");
+            countQuery.Append(" JOIN MemberRecipe b ON a.Id = b.RecipeId ");
+            countQuery.Append(" JOIN Member c on b.MemberId = c.Id ");
+            countQuery.Append(" LEFT JOIN Category d ON d.Id = a.CategoryId ");
+            countQuery.Append(" JOIN Picture e on e.Id = a.PictureId ");
+            countQuery.Append($" WHERE a.IsActive = {filter.SearchByActivityStatus} ");
 
-            sb.Append("SELECT  " +
-                "a.Id, " +
-                "a.Title, " +
-                "a.Subtitle, " +
-                "a.Text," +
-                "a.CategoryId, " +
-                "c.Id, " +
-                "c.FirstName, " +
-                "c.LastName, " +
-                "c.Bio, " +
-                "d.Id, " +
-                "d.Name, " +
-                "d.Description, " +
-                "e.* " +
-                "FROM Recipe a " +
-                " JOIN MemberRecipe b on a.Id = b.RecipeId " +
-                " JOIN Member c on b.MemberId = c.Id " +
-                "LEFT JOIN Category d on d.Id = a.CategoryId " +
-                " JOIN Picture e on e.Id = a.PictureId " +
-                "WHERE a.IsActive = 1 ");
+            sb.Append("SELECT a.Id, a.Title, a.Subtitle, a.Text,a.CategoryId, c.Id, ");
+            sb.Append("c.FirstName, c.LastName, c.Bio, d.Id, d.Name, d.Description, ");
+            sb.Append("e.* FROM Recipe a JOIN MemberRecipe b on a.Id = b.RecipeId ");
+            sb.Append(" JOIN Member c on b.MemberId = c.Id ");
+            sb.Append( "LEFT JOIN Category d on d.Id = a.CategoryId  JOIN Picture e on e.Id = a.PictureId ");
+            sb.Append("WHERE a.IsActive = 1 ");
 
             if (!string.IsNullOrWhiteSpace(filter.SearchByTitle)) 
             {
