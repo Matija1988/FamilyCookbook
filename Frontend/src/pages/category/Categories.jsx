@@ -88,7 +88,7 @@ export default function Categories() {
       showError(response.data);
     }
     setShowDeleteModal(false);
-    fetchCategories();
+    paginateCategory();
   }
 
   function updateCategory(category) {

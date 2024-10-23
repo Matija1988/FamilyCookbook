@@ -139,27 +139,23 @@ namespace FamilyCookbook.Repository
 
         private StringBuilder UpdateRecipeQuery(RecipeCreateDTO entity, int id)
         {
-            return new StringBuilder("UPDATE Recipe " +
-                "SET Title = @Title, Subtitle = @Subtitle, Text = @Text, " +
-                " DateUpdated = @DateUpdated, IsActive = @IsActive, " +
-                " CategoryId = @CategoryId, PictureId = @PictureId" +
-                " WHERE Id = @Id");
+            StringBuilder query = new("UPDATE Recipe SET Title = @Title, Subtitle = @Subtitle, Text = @Text, ");
+            query.Append(" DateUpdated = @DateUpdated, IsActive = @IsActive, ");
+            query.Append(" CategoryId = @CategoryId, PictureId = @PictureId ");
+
+            return query.Append(" WHERE Id = @Id");
         }
 
         private StringBuilder UpdatePictureQuery(RecipeCreateDTO entity)
         {
-
-            return new StringBuilder("UPDATE Picture SET Name = @Name, " +
-                                       " Location = @Location, IsActive = @IsActive " +
-                                      $" WHERE Id = {entity.Picture.Id};");
-
+            StringBuilder query = new("UPDATE Picture SET Name = @Name, Location = @Location, IsActive = @IsActive ");
+            return query.Append($" WHERE Id = {entity.Picture.Id};");
         }
 
         private StringBuilder InsertPictureQuery(RecipeCreateDTO entity)
         {
-            return new StringBuilder("INSERT Picture (Name, Location, IsActive) " +
-                "VALUES (@Name, @Location, @IsActive);" +
-                "SELECT SCOPE_IDENTITY();");
+            StringBuilder query = new("INSERT Picture (Name, Location, IsActive) ");
+            return query.Append("VALUES (@Name, @Location, @IsActive); SELECT SCOPE_IDENTITY();");
         }
     }
 }

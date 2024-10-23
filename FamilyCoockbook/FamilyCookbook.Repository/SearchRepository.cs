@@ -30,20 +30,13 @@ namespace FamilyCookbook.Repository
 
             try
             {
-                StringBuilder query = new("SELECT a.Id, a.Title, a.Subtitle, a.Text, " +
-                    "c.Id, c.FirstName, c.LastName, " +
-                    "d.Id, d.Name, " +
-                    "e.* " +
-                    "FROM Recipe a " +
-                    "JOIN MemberRecipe b on a.Id = b.RecipeId " +
-                    "JOIN Member c on c.Id = b.MemberId " +
-                    "LEFT JOIN Category d on d.Id = a.CategoryId " +
-                    "JOIN Picture e on e.Id = a.PictureId " +
-                    "JOIN RecipeTags f on f.RecipeId = a.Id " +
-                    "JOIN Tag g on g.Id = f.TagId " +
-                    @$"WHERE g.Text LIKE '%{searchText}%' " +
-                    "AND a.IsActive = 1 " +
-                    "ORDER BY a.DateCreated DESC");
+                StringBuilder query = new("SELECT a.Id, a.Title, a.Subtitle, a.Text, ");
+                query.Append("c.Id, c.FirstName, c.LastName, d.Id, d.Name, e.* ");
+                query.Append(" FROM Recipe a JOIN MemberRecipe b on a.Id = b.RecipeId ");
+                query.Append(" JOIN Member c on c.Id = b.MemberId LEFT JOIN Category d on d.Id = a.CategoryId ");
+                query.Append(" JOIN Picture e on e.Id = a.PictureId JOIN RecipeTags f on f.RecipeId = a.Id ");
+                query.Append(" JOIN Tag g on g.Id = f.TagId WHERE g.Text LIKE '% + {searchText} + %' ");
+                query.Append(" AND a.IsActive = 1 ORDER BY a.DateCreated DESC");
 
                 using var connection = _dbContext.CreateConnection();
 
@@ -83,10 +76,6 @@ namespace FamilyCookbook.Repository
                 _dbContext.CreateConnection().Close();
             }
             
-
-
-
-            throw new NotImplementedException();
         }
     }
 }
