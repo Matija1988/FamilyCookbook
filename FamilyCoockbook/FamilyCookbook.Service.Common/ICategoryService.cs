@@ -9,10 +9,9 @@ using System.Threading.Tasks;
 
 namespace FamilyCookbook.Service.Common
 {
-    public interface ICategoryService : IService<Category>
+    public interface ICategoryService : IService<Category, CategoryFilter>
     {
         Task<MessageResponse> CreateAsync(Category entity);
 
-        Task<RepositoryResponse<Lazy<List<Category>>>> PaginateAsync(Paging paging, CategoryFilter filter);
     }
 }

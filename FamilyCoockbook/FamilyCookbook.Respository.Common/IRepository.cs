@@ -1,10 +1,11 @@
 ﻿using FamilyCookbook.Common;
+using FamilyCookbook.Common.Filters;
 using FamilyCookbook.Model;
 using System.Runtime.InteropServices;
 
 namespace FamilyCookbook.Respository.Common
 {
-    public interface IRepository<T> where T : class
+    public interface IRepository<T, Filter> where T : class
     {
         Task<RepositoryResponse<List<T>>> GetAllAsync();
 
@@ -16,6 +17,7 @@ namespace FamilyCookbook.Respository.Common
 
         Task<RepositoryResponse<T>> SoftDeleteAsync(int id);
 
-        Task<RepositoryResponse<Lazy<List<T>>>> Paginate<Filter>(Filter filter, Paging paging);
+
+        Task<RepositoryResponse<Lazy<List<T>>>> PaginateAsync(Paging paging, Filter filter);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using FamilyCookbook.Common;
+using FamilyCookbook.Common.Filters;
 using FamilyCookbook.Mapping;
 using FamilyCookbook.Model;
 using FamilyCookbook.REST_Models.Tags;
@@ -89,9 +90,9 @@ namespace FamilyCookbook.Controllers
         [HttpGet]
         [Route("tags")]
 
-        public async Task<IActionResult> PaginateAsync([FromQuery]Paging paging, [FromQuery]string? text)
+        public async Task<IActionResult> PaginateAsync([FromQuery]Paging paging, [FromQuery]TagFilter filter)
         { 
-            var response = await _tagService.PaginateAsync(paging, text);
+            var response = await _tagService.PaginateAsync(paging, filter);
 
             if(response.Success == false)
             {
@@ -100,7 +101,7 @@ namespace FamilyCookbook.Controllers
 
             var finalResponse = new PaginatedList<List<Tag>>();
 
-            finalResponse.Items = response.Items;
+            finalResponse.Items = response.Items.Value;
             finalResponse.TotalCount = response.TotalCount;
             finalResponse.PageCount = response.PageCount;
 

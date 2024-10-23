@@ -1,8 +1,10 @@
-﻿using Dapper;
+﻿using AngleSharp.Common;
+using Dapper;
 using FamilyCookbook.Common;
 using FamilyCookbook.Model;
 using FamilyCookbook.Respository.Common;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,16 +17,16 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using static Dapper.SqlMapper;
+using System.Linq;
 
 namespace FamilyCookbook.Repository
 {
-    public abstract class AbstractRepository<T> : IRepository<T> where T : class
+    public abstract class AbstractRepository<T, Filter> : IRepository<T, Filter> where T : class
     {
         private readonly DapperDBContext _context;
         private readonly IErrorMessages _errorMessages;
         private readonly ISuccessResponses _successResponses;
-        
-        
+
         public AbstractRepository(DapperDBContext context, IErrorMessages errorMessages, ISuccessResponses successResponses)
         {
             _context = context;
@@ -277,47 +279,51 @@ namespace FamilyCookbook.Repository
 
         }
 
-        public async Task<RepositoryResponse<Lazy<List<T>>>> Paginate<Filter>(Filter filter, Paging paging)
+        public async Task<RepositoryResponse<Lazy<List<T>>>> PaginateAsync(Paging paging, Filter filter)
         {
             var response = new RepositoryResponse<Lazy<List<T>>>();
-            var tableName = GetTableName();
-            var keyColumn = GetKeyColumnName();
-            var keyPropery = GetKeyPropertyName();
+
+            string tableName = GetTableName();
+            string keyColumn = GetKeyColumnName();
+            string keyProperty = GetKeyPropertyName();
+
             try
             {
-                StringBuilder query = PaginateQueryBuilder(paging, filter, tableName, keyColumn, keyPropery);
+                StringBuilder query = PaginateQueryBuilder(paging, filter, tableName, keyColumn, keyProperty);
 
                 using var connection = _context.CreateConnection();
 
                 var parameters = new DynamicParameters();
 
-                parameters.Add("Offset", (paging.PageNumber -1) * paging.PageSize);
+                parameters.Add("Offset", (paging.PageNumber - 1) * paging.PageSize);
                 parameters.Add("PageSize", paging.PageSize);
 
                 var filterProperties = filter.GetType().GetProperties();
 
                 foreach (var property in filterProperties) 
-                { 
+                {
                     var value = property.GetValue(filter);
                     if(value != null)
                     {
                         parameters.Add(property.Name, value);
                     }
+                
                 }
 
                 using var multipleQuery = await connection.QueryMultipleAsync(query.ToString(), parameters);
 
-                var entities = await BuildPaginationCommand(query.ToString(), multipleQuery);
+                var entities = await BuildPaginationCommand(query, multipleQuery);
 
                 response.Success = true;
                 response.Items = new Lazy<List<T>>(() => entities.ToList());
-                return response;
+                response.TotalCount = await multipleQuery.ReadSingleAsync<int>();
 
+                return response;
             }
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = _errorMessages.ErrorAccessingDb(tableName);
+                response.Message = _errorMessages.ErrorAccessingDb(tableName, ex);
                 return response;
             }
             finally
@@ -455,10 +461,6 @@ namespace FamilyCookbook.Repository
             return null;
         }
 
-
-
-
-
         private string GetPropertyNames(bool excludeKey)
         {
             var properties = typeof(T).GetProperties()
@@ -506,6 +508,85 @@ namespace FamilyCookbook.Repository
 
 
         #region PROTECTED VIRTUAL METHODS
+
+        protected StringBuilder PaginateQueryBuilder(Paging paging, Filter? filter, string tableName, string keyColumn, string keyProperty)
+        {
+            StringBuilder countQuery = new($"SELECT COUNT (DISTINCT {keyColumn}) FROM {tableName} WHERE 1 = 1 ");
+
+            StringBuilder query = new($"SELECT * FROM {tableName} WHERE 1 = 1 ");
+
+            var filterProperties = GetFilterProperties();
+            var genericProperties = GetProperties();
+
+            foreach(var prop in filterProperties)
+            {
+                var columntAttr = prop.GetCustomAttribute<ColumnAttribute>();
+
+                string propName = prop.Name;
+                string actualPropName = prop.Name.Substring("SearchBy".Length);
+
+
+                if (prop.Name.StartsWith("SearchBy"))
+                {
+                    
+                    var matchingGenericProp = 
+                        genericProperties.FirstOrDefault(p => 
+                        p.Name.Equals(actualPropName, StringComparison.OrdinalIgnoreCase));
+                    
+
+                    if (prop.Name.Equals("SearchByActivityStatus", StringComparison.OrdinalIgnoreCase)  
+                        && prop.GetValue(filter) != null)
+                    {
+                        countQuery.Append($" AND IsActive = @{prop.Name} ");
+                        query.Append($" AND IsActive = @{prop.Name} ");
+                    }
+
+                    if (matchingGenericProp != null && prop.GetValue(filter) != null)
+                    {
+                        string columnName = columntAttr?.Name ?? matchingGenericProp.Name;
+
+                         if ((matchingGenericProp.PropertyType == typeof(int) && matchingGenericProp.Name
+                            != "SearchByActivitiyStatus") && prop.GetValue(filter) != null)
+                        {
+                            countQuery.Append($" AND {columnName} = {prop.Name} ");
+                            query.Append($" AND {columnName} = {prop.Name} ");
+                        }
+
+                        if (matchingGenericProp.PropertyType == typeof(string) && prop.GetValue(filter) != null)
+                        {
+                            countQuery.Append(@$" AND {columnName} LIKE '%' + @{prop.Name} + '%' ");
+                            query.Append(@$" AND {columnName} LIKE '%' + @{prop.Name} + '%' ");
+                        }
+
+                        if (matchingGenericProp.PropertyType == typeof(bool) && prop.GetValue(filter) != null)
+                        {
+                            countQuery.Append($" AND {columnName} = @{prop.Name} ");
+                            query.Append($" AND {columnName} = @{prop.Name} ");
+                        }
+
+                        if (matchingGenericProp.PropertyType == typeof(DateTime) && prop.GetValue(filter) != null)
+                        {
+                            countQuery.Append($" AND {columnName} = @{prop.Name} ");
+                            query.Append($" AND {columnName} = @{prop.Name} ");
+                        } 
+                    }
+
+                }
+             
+            }
+            query.Append($" ORDER BY {keyColumn} DESC ");
+            query.Append(@" OFFSET @Offset ROWS ");
+            query.Append(@" FETCH NEXT @PageSize ROWS ONLY; ");
+
+            query.Append(countQuery);
+
+
+            return query;
+
+        }
+
+
+
 
         protected virtual StringBuilder BuildSoftDeleteQuery(string tableName, int id)
         {
@@ -576,6 +657,15 @@ namespace FamilyCookbook.Repository
 
             return entity.ToList();
         }
+
+
+        protected virtual async Task<IEnumerable<T>> BuildPaginationCommand(StringBuilder query, GridReader multipleQuery)
+        {
+            var entities = await multipleQuery.ReadAsync<T>();
+
+            return entities;
+        }
+
 
         protected virtual async Task<T> BuildQueryCommand(string query, System.Data.IDbConnection connection, int id)
         {

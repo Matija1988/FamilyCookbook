@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using FamilyCookbook.Common;
+using FamilyCookbook.Common.Filters;
 using FamilyCookbook.Model;
 using FamilyCookbook.Repository.Common;
 using System;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace FamilyCookbook.Repository
 {
-    public sealed class CommentRepository : AbstractRepository<Comment>, ICommentRepository
+    public sealed class CommentRepository : AbstractRepository<Comment, CommentFilter>, ICommentRepository
     {
         private readonly DapperDBContext _context;
         private readonly IErrorMessages _errorMessages;

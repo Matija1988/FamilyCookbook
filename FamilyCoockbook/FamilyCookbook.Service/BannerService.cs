@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace FamilyCookbook.Service
 {
-    public class BannerService : AbstractService<Banner>, IBannerService
+    public class BannerService : AbstractService<Banner, BannerFilter>, IBannerService
     {
         private readonly IBannerRepository _repository;
 
@@ -31,7 +31,7 @@ namespace FamilyCookbook.Service
             return response;
         }
 
-        public async Task<RepositoryResponse<List<Banner>>> PaginateAsync(Paging paging, BannerFilter filter)
+        public async Task<RepositoryResponse<Lazy<List<Banner>>>> PaginateAsync(Paging paging, BannerFilter filter)
         {
             var response = await _repository.PaginateAsync(paging, filter);
 

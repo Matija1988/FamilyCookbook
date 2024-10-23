@@ -15,7 +15,7 @@ namespace FamilyCookbook.Controllers
     [ApiController]
     [Route("api/v0/[controller]")]
     [EnableCors("CorsPolicy")]
-    public class MemberController : AbstractController<Member, MemberRead, MemberCreate>
+    public class MemberController : AbstractController<Member, MemberRead, MemberCreate, MemberFilter>
     {
         private readonly  IMemberService _service;
         private readonly IMapper<Member, MemberRead, MemberCreate> _mapper;

@@ -9,7 +9,7 @@ using System.Text;
 
 namespace FamilyCookbook.Repository
 {
-    public sealed class CategoryRepository : AbstractRepository<Category>, ICategoryRepository
+    public sealed class CategoryRepository : AbstractRepository<Category, CategoryFilter>, ICategoryRepository
     {
         private readonly DapperDBContext _context;
         private readonly IErrorMessages _errorMessages;

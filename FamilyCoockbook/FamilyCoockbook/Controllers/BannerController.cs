@@ -14,7 +14,7 @@ namespace FamilyCookbook.Controllers
 {
     [ApiController]
     [Route("api/v0/[controller]")]
-    public class BannerController : AbstractController<Banner, BannerRead, BannerCreate>
+    public class BannerController : AbstractController<Banner, BannerRead, BannerCreate, BannerFilter>
     {
         private readonly IBannerService _service;
         private readonly IMapper<Banner, BannerRead, BannerCreate> _mapper;
@@ -76,7 +76,7 @@ namespace FamilyCookbook.Controllers
                 return NotFound(response.Message.ToString());
             }
 
-            var banners = _mapper.MapToReadList(response.Items);
+            var banners = _mapper.MapToReadList(response.Items.Value);
 
             var finalResponse = new PaginatedList<List<BannerRead>>
             {

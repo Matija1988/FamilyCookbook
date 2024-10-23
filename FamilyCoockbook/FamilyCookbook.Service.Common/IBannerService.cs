@@ -4,9 +4,9 @@ using FamilyCookbook.Model;
 
 namespace FamilyCookbook.Service.Common
 {
-    public interface IBannerService : IService<Banner>
+    public interface IBannerService : IService<Banner, BannerFilter>
     {
         Task<MessageResponse> CreateAsync(Banner banner);
-        Task<RepositoryResponse<List<Banner>>> PaginateAsync(Paging paging, BannerFilter filter);
+        Task<RepositoryResponse<Lazy<List<Banner>>>> PaginateAsync(Paging paging, BannerFilter filter);
     }
 }

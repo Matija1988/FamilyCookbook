@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace FamilyCookbook.Service.Common
 {
-    public interface IRecipeService : IService<Recipe>
+    public interface IRecipeService : IService<Recipe, RecipeFilter>
     {
         Task<RepositoryResponse<Recipe>> AddMemberToRecipe(MemberRecipe entity);
 
@@ -18,8 +18,6 @@ namespace FamilyCookbook.Service.Common
         Task<MessageResponse> UpdateAsync(int id, RecipeCreateDTO dto);
 
         Task<RepositoryResponse<Recipe>> RemoveMemberFromRecipeAsync(int memberId, int recipeId);
-
-        Task<RepositoryResponse<List<Recipe>>> PaginateAsync(Paging paging, RecipeFilter filter);
 
         Task<RepositoryResponse<Recipe>> SoftDeleteAsync(int id);
 

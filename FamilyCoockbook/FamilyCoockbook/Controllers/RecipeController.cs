@@ -81,7 +81,7 @@ namespace FamilyCookbook.Controllers
                 return NotFound(response.Message.ToString());
             }
           
-            var recipes = _mapper.MapToReadList(response.Items);
+            var recipes = _mapper.MapToReadList(response.Items.Value);
 
             var finalResponse = new PaginatedList<List<RecipeRead>>();
 
