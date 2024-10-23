@@ -277,8 +277,137 @@ namespace FamilyCookbook.Repository
 
         }
 
+        public async Task<RepositoryResponse<Lazy<List<T>>>> Paginate<Filter>(Filter filter, Paging paging)
+        {
+            var response = new RepositoryResponse<Lazy<List<T>>>();
+            var tableName = GetTableName();
+            var keyColumn = GetKeyColumnName();
+            var keyPropery = GetKeyPropertyName();
+            try
+            {
+                StringBuilder query = PaginateQueryBuilder(paging, filter, tableName, keyColumn, keyPropery);
+
+                using var connection = _context.CreateConnection();
+
+                var parameters = new DynamicParameters();
+
+                parameters.Add("Offset", (paging.PageNumber -1) * paging.PageSize);
+                parameters.Add("PageSize", paging.PageSize);
+
+                var filterProperties = filter.GetType().GetProperties();
+
+                foreach (var property in filterProperties) 
+                { 
+                    var value = property.GetValue(filter);
+                    if(value != null)
+                    {
+                        parameters.Add(property.Name, value);
+                    }
+                }
+
+                using var multipleQuery = await connection.QueryMultipleAsync(query.ToString(), parameters);
+
+                var entities = await BuildPaginationCommand(query.ToString(), multipleQuery);
+
+                response.Success = true;
+                response.Items = new Lazy<List<T>>(() => entities.ToList());
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = _errorMessages.ErrorAccessingDb(tableName);
+                return response;
+            }
+            finally
+            {
+                _context.CreateConnection().Close();
+            }
+
+        }
+
+        protected virtual async Task<IEnumerable<T>> BuildPaginationCommand(string v, GridReader multipleQuery)
+        {
+            var entities = await multipleQuery.ReadAsync<T>();
+
+            return entities;
+        }
+
+        protected virtual StringBuilder PaginateQueryBuilder<Filter>(Paging paging, Filter? filter, string tableName, string keyColumn, string keyPropery)
+        {
+            StringBuilder countQuery = new($"SELECT COUNT (DISTINCT {keyColumn}) FROM {tableName} WHERE 1 = 1 ");
+
+            StringBuilder query = new($"SELECT * FROM {tableName} WHERE 1 = 1 ");
+
+            var filterProperties = GetFilterProperties(filter);
+            var genericProperties = GetProperties();
+
+            foreach(var prop in filterProperties) 
+            { 
+                var columnAttr = prop.GetCustomAttribute<ColumnAttribute>();
+
+                string propName = prop.Name;
+                string actualPropName = prop.Name.Substring("SearchBy".Length);
+
+                if(prop.Name.StartsWith("SearchBy"))
+                {
+                    var matchingGenericProp = genericProperties
+                        .FirstOrDefault(p => p.Name.Equals(actualPropName, StringComparison.OrdinalIgnoreCase));
+
+                    if(prop.Name.Equals("SearchByActivityStatus", StringComparison.OrdinalIgnoreCase)) 
+                    {
+                        countQuery.Append($" AND IsActive = @{prop.Name} ");
+                        query.Append($" AND IsActive = @{prop.Name} ");
+                    }
+
+                    if (matchingGenericProp != null && prop.GetValue(filter) != null) 
+                    { 
+                        string columnName = columnAttr?.Name ?? matchingGenericProp.Name;
+
+                        if((matchingGenericProp.PropertyType == typeof(int) && matchingGenericProp.Name
+                            != "SearchByActivityStatus") && prop.GetValue(filter) != null)
+                        {
+                            countQuery.Append($" AND {columnName} = @{prop.Name} ");
+                            query.Append($" AND {columnName} = @{prop.Name} ");
+                        } 
+
+                        if(matchingGenericProp.PropertyType == typeof(string) && prop.GetValue(filter) != null)
+                        {
+                            countQuery.Append(@$" AND {columnName} LIKE '%' + @{prop.Name} + '%' ");
+                            query.Append(@$" AND {columnName} LIKE '%' + @{prop.Name} + '%' ");
+                        }
+
+                        if(matchingGenericProp.PropertyType == typeof(bool) && prop.GetValue(filter) != null)
+                        {
+                            countQuery.Append($" AND {columnName} = @{prop.Name} ");
+                            query.Append($" AND {columnName} = @{prop.Name} ");
+                        }
+
+                    }
+                }
+            }
+            query.Append($" ORDER BY {keyColumn} DESC");
+            query.Append(@" OFFSET @Offset ROWS ");
+            query.Append(@" FETCH NEXT @PageSize ROWS ONLY");
+            query.Append(countQuery);
+
+            return query;
+
+        }
+
 
         #region PRIVATE METHODS
+
+        private IEnumerable<PropertyInfo> GetFilterProperties<Filter>(Filter? filter, bool excludeKey = false)
+        {
+            var properties = typeof(Filter).GetProperties()
+                 .Where(p => !excludeKey || p.GetCustomAttribute<KeyAttribute>() == null);
+
+            return properties;
+        }
+
+
 
         private IEnumerable<PropertyInfo> GetProperties(bool excludeKey = false)
         {
@@ -459,6 +588,8 @@ namespace FamilyCookbook.Repository
         {
             return await connection.ExecuteAsync(query, entity);
         }
+
+        
 
         #endregion
     }

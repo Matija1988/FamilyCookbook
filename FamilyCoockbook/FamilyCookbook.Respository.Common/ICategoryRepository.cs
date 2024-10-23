@@ -18,7 +18,7 @@ namespace FamilyCookbook.Repository.Common
         Task<MessageResponse> UpdateAsync(int id, Category entity);
 
 
-        Task<RepositoryResponse<Lazy<List<Category>>>> PaginateAsync(Paging paging, CategoryFilter filter);
+     //   Task<RepositoryResponse<Lazy<List<Category>>>> PaginateAsync(Paging paging, CategoryFilter filter);
 
     }
 }

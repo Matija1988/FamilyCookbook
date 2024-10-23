@@ -44,9 +44,9 @@ namespace FamilyCookbook.Repository
                 response.Success = true;
                 response.Items = new Lazy<List<Category>>(() => entities.ToList());
                 response.TotalCount = await multipleQuery.ReadSingleAsync<int>();
-                return response;    
+                return response;
 
-            } 
+            }
             catch (Exception ex)
             {
                 response.Success = false;

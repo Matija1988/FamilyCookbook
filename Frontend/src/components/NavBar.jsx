@@ -38,12 +38,15 @@ function NavBar() {
   }
 
   async function searchRecipes() {
-    const response = await SearchService.SearchRecipeByTag(searchText);
-    if (!response.ok) {
-      showError();
+    if (searchText === "") {
+      navigate(RouteNames.HOME);
       return;
     }
-
+    const response = await SearchService.SearchRecipeByTag(searchText);
+    if (!response.ok) {
+      navigate(RouteNames.HOME);
+      return;
+    }
     const foundRecipes = response.data;
 
     navigate(RouteNames.SEARCH_RESULTS, { state: { recipes: foundRecipes } });

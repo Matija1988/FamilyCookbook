@@ -4,9 +4,10 @@ import { Col, Container, Row } from "react-bootstrap";
 import ArticleCard from "./homeComponents/ArticleCard";
 import CustomPagination from "../components/CustomPagination";
 import useError from "../hooks/useError";
+import ErrorModal from "../components/ErrorModal";
 
 export default function FoundRecipeList({ recipes }) {
-  const { showError, onHide } = useError();
+  const { showError, hideError, showErrorModal, errors } = useError();
   const { showLoading, hideLoading } = useLoading();
 
   const [pageNumber, setPageNumber] = useState(1);
@@ -60,6 +61,11 @@ export default function FoundRecipeList({ recipes }) {
           className="home-article-pagination"
         ></CustomPagination>
       </Container>
+      <ErrorModal
+        show={showErrorModal}
+        onHide={hideError}
+        errors={errors}
+      ></ErrorModal>
     </>
   );
 }

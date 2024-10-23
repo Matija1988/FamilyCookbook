@@ -25,11 +25,14 @@ namespace FamilyCookbook.Service
 
             double averageRating = 0.0;
 
-            foreach (var item in response.Items)
+            if (response.Success)
             {
-                averageRating = await CalculateAverageRating(item.Id);
 
-                item.AverageRating = averageRating;
+                foreach (var item in response.Items)
+                {
+                    averageRating = await CalculateAverageRating(item.Id);
+                    item.AverageRating = averageRating;
+                }
             }
 
             return response;

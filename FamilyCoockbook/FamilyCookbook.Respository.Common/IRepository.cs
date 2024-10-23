@@ -1,5 +1,6 @@
 ﻿using FamilyCookbook.Common;
 using FamilyCookbook.Model;
+using System.Runtime.InteropServices;
 
 namespace FamilyCookbook.Respository.Common
 {
@@ -14,5 +15,7 @@ namespace FamilyCookbook.Respository.Common
         Task<MessageResponse> DeleteAsync(int id);
 
         Task<RepositoryResponse<T>> SoftDeleteAsync(int id);
+
+        Task<RepositoryResponse<Lazy<List<T>>>> Paginate<Filter>(Filter filter, Paging paging);
     }
 }
