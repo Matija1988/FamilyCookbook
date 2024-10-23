@@ -333,79 +333,72 @@ namespace FamilyCookbook.Repository
 
         }
 
-        protected virtual async Task<IEnumerable<T>> BuildPaginationCommand(string v, GridReader multipleQuery)
-        {
-            var entities = await multipleQuery.ReadAsync<T>();
+        //protected virtual StringBuilder PaginateQueryBuilder<Filter>(Paging paging, Filter? filter, string tableName, string keyColumn, string keyPropery)
+        //{
+        //    StringBuilder countQuery = new($"SELECT COUNT (DISTINCT {keyColumn}) FROM {tableName} WHERE 1 = 1 ");
 
-            return entities;
-        }
+        //    StringBuilder query = new($"SELECT * FROM {tableName} WHERE 1 = 1 ");
 
-        protected virtual StringBuilder PaginateQueryBuilder<Filter>(Paging paging, Filter? filter, string tableName, string keyColumn, string keyPropery)
-        {
-            StringBuilder countQuery = new($"SELECT COUNT (DISTINCT {keyColumn}) FROM {tableName} WHERE 1 = 1 ");
+        //    var filterProperties = GetFilterProperties();
+        //    var genericProperties = GetProperties();
 
-            StringBuilder query = new($"SELECT * FROM {tableName} WHERE 1 = 1 ");
+        //    foreach(var prop in filterProperties) 
+        //    { 
+        //        var columnAttr = prop.GetCustomAttribute<ColumnAttribute>();
 
-            var filterProperties = GetFilterProperties(filter);
-            var genericProperties = GetProperties();
+        //        string propName = prop.Name;
+        //        string actualPropName = prop.Name.Substring("SearchBy".Length);
 
-            foreach(var prop in filterProperties) 
-            { 
-                var columnAttr = prop.GetCustomAttribute<ColumnAttribute>();
+        //        if(prop.Name.StartsWith("SearchBy"))
+        //        {
+        //            var matchingGenericProp = genericProperties
+        //                .FirstOrDefault(p => p.Name.Equals(actualPropName, StringComparison.OrdinalIgnoreCase));
 
-                string propName = prop.Name;
-                string actualPropName = prop.Name.Substring("SearchBy".Length);
+        //            if(prop.Name.Equals("SearchByActivityStatus", StringComparison.OrdinalIgnoreCase)) 
+        //            {
+        //                countQuery.Append($" AND IsActive = @{prop.Name} ");
+        //                query.Append($" AND IsActive = @{prop.Name} ");
+        //            }
 
-                if(prop.Name.StartsWith("SearchBy"))
-                {
-                    var matchingGenericProp = genericProperties
-                        .FirstOrDefault(p => p.Name.Equals(actualPropName, StringComparison.OrdinalIgnoreCase));
+        //            if (matchingGenericProp != null && prop.GetValue(filter) != null) 
+        //            { 
+        //                string columnName = columnAttr?.Name ?? matchingGenericProp.Name;
 
-                    if(prop.Name.Equals("SearchByActivityStatus", StringComparison.OrdinalIgnoreCase)) 
-                    {
-                        countQuery.Append($" AND IsActive = @{prop.Name} ");
-                        query.Append($" AND IsActive = @{prop.Name} ");
-                    }
+        //                if((matchingGenericProp.PropertyType == typeof(int) && matchingGenericProp.Name
+        //                    != "SearchByActivityStatus") && prop.GetValue(filter) != null)
+        //                {
+        //                    countQuery.Append($" AND {columnName} = @{prop.Name} ");
+        //                    query.Append($" AND {columnName} = @{prop.Name} ");
+        //                } 
 
-                    if (matchingGenericProp != null && prop.GetValue(filter) != null) 
-                    { 
-                        string columnName = columnAttr?.Name ?? matchingGenericProp.Name;
+        //                if(matchingGenericProp.PropertyType == typeof(string) && prop.GetValue(filter) != null)
+        //                {
+        //                    countQuery.Append(@$" AND {columnName} LIKE '%' + @{prop.Name} + '%' ");
+        //                    query.Append(@$" AND {columnName} LIKE '%' + @{prop.Name} + '%' ");
+        //                }
 
-                        if((matchingGenericProp.PropertyType == typeof(int) && matchingGenericProp.Name
-                            != "SearchByActivityStatus") && prop.GetValue(filter) != null)
-                        {
-                            countQuery.Append($" AND {columnName} = @{prop.Name} ");
-                            query.Append($" AND {columnName} = @{prop.Name} ");
-                        } 
+        //                if(matchingGenericProp.PropertyType == typeof(bool) && prop.GetValue(filter) != null)
+        //                {
+        //                    countQuery.Append($" AND {columnName} = @{prop.Name} ");
+        //                    query.Append($" AND {columnName} = @{prop.Name} ");
+        //                }
 
-                        if(matchingGenericProp.PropertyType == typeof(string) && prop.GetValue(filter) != null)
-                        {
-                            countQuery.Append(@$" AND {columnName} LIKE '%' + @{prop.Name} + '%' ");
-                            query.Append(@$" AND {columnName} LIKE '%' + @{prop.Name} + '%' ");
-                        }
+        //            }
+        //        }
+        //    }
+        //    query.Append($" ORDER BY {keyColumn} DESC");
+        //    query.Append(@" OFFSET @Offset ROWS ");
+        //    query.Append(@" FETCH NEXT @PageSize ROWS ONLY");
+        //    query.Append(countQuery);
 
-                        if(matchingGenericProp.PropertyType == typeof(bool) && prop.GetValue(filter) != null)
-                        {
-                            countQuery.Append($" AND {columnName} = @{prop.Name} ");
-                            query.Append($" AND {columnName} = @{prop.Name} ");
-                        }
+        //    return query;
 
-                    }
-                }
-            }
-            query.Append($" ORDER BY {keyColumn} DESC");
-            query.Append(@" OFFSET @Offset ROWS ");
-            query.Append(@" FETCH NEXT @PageSize ROWS ONLY");
-            query.Append(countQuery);
-
-            return query;
-
-        }
+        //}
 
 
         #region PRIVATE METHODS
 
-        private IEnumerable<PropertyInfo> GetFilterProperties<Filter>(Filter? filter, bool excludeKey = false)
+        private IEnumerable<PropertyInfo> GetFilterProperties(bool excludeKey = false)
         {
             var properties = typeof(Filter).GetProperties()
                  .Where(p => !excludeKey || p.GetCustomAttribute<KeyAttribute>() == null);
@@ -509,7 +502,7 @@ namespace FamilyCookbook.Repository
 
         #region PROTECTED VIRTUAL METHODS
 
-        protected StringBuilder PaginateQueryBuilder(Paging paging, Filter? filter, string tableName, string keyColumn, string keyProperty)
+        protected virtual StringBuilder PaginateQueryBuilder(Paging paging, Filter? filter, string tableName, string keyColumn, string keyProperty)
         {
             StringBuilder countQuery = new($"SELECT COUNT (DISTINCT {keyColumn}) FROM {tableName} WHERE 1 = 1 ");
 
@@ -659,11 +652,11 @@ namespace FamilyCookbook.Repository
         }
 
 
-        protected virtual async Task<IEnumerable<T>> BuildPaginationCommand(StringBuilder query, GridReader multipleQuery)
+        protected virtual async Task<List<T>> BuildPaginationCommand(StringBuilder query, GridReader multipleQuery)
         {
             var entities = await multipleQuery.ReadAsync<T>();
 
-            return entities;
+            return entities.ToList();
         }
 
 

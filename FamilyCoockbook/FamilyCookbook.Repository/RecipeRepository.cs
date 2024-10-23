@@ -26,8 +26,8 @@ namespace FamilyCookbook.Repository
         private readonly ISuccessResponses _successResponses;
 
         public RecipeRepository
-            (DapperDBContext context, 
-            IErrorMessages errorMessages, 
+            (DapperDBContext context,
+            IErrorMessages errorMessages,
             ISuccessResponses successResponses) : base(context, errorMessages, successResponses)
         {
             _context = context;
@@ -45,24 +45,24 @@ namespace FamilyCookbook.Repository
             {
                 StringBuilder query = new("DELETE FROM MemberRecipe where MemberId = @memberId AND RecipeId = @recipeId");
 
-                using var connection =_context.CreateConnection();
+                using var connection = _context.CreateConnection();
 
-                rowsAffected = await connection.ExecuteAsync(query.ToString(), new {MemberId = memberId, RecipeId = recipeId});
+                rowsAffected = await connection.ExecuteAsync(query.ToString(), new { MemberId = memberId, RecipeId = recipeId });
 
                 response.Success = rowsAffected > 0;
                 response.Message = _successResponses.EntityDeleted(" member from recipe");
 
                 return response;
             }
-            catch (Exception ex) 
-            { 
+            catch (Exception ex)
+            {
                 response.Success = false;
                 response.Message = _errorMessages.ErrorAccessingDb("MemberRecipe");
                 return response;
             }
             finally
             {
-               _context.CreateConnection().Close();   
+                _context.CreateConnection().Close();
             }
 
         }
@@ -117,13 +117,14 @@ namespace FamilyCookbook.Repository
                 return response;
 
             }
-            catch (Exception ex) 
-            { 
-                response.Success= false;
+            catch (Exception ex)
+            {
+                response.Success = false;
                 response.Message = _errorMessages.ErrorAccessingDb("Recipe");
                 return response;
 
-            } finally
+            }
+            finally
             {
                 _context.CreateConnection().Close();
             }
@@ -228,7 +229,7 @@ namespace FamilyCookbook.Repository
                         existingEntity.Picture = picture;
                     }
 
-                    if(tag != null)
+                    if (tag != null)
                     {
                         existingEntity.Tags.Add(tag);
                     }
@@ -239,7 +240,7 @@ namespace FamilyCookbook.Repository
                 splitOn: "Id");
 
             return entityDictionary.Values.FirstOrDefault();
-            
+
         }
 
         public async Task<RepositoryResponse<List<Recipe>>> GetRecipesWithoutAuthors()
@@ -252,7 +253,7 @@ namespace FamilyCookbook.Repository
                 query.Append("LEFT JOIN MemberRecipe b on a.Id = b.RecipeId ");
                 query.Append("LEFT JOIN Member c on b.MemberId = c.Id ");
                 query.Append("WHERE b.MemberId IS NULL");
-                
+
                 using var connection = _context.CreateConnection();
 
                 IEnumerable<Recipe> recipes = (await connection.QueryAsync<Recipe>(query.ToString())).ToList();
@@ -265,29 +266,67 @@ namespace FamilyCookbook.Repository
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = _errorMessages.ErrorAccessingDb("Recipe"); 
+                response.Message = _errorMessages.ErrorAccessingDb("Recipe");
                 return response;
             }
             finally
             {
-                _context.CreateConnection().Close();    
+                _context.CreateConnection().Close();
             }
         }
-       
-        public async Task<RepositoryResponse<List<Recipe>>> PaginateAsync(Paging paging, RecipeFilter filter)
+
+        protected override async Task<List<Recipe>> BuildPaginationCommand(StringBuilder query, GridReader multipleQuery)
+        {
+
+            var entityDictionary = new Dictionary<int, Recipe>();
+
+            IEnumerable<Recipe> entities = multipleQuery.Read<Recipe, Member, Category, Picture, Recipe>
+                ((recipe, member, category, picture) =>
+                {
+                    if (!entityDictionary.TryGetValue(recipe.Id, out var existingEntity))
+                    {
+                        existingEntity = recipe;
+                        existingEntity.Members = new List<Member>();
+                        entityDictionary.Add(existingEntity.Id, existingEntity);
+                    }
+
+                    if (member != null)
+                    {
+                        existingEntity.Members.Add(member);
+                    }
+
+                    if (category != null)
+                    {
+                        existingEntity.Category = category;
+                    }
+
+                    if (picture != null)
+                    {
+                        existingEntity.Picture = picture;
+                    }
+
+                    return existingEntity;
+                },
+                splitOn: "Id");
+
+
+            return  entities.ToList();
+        }
+
+        public async Task<RepositoryResponse<List<Recipe>>> PaginateAsync(Paging paging, RecipeFilter? filter)
         {
             var response = new RepositoryResponse<List<Recipe>>();
 
             try
             {
-                var incrrasedPageSize = paging.PageSize * 3;                
-                string query = QueryBuilder(paging, filter);
+                var incrrasedPageSize = paging.PageSize * 3;
+                StringBuilder query = PaginateQueryBuilder(paging, filter, "Recipe", "Id", "Id");
 
                 var entityDictionary = new Dictionary<int, Recipe>();
 
                 using var connection = _context.CreateConnection();
 
-                using var multipleQuery = await connection.QueryMultipleAsync(query, new
+                using var multipleQuery = await connection.QueryMultipleAsync(query.ToString(), new
                 {
                     Offset = (paging.PageNumber - 1) * paging.PageSize,
                     PageSize = incrrasedPageSize,
@@ -313,7 +352,7 @@ namespace FamilyCookbook.Repository
                             existingEntity.Category = category;
                         }
 
-                        if(picture != null)
+                        if (picture != null)
                         {
                             existingEntity.Picture = picture;
                         }
@@ -323,9 +362,9 @@ namespace FamilyCookbook.Repository
                     splitOn: "Id");
 
                 response.Success = true;
-                response.Items = entityDictionary.Values.Take(paging.PageSize).ToList();    
+                response.Items = entityDictionary.Values.Take(paging.PageSize).ToList();
                 response.TotalCount = await multipleQuery.ReadSingleAsync<int>();
-                
+
                 return response;
 
             }
@@ -342,7 +381,8 @@ namespace FamilyCookbook.Repository
 
         }
 
-        private string QueryBuilder(Paging paging, RecipeFilter filter)
+        protected override StringBuilder PaginateQueryBuilder
+            (Paging paging, RecipeFilter? filter, string tableName, string keyColumn, string keyPropery)
         {
             StringBuilder sb = new StringBuilder();
 
@@ -357,16 +397,16 @@ namespace FamilyCookbook.Repository
             sb.Append("c.FirstName, c.LastName, c.Bio, d.Id, d.Name, d.Description, ");
             sb.Append("e.* FROM Recipe a JOIN MemberRecipe b on a.Id = b.RecipeId ");
             sb.Append(" JOIN Member c on b.MemberId = c.Id ");
-            sb.Append( "LEFT JOIN Category d on d.Id = a.CategoryId  JOIN Picture e on e.Id = a.PictureId ");
+            sb.Append("LEFT JOIN Category d on d.Id = a.CategoryId  JOIN Picture e on e.Id = a.PictureId ");
             sb.Append("WHERE a.IsActive = 1 ");
 
-            if (!string.IsNullOrWhiteSpace(filter.SearchByTitle)) 
+            if (!string.IsNullOrWhiteSpace(filter.SearchByTitle))
             {
                 sb.Append(@$"AND a.Title LIKE '%{filter.SearchByTitle}%' ");
                 countQuery.Append(@$" AND a.Title LIKE '%{filter.SearchByTitle}%' ");
             }
 
-            if (!string.IsNullOrWhiteSpace(filter.SearchBySubtitle)) 
+            if (!string.IsNullOrWhiteSpace(filter.SearchBySubtitle))
             {
                 sb.Append(@$"AND a.Subtitle LIKE '%{filter.SearchBySubtitle}%' ");
                 countQuery.Append(@$" AND a.Subtitle LIKE '%{filter.SearchBySubtitle}%' ");
@@ -391,14 +431,14 @@ namespace FamilyCookbook.Repository
                 countQuery.Append(@$" AND a.DateCreate = {filter.SearchByDateCreated} ");
             }
 
-            if (!string.IsNullOrWhiteSpace(filter.SearchByAuthorName)) 
+            if (!string.IsNullOrWhiteSpace(filter.SearchByAuthorName))
             {
                 sb.Append(@$" AND c.FirstName LIKE '%{filter.SearchByAuthorName}%' ");
                 countQuery.Append(@$" AND c.FirstName LIKE '%{filter.SearchByAuthorName}%' ");
-                
+
             }
 
-            if(!string.IsNullOrWhiteSpace(filter.SearchByAuthorSurname))
+            if (!string.IsNullOrWhiteSpace(filter.SearchByAuthorSurname))
             {
                 sb.Append(@$"AND c.LastName LIKE '%{filter.SearchByAuthorSurname}%'");
                 countQuery.Append(@$" AND c.LastName LIKE '%{filter.SearchByAuthorSurname}% '");
@@ -408,14 +448,14 @@ namespace FamilyCookbook.Repository
             sb.Append("ORDER BY a.DateCreated DESC ");
             sb.Append("OFFSET @Offset ROWS ");
             sb.Append("FETCH NEXT @PageSize ROWS ONLY;");
-           
+
             sb.Append(countQuery);
 
-            return sb.ToString();
+            return sb;
 
         }
         #endregion
 
-        
+
     }
 }

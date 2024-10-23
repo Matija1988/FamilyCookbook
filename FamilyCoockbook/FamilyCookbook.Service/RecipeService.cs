@@ -90,9 +90,9 @@ namespace FamilyCookbook.Service
 
             response.PageCount = (int)Math.Ceiling(response.TotalCount / (double)paging.PageSize);
 
-            if (response.Items.Count > 0)
+            if (response.Items.Value.Count > 0)
             {
-                foreach (var item in response.Items)
+                foreach (var item in response.Items.Value)
                 {
                     item.AverageRating = await CalculateAverageRating(item.Id);
                 }

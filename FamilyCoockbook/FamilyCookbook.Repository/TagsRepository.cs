@@ -32,12 +32,12 @@ namespace FamilyCookbook.Repository
 
         #region GET METHODS
 
-        protected override StringBuilder BuildQueryReadAll()
-        {
-            StringBuilder query = new("SELECT * FROM Tag");
+        //protected override StringBuilder BuildQueryReadAll()
+        //{
+        //    StringBuilder query = new("SELECT * FROM Tag");
 
-            return query;
-        }
+        //    return query;
+        //}
 
         public async Task<RepositoryResponse<List<Tag>>> GetByTextAsync(string text)
         {
@@ -70,54 +70,55 @@ namespace FamilyCookbook.Repository
             }
         }
 
-        public async Task<RepositoryResponse<List<Tag>>> PaginateAsync(Paging paging, string text)
-        {
-            var response = new RepositoryResponse<List<Tag>>();
+        //public async Task<RepositoryResponse<List<Tag>>> PaginateAsync(Paging paging, string text)
+        //{
+        //    var response = new RepositoryResponse<List<Tag>>();
 
-            try
-            {
-                StringBuilder query = PaginationQueryBuilder(paging, text);
+        //    try
+        //    {
+        //        StringBuilder query = PaginationQueryBuilder(paging, text);
 
-                var entityDictionary = new Dictionary<int, Tag>();
+        //        var entityDictionary = new Dictionary<int, Tag>();
 
-                using var connection = _context.CreateConnection();
+        //        using var connection = _context.CreateConnection();
 
-                using var multipleQuery = await connection.QueryMultipleAsync(query.ToString(), new
-                {
-                    Offset = (paging.PageNumber - 1) * paging.PageSize,
-                    PageSize = paging.PageSize
-                });
+        //        using var multipleQuery = await connection.QueryMultipleAsync(query.ToString(), new
+        //        {
+        //            Offset = (paging.PageNumber - 1) * paging.PageSize,
+        //            PageSize = paging.PageSize
+        //        });
 
-                IEnumerable<Tag> entities = await multipleQuery.ReadAsync<Tag>();
+        //        IEnumerable<Tag> entities = await multipleQuery.ReadAsync<Tag>();
 
-                response.TotalCount = await multipleQuery.ReadSingleAsync<int>();
+        //        response.TotalCount = await multipleQuery.ReadSingleAsync<int>();
 
-                response.Success = true;
-                response.Items = entities.ToList();
-                return response;
+        //        response.Success = true;
+        //        response.Items = entities.ToList();
+        //        return response;
 
-            }
-            catch (Exception ex)
-            {
-                response.Success = false;
-                response.Message = _errorMessages.ErrorAccessingDb("Tags", ex);
-                return response;
-            }
-            finally
-            {
-                _context.CreateConnection().Close();
-            }
-        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        response.Success = false;
+        //        response.Message = _errorMessages.ErrorAccessingDb("Tags", ex);
+        //        return response;
+        //    }
+        //    finally
+        //    {
+        //        _context.CreateConnection().Close();
+        //    }
+        //}
 
-        private StringBuilder PaginationQueryBuilder(Paging paging, string text)
+
+        protected override StringBuilder PaginateQueryBuilder(Paging paging, TagFilter? filter, string tableName, string keyColumn, string keyProperty)
         {
             StringBuilder query = new("SELECT * FROM Tag WHERE 1 = 1 ");
 
-            StringBuilder countQuery = new($" SELECT COUNT (DISTINCT Id) FROM Tag WHERE Text LIKE '%{text}%';");
+            StringBuilder countQuery = new($" SELECT COUNT (DISTINCT Id) FROM Tag WHERE Text LIKE '%{filter.Text}%';");
 
-            if (!string.IsNullOrWhiteSpace(text))
+            if (!string.IsNullOrWhiteSpace(filter.Text))
             {
-                query.Append($"AND Text LIKE '%{text}%'");
+                query.Append($"AND Text LIKE '%{filter.Text}%'");
             }
 
             query.Append(" ORDER BY Text ASC ");
@@ -127,7 +128,6 @@ namespace FamilyCookbook.Repository
             query.Append(countQuery);
 
             return query;
-
         }
 
         #endregion
