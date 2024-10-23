@@ -310,7 +310,7 @@ namespace FamilyCookbook.Repository
                 splitOn: "Id");
 
 
-            return  entities.ToList();
+            return entities.ToList();
         }
 
         public async Task<RepositoryResponse<List<Recipe>>> PaginateAsync(Paging paging, RecipeFilter? filter)

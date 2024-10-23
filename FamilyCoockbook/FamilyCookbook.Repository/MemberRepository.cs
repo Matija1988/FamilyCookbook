@@ -246,66 +246,34 @@ namespace FamilyCookbook.Repository
             }
         }
 
-        public async Task<RepositoryResponse<Lazy<List<Member>>>> PaginateAsync(Paging paging, MemberFilter filter)
+        protected override async Task<List<Member>> BuildPaginationCommand(StringBuilder query, GridReader multipleQuery)
         {
-            var response = new RepositoryResponse<Lazy<List<Member>>>();
+            var entityDictionary = new Dictionary<int, Member>();
 
-            try
-            {
-
-                string query = QueryBuilder(paging, filter);
-
-                var entityDictionary = new Dictionary<int, Member>();
-
-                using var connection = _context.CreateConnection();
-
-                using var multipleQuery = await connection.QueryMultipleAsync(query, new
+            IEnumerable<Member> members = multipleQuery.Read<Member, Role, Member>(
+                (entity, role) =>
                 {
-                    Offset = (paging.PageNumber - 1) * paging.PageSize,
-                    PageSize = paging.PageSize,
-                });
-
-                IEnumerable<Member> members = multipleQuery.Read<Member, Role, Member>(
-                    (entity, role) =>
+                    if (!entityDictionary.TryGetValue(entity.Id, out var existingEntity))
                     {
-                        if (!entityDictionary.TryGetValue(entity.Id, out var existingEntity))
-                        {
-                            existingEntity = entity;
-                            existingEntity.Recipes = new List<Recipe>();
-                            entityDictionary.Add(existingEntity.Id, existingEntity);
-                        }
-                        if (role != null)
-                        {
+                        existingEntity = entity;
+                        existingEntity.Recipes = new List<Recipe>();
+                        entityDictionary.Add(existingEntity.Id, existingEntity);
+                    }
+                    if (role != null)
+                    {
 
-                            existingEntity.Role = role;
-                        }
+                        existingEntity.Role = role;
+                    }
 
-                        return existingEntity;
-                    },
-                splitOn: "RoleRoleId");
+                    return existingEntity;
+                },
+            splitOn: "RoleRoleId");
 
-                response.TotalCount = await multipleQuery.ReadSingleAsync<int>();
-
-                response.Success = true;
-                response.Items = new Lazy<List<Member>>(() => entityDictionary.Values.ToList());
-                
-                return response;
-
-            }
-            catch (Exception ex)
-            {
-                response.Success = false;
-                response.Message = _errorMessages.ErrorAccessingDb("Member", ex);
-                return response;
-            }
-            finally
-            {
-                _context.CreateConnection().Close();
-            }
+            return members.ToList();
 
         }
 
-        private string QueryBuilder(Paging paging, MemberFilter filter)
+        protected override StringBuilder PaginateQueryBuilder(Paging paging, MemberFilter? filter, string tableName, string keyColumn, string keyProperty)
         {
             StringBuilder query = new StringBuilder();
             StringBuilder countQuery = new StringBuilder(@$" SELECT COUNT(*) FROM Member a ");
@@ -357,8 +325,8 @@ namespace FamilyCookbook.Repository
             query.Append($"FETCH NEXT @PageSize ROWS ONLY;");
 
             query.Append(countQuery);
-            
-            return query.ToString();
+
+            return query;
         }
 
         #endregion

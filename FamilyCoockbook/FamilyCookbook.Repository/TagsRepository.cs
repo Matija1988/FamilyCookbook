@@ -32,12 +32,12 @@ namespace FamilyCookbook.Repository
 
         #region GET METHODS
 
-        //protected override StringBuilder BuildQueryReadAll()
-        //{
-        //    StringBuilder query = new("SELECT * FROM Tag");
+        protected override StringBuilder BuildQueryReadAll()
+        {
+            StringBuilder query = new("SELECT * FROM Tag");
 
-        //    return query;
-        //}
+            return query;
+        }
 
         public async Task<RepositoryResponse<List<Tag>>> GetByTextAsync(string text)
         {
@@ -69,46 +69,6 @@ namespace FamilyCookbook.Repository
                 _context.CreateConnection().Close();                
             }
         }
-
-        //public async Task<RepositoryResponse<List<Tag>>> PaginateAsync(Paging paging, string text)
-        //{
-        //    var response = new RepositoryResponse<List<Tag>>();
-
-        //    try
-        //    {
-        //        StringBuilder query = PaginationQueryBuilder(paging, text);
-
-        //        var entityDictionary = new Dictionary<int, Tag>();
-
-        //        using var connection = _context.CreateConnection();
-
-        //        using var multipleQuery = await connection.QueryMultipleAsync(query.ToString(), new
-        //        {
-        //            Offset = (paging.PageNumber - 1) * paging.PageSize,
-        //            PageSize = paging.PageSize
-        //        });
-
-        //        IEnumerable<Tag> entities = await multipleQuery.ReadAsync<Tag>();
-
-        //        response.TotalCount = await multipleQuery.ReadSingleAsync<int>();
-
-        //        response.Success = true;
-        //        response.Items = entities.ToList();
-        //        return response;
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        response.Success = false;
-        //        response.Message = _errorMessages.ErrorAccessingDb("Tags", ex);
-        //        return response;
-        //    }
-        //    finally
-        //    {
-        //        _context.CreateConnection().Close();
-        //    }
-        //}
-
 
         protected override StringBuilder PaginateQueryBuilder(Paging paging, TagFilter? filter, string tableName, string keyColumn, string keyProperty)
         {
