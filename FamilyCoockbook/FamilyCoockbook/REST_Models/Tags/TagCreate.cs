@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace FamilyCookbook.REST_Models.Tags
+﻿namespace FamilyCookbook.REST_Models.Tags
 {
     public class TagCreate
     {

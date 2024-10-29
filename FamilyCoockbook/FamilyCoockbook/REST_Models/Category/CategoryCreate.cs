@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace FamilyCookbook.REST_Models.Category
 {
@@ -8,7 +7,6 @@ namespace FamilyCookbook.REST_Models.Category
         [StringLength(50, ErrorMessage = "Maximum allowed number of characters: 50")]
         [Required]
         public string Name { get; set; }
-
         [AllowNull]
         public string Description { get; set; }
     }

@@ -1,10 +1,4 @@
-﻿using FamilyCookbook.Model;
-using FamilyCookbook.REST_Models.Member;
-using FamilyCookbook.REST_Models.Recipe;
-using Riok.Mapperly.Abstractions;
-using System.Collections.Immutable;
-
-namespace FamilyCookbook.Mapping
+﻿namespace FamilyCookbook.Mapping
 {
     [Mapper]
     public partial class RecipeMapper

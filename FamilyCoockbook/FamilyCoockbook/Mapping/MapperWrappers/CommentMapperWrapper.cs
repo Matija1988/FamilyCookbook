@@ -1,5 +1,4 @@
-﻿using FamilyCookbook.Model;
-using static FamilyCookbook.REST_Models.Comment.CommentModels;
+﻿using static FamilyCookbook.REST_Models.Comment.CommentModels;
 
 namespace FamilyCookbook.Mapping.MapperWrappers
 {
@@ -11,12 +10,10 @@ namespace FamilyCookbook.Mapping.MapperWrappers
         {
             return _mapper.CommentRead(entity);
         }
-
         public Comment MapToEntity(CommentCreate dto)
         {
             return _mapper.CommentCreate(dto);
         }
-
         public List<CommentRead> MapToReadList(List<Comment> entities)
         {
             return _mapper.CommentsReadList(entities);

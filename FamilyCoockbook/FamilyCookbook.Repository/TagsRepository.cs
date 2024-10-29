@@ -1,18 +1,4 @@
-﻿using Azure;
-using Dapper;
-using FamilyCookbook.Common;
-using FamilyCookbook.Common.Filters;
-using FamilyCookbook.Model;
-using FamilyCookbook.Repository.Common;
-using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FamilyCookbook.Repository
+﻿namespace FamilyCookbook.Repository
 {
     public sealed class TagsRepository : AbstractRepository<Tag, TagFilter>, ITagRepository
     {

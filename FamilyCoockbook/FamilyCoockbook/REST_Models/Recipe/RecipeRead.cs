@@ -1,7 +1,4 @@
-﻿using FamilyCookbook.Model;
-using System.Diagnostics.CodeAnalysis;
-
-namespace FamilyCookbook.REST_Models.Recipe
+﻿namespace FamilyCookbook.REST_Models.Recipe
 {
     public sealed class RecipeRead
     {

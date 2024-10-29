@@ -1,8 +1,4 @@
-﻿using FamilyCookbook.Common.Filters;
-using FamilyCookbook.Common;
-using FamilyCookbook.Model;
-
-namespace FamilyCookbook.Service.Common
+﻿namespace FamilyCookbook.Service.Common
 {
     public interface IBannerService : IService<Banner, BannerFilter>
     {

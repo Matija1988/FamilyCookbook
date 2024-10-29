@@ -1,6 +1,4 @@
-﻿using FamilyCookbook.Model;
-using Riok.Mapperly.Abstractions;
-using static FamilyCookbook.REST_Models.Comment.CommentModels;
+﻿using static FamilyCookbook.REST_Models.Comment.CommentModels;
 
 namespace FamilyCookbook.Mapping
 {

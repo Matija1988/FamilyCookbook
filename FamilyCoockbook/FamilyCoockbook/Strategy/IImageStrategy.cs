@@ -1,6 +1,4 @@
 ﻿using FamilyCookbook.Common.Enums;
-using FamilyCookbook.Model;
-
 namespace FamilyCookbook.Strategy
 {
     public interface IImageStrategy

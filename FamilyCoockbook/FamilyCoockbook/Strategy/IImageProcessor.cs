@@ -1,7 +1,4 @@
-﻿using FamilyCookbook.Common.Enums;
-using FamilyCookbook.Model;
-
-namespace FamilyCookbook.Strategy
+﻿namespace FamilyCookbook.Strategy
 {
     public interface IImageProcessor
     {

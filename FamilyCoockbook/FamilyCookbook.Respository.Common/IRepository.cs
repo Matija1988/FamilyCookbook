@@ -1,9 +1,4 @@
-﻿using FamilyCookbook.Common;
-using FamilyCookbook.Common.Filters;
-using FamilyCookbook.Model;
-using System.Runtime.InteropServices;
-
-namespace FamilyCookbook.Respository.Common
+﻿namespace FamilyCookbook.Respository.Common
 {
     public interface IRepository<T, Filter> where T : class
     {

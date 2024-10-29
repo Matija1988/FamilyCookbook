@@ -1,6 +1,4 @@
-﻿using FamilyCookbook.Model;
-using FamilyCookbook.REST_Models.Banner;
-using static FamilyCookbook.REST_Models.Banner.BannerDTO;
+﻿using static FamilyCookbook.REST_Models.Banner.BannerDTO;
 
 namespace FamilyCookbook.Mapping.MapperWrappers
 {
@@ -11,12 +9,10 @@ namespace FamilyCookbook.Mapping.MapperWrappers
         {
             return _mapper.MapSingle(entity);
         }
-
         public Banner MapToEntity(BannerCreate dto)
         {
             return _mapper.BannerCreateToBanner(dto);
         }
-
         public List<BannerRead> MapToReadList(List<Banner> entities)
         {
             return _mapper.MapAllToBannerRead(entities);

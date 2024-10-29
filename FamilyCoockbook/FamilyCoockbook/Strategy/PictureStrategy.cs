@@ -1,11 +1,4 @@
-﻿using FamilyCookbook.Common.Enums;
-using FamilyCookbook.Common.Upload;
-using FamilyCookbook.Model;
-using FamilyCookbook.REST_Models.Banner;
-using FamilyCookbook.REST_Models.Picture;
-using FamilyCookbook.REST_Models.Recipe;
-
-namespace FamilyCookbook.Strategy
+﻿namespace FamilyCookbook.Strategy
 {
     public class PictureStrategy : IImageStrategy
     {

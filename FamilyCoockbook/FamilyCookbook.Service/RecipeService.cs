@@ -1,12 +1,4 @@
-﻿using FamilyCookbook.Common;
-using FamilyCookbook.Common.Filters;
-using FamilyCookbook.Model;
-using FamilyCookbook.Repository.Common;
-using FamilyCookbook.Service.Common;
-using System.Collections.Immutable;
-using System.Text;
-
-namespace FamilyCookbook.Service
+﻿namespace FamilyCookbook.Service
 {
     public sealed class RecipeService : AbstractService<Recipe, RecipeFilter>, IRecipeService
     {

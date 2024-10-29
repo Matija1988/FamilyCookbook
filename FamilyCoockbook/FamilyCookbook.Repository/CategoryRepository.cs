@@ -1,13 +1,4 @@
-﻿using Dapper;
-using FamilyCookbook.Common;
-using FamilyCookbook.Common.Filters;
-using FamilyCookbook.Model;
-using FamilyCookbook.Repository.Common;
-using Microsoft.AspNetCore.Http.Extensions;
-using System.Runtime.CompilerServices;
-using System.Text;
-
-namespace FamilyCookbook.Repository
+﻿namespace FamilyCookbook.Repository
 {
     public sealed class CategoryRepository : AbstractRepository<Category, CategoryFilter>, ICategoryRepository
     {

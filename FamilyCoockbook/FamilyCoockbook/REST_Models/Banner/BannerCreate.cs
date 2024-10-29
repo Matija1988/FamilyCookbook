@@ -1,6 +1,4 @@
 ﻿using FamilyCookbook.Model;
-using System.ComponentModel.DataAnnotations;
-
 namespace FamilyCookbook.REST_Models.Banner
 {
     public class BannerCreate : ImageDTO

@@ -1,9 +1,4 @@
-﻿using FamilyCookbook.Common;
-using FamilyCookbook.Common.Filters;
-using FamilyCookbook.Model;
-using FamilyCookbook.Repository.Common;
-
-namespace FamilyCookbook.Repository
+﻿namespace FamilyCookbook.Repository
 {
     public sealed class RoleRepository : AbstractRepository<Role, RoleFilter>, IRoleRepository
     {

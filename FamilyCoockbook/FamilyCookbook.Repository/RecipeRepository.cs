@@ -1,21 +1,4 @@
-﻿using Azure;
-using Azure.Core;
-using Dapper;
-using FamilyCookbook.Common;
-using FamilyCookbook.Common.Filters;
-using FamilyCookbook.Model;
-using FamilyCookbook.Repository.Common;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Data;
-using System.Data.Common;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using static Dapper.SqlMapper;
+﻿using static Dapper.SqlMapper;
 
 namespace FamilyCookbook.Repository
 {

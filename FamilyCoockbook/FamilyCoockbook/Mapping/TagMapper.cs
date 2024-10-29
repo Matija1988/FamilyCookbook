@@ -1,6 +1,4 @@
-﻿using FamilyCookbook.Model;
-using FamilyCookbook.REST_Models.Tags;
-using Riok.Mapperly.Abstractions;
+﻿using FamilyCookbook.REST_Models.Tags;
 
 namespace FamilyCookbook.Mapping
 {

@@ -1,8 +1,4 @@
-﻿using FamilyCookbook.Model;
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
-
-namespace FamilyCookbook.REST_Models.Recipe
+﻿namespace FamilyCookbook.REST_Models.Recipe
 {
     public class RecipeCreate : ImageDTO
     {

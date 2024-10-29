@@ -1,13 +1,9 @@
-﻿using FamilyCookbook.Common;
-using FamilyCookbook.Common.Filters;
+﻿using FamilyCookbook.Common.Filters;
 using FamilyCookbook.Mapping;
-using FamilyCookbook.Model;
 using FamilyCookbook.REST_Models.Tags;
 using FamilyCookbook.Service.Common;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Immutable;
 
 namespace FamilyCookbook.Controllers
 {

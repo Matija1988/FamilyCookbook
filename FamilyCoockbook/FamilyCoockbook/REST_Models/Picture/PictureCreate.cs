@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace FamilyCookbook.REST_Models.Picture
+﻿namespace FamilyCookbook.REST_Models.Picture
 {
     public sealed class PictureCreate
     {

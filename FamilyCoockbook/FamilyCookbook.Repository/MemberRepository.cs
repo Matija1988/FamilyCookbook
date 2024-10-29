@@ -1,17 +1,6 @@
-﻿using Dapper;
-using FamilyCookbook.Common;
-using FamilyCookbook.Common.Filters;
-using FamilyCookbook.Common.Validations;
-using FamilyCookbook.Model;
-using FamilyCookbook.Repository.Common;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FamilyCookbook.Common.Validations;
 using static Dapper.SqlMapper;
+using MemberFilter = FamilyCookbook.Common.Filters.MemberFilter;
 
 namespace FamilyCookbook.Repository
 {
@@ -21,9 +10,9 @@ namespace FamilyCookbook.Repository
         private readonly IErrorMessages _errorMessages;
         private readonly ISuccessResponses _successResponses;
 
-        public MemberRepository(DapperDBContext context, 
-            IErrorMessages errorMessages, 
-            ISuccessResponses successResponses) 
+        public MemberRepository(DapperDBContext context,
+            IErrorMessages errorMessages,
+            ISuccessResponses successResponses)
             : base(context, errorMessages, successResponses)
         {
             _context = context;
@@ -48,7 +37,7 @@ namespace FamilyCookbook.Repository
         public async Task<RepositoryResponse<Lazy<Member>>> FindByUsernameAsync(string username)
         {
             var response = new RepositoryResponse<Lazy<Member>>();
-            StringBuilder queryBuilder = new StringBuilder(); 
+            StringBuilder queryBuilder = new StringBuilder();
 
             try
             {
@@ -59,25 +48,25 @@ namespace FamilyCookbook.Repository
 
                 using var connection = _context.CreateConnection();
 
-                var entities = await connection.QueryAsync<Member,Role, Member>(queryBuilder.ToString(),
+                var entities = await connection.QueryAsync<Member, Role, Member>(queryBuilder.ToString(),
                     (entity, role) =>
                     {
-                        if(!entityDictionary.TryGetValue(entity.Id, out var existingEntity))
+                        if (!entityDictionary.TryGetValue(entity.Id, out var existingEntity))
                         {
                             existingEntity = entity;
                             existingEntity.Recipes = new List<Recipe>();
                             entityDictionary.Add(existingEntity.Id, existingEntity);
                         }
 
-                        if(role != null)
+                        if (role != null)
                         {
                             existingEntity.Role = role;
 
                         }
                         return existingEntity;
-                    }, new {Username = username},splitOn:"Id");
+                    }, new { Username = username }, splitOn: "Id");
 
-                if (Nullchks.CheckDictionary(entityDictionary))
+                if (entities == null)
                 {
                     response.Success = false;
                     response.Message = _errorMessages.InvalidUsername();
@@ -88,7 +77,7 @@ namespace FamilyCookbook.Repository
                 response.Items = new Lazy<Member>(() => entityDictionary.Values.FirstOrDefault());
 
                 return response;
-            } 
+            }
             catch (Exception ex)
             {
                 response.Success = false;
@@ -97,7 +86,7 @@ namespace FamilyCookbook.Repository
             }
             finally
             {
-                _context.CreateConnection().Close();  
+                _context.CreateConnection().Close();
             }
         }
 
@@ -159,20 +148,20 @@ namespace FamilyCookbook.Repository
 
             var entities = await connection.QueryAsync<Member, Role, Member>(query, (member, role) =>
             {
-                if(!entityDictionary.TryGetValue(member.Id, out var existingEntity))
+                if (!entityDictionary.TryGetValue(member.Id, out var existingEntity))
                 {
                     existingEntity = member;
                     existingEntity.Recipes = new List<Recipe>();
                     entityDictionary.Add(existingEntity.Id, existingEntity);
                 }
 
-                if (role != null) 
+                if (role != null)
                 {
                     existingEntity.Role = role;
                 }
 
                 return existingEntity;
-            }, new { Id = id},
+            }, new { Id = id },
             splitOn: "RoleId");
 
             return entityDictionary.Values.FirstOrDefault();
@@ -341,6 +330,5 @@ namespace FamilyCookbook.Repository
         }
 
         #endregion
-
     }
 }

@@ -1,15 +1,4 @@
-﻿using FamilyCookbook.Common;
-using FamilyCookbook.Model;
-using FamilyCookbook.Respository.Common;
-using FamilyCookbook.Service.Common;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FamilyCookbook.Service
+﻿namespace FamilyCookbook.Service
 {
     public abstract class AbstractService<T, Filter> : IService<T, Filter> where T : class
     {

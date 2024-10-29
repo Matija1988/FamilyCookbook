@@ -1,15 +1,7 @@
-﻿using Autofac.Core;
-using FamilyCookbook.Common.Enums;
+﻿using FamilyCookbook.Common.Enums;
 using FamilyCookbook.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace FamilyCookbook.Common.Upload
 {
@@ -55,8 +47,8 @@ namespace FamilyCookbook.Common.Upload
                 var fileName = pictureName + fileExtension;
                 var filePath = Path.Combine(uploadsFolder, fileName);
                 relativePath = Path.Combine(relativePath, fileName);
-
                 await System.IO.File.WriteAllBytesAsync(filePath, imageBytes);
+
                 return relativePath;
             }
             else if (chkPicture is not null)
@@ -64,8 +56,8 @@ namespace FamilyCookbook.Common.Upload
                 relativePath = chkPicture.Location;
                 return relativePath;
             }
-
             return relativePath;
+
         }
         public static Picture IntermediaryPicture(string pictureName, string relativePath)
         {

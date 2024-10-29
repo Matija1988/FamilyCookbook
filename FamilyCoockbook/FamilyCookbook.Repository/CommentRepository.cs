@@ -1,16 +1,4 @@
-﻿using Dapper;
-using FamilyCookbook.Common;
-using FamilyCookbook.Common.Filters;
-using FamilyCookbook.Model;
-using FamilyCookbook.Repository.Common;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FamilyCookbook.Repository
+﻿namespace FamilyCookbook.Repository
 {
     public sealed class CommentRepository : AbstractRepository<Comment, CommentFilter>, ICommentRepository
     {
@@ -26,9 +14,6 @@ namespace FamilyCookbook.Repository
             _errorMessages = errorMessages;
             _successResponses = successResponses;
         }
-
-
-
 
         #region OVEERIDE UPDATE
 
@@ -110,7 +95,6 @@ namespace FamilyCookbook.Repository
 #endregion
 
         #region CREATE OVERRIDE
-
         protected override StringBuilder BuildCreateQuery(string tableName, string columns, string properties)
         {
             StringBuilder query = new();
@@ -141,7 +125,6 @@ namespace FamilyCookbook.Repository
         #endregion
 
         #region UniqueMethods
-
         public async Task<RepositoryResponse<List<Comment>>> GetRecipeCommentsAsync(int id)
         {
             var response = new RepositoryResponse<List<Comment>>();
@@ -189,7 +172,6 @@ namespace FamilyCookbook.Repository
             }
 
         }
-
 
         #endregion
     }

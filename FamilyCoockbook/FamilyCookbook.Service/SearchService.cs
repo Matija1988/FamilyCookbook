@@ -1,14 +1,4 @@
-﻿using FamilyCookbook.Model;
-using FamilyCookbook.Repository.Common;
-using FamilyCookbook.Service.Common;
-using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FamilyCookbook.Service
+﻿namespace FamilyCookbook.Service
 {
     public class SearchService : ISearchService
     {

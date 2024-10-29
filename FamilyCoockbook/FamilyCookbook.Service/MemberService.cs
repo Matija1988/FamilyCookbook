@@ -1,24 +1,4 @@
-﻿using AngleSharp.Css.Dom;
-using BCrypt.Net;
-using FamilyCookbook.Common;
-using FamilyCookbook.Common.Filters;
-using FamilyCookbook.Model;
-using FamilyCookbook.Repository.Common;
-using FamilyCookbook.Respository.Common;
-using FamilyCookbook.Service.Common;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FamilyCookbook.Service
+﻿namespace FamilyCookbook.Service
 {
     public sealed class MemberService : AbstractService<Member, MemberFilter>, IMemberService
     {

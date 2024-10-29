@@ -1,7 +1,5 @@
 ﻿using Autofac;
-using FamilyCookbook.Model;
-using FamilyCookbook.Repository.Common;
-using FamilyCookbook.Respository.Common;
+using Module = Autofac.Module;
 
 namespace FamilyCookbook.Repository
 {

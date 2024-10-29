@@ -1,10 +1,4 @@
-﻿using FamilyCookbook.Common;
-using FamilyCookbook.Common.Filters;
-using FamilyCookbook.Model;
-using FamilyCookbook.Repository.Common;
-using FamilyCookbook.Service.Common;
-
-namespace FamilyCookbook.Service
+﻿namespace FamilyCookbook.Service
 {
     public sealed class PictureService : AbstractService<Picture, PictureFilter>, IPictureService
     {

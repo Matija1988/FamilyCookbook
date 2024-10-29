@@ -1,14 +1,4 @@
-﻿using Autofac;
-using FamilyCookbook.Controllers;
-using FamilyCookbook.Mapping.MapperWrappers;
-using FamilyCookbook.Model;
-using FamilyCookbook.REST_Models.Banner;
-using FamilyCookbook.REST_Models.Category;
-using FamilyCookbook.REST_Models.Member;
-using FamilyCookbook.REST_Models.Picture;
-using FamilyCookbook.REST_Models.Recipe;
-using FamilyCookbook.Strategy;
-using static FamilyCookbook.REST_Models.Banner.BannerDTO;
+﻿using static FamilyCookbook.REST_Models.Banner.BannerDTO;
 using static FamilyCookbook.REST_Models.Comment.CommentModels;
 
 namespace FamilyCookbook

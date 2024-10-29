@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace FamilyCookbook.REST_Models.Comment
+﻿namespace FamilyCookbook.REST_Models.Comment
 {
     public class CommentModels
     {

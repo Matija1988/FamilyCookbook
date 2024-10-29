@@ -4,7 +4,6 @@
     {
         T MapToEntity(TDI dto);
         TDR MapReadToDto(T entity);
-
         List<TDR> MapToReadList(List<T> entities);
     }
 }
