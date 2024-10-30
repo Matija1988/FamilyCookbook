@@ -1,9 +1,4 @@
-﻿using FamilyCookbook.Common;
-using FamilyCookbook.Service.Common;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-
-namespace FamilyCookbook.Controllers
+﻿namespace FamilyCookbook.Controllers
 {
 
     [ApiController]

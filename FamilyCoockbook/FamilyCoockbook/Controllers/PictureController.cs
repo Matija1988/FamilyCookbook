@@ -1,14 +1,4 @@
-﻿using FamilyCookbook.Common;
-using FamilyCookbook.Common.Upload;
-using FamilyCookbook.Mapping;
-using FamilyCookbook.Mapping.MapperWrappers;
-using FamilyCookbook.Model;
-using FamilyCookbook.REST_Models.Picture;
-using FamilyCookbook.Service.Common;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-
-namespace FamilyCookbook.Controllers
+﻿namespace FamilyCookbook.Controllers
 {
     [ApiController]
     [Route("api/v0/[controller]")]

@@ -1,11 +1,4 @@
-﻿using FamilyCookbook.Common.Filters;
-using FamilyCookbook.Mapping;
-using FamilyCookbook.REST_Models.Tags;
-using FamilyCookbook.Service.Common;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-
-namespace FamilyCookbook.Controllers
+﻿namespace FamilyCookbook.Controllers
 {
     [ApiController]
     [Route("api/v0/tag")]

@@ -1,6 +1,4 @@
-﻿using FamilyCookbook.Service.Common;
-using Microsoft.AspNetCore.Mvc;
-using static FamilyCookbook.REST_Models.Auth.AuthModels;
+﻿using static FamilyCookbook.REST_Models.Auth.AuthModels;
 
 namespace FamilyCookbook.Controllers
 {

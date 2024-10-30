@@ -1,9 +1,4 @@
-﻿using Autofac.Core;
-using FamilyCookbook.Model;
-using FamilyCookbook.Service.Common;
-using Microsoft.AspNetCore.Mvc;
-
-namespace FamilyCookbook.Controllers
+﻿namespace FamilyCookbook.Controllers
 {
     [ApiController]
     [Route("api/v0/[controller]")]

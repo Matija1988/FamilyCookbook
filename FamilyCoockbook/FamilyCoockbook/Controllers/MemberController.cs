@@ -1,14 +1,4 @@
-﻿using FamilyCookbook.Common;
-using FamilyCookbook.Common.Filters;
-using FamilyCookbook.Mapping;
-using FamilyCookbook.Mapping.MapperWrappers;
-using FamilyCookbook.Model;
-using FamilyCookbook.REST_Models.Member;
-using FamilyCookbook.Service.Common;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Mvc;
-using System.Formats.Asn1;
+﻿using Microsoft.AspNetCore.Cors;
 
 namespace FamilyCookbook.Controllers
 {

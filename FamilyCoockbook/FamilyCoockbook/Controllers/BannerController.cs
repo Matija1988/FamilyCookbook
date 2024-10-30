@@ -1,14 +1,4 @@
-﻿using FamilyCookbook.Common;
-using FamilyCookbook.Common.Enums;
-using FamilyCookbook.Common.Filters;
-using FamilyCookbook.Mapping.MapperWrappers;
-using FamilyCookbook.Model;
-using FamilyCookbook.REST_Models.Banner;
-using FamilyCookbook.Service.Common;
-using FamilyCookbook.Strategy;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using static FamilyCookbook.REST_Models.Banner.BannerDTO;
+﻿using static FamilyCookbook.REST_Models.Banner.BannerDTO;
 
 namespace FamilyCookbook.Controllers
 {

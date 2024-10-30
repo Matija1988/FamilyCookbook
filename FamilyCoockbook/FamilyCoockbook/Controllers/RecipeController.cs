@@ -1,20 +1,4 @@
-﻿using AngleSharp.Dom;
-using FamilyCookbook.Common;
-using FamilyCookbook.Common.Enums;
-using FamilyCookbook.Common.Filters;
-using FamilyCookbook.Common.Upload;
-using FamilyCookbook.Common.Validations;
-using FamilyCookbook.Mapping;
-using FamilyCookbook.Mapping.MapperWrappers;
-using FamilyCookbook.Model;
-using FamilyCookbook.REST_Models.Recipe;
-using FamilyCookbook.Service.Common;
-using FamilyCookbook.Strategy;
-using Ganss.Xss;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Client;
-using System.Reflection.Metadata.Ecma335;
+﻿using Ganss.Xss;
 
 namespace FamilyCookbook.Controllers
 {
@@ -137,48 +121,6 @@ namespace FamilyCookbook.Controllers
             }
 
             return Ok(response.Message.ToString());
-
-            //bool chkBlob = string.IsNullOrEmpty(newRecipe.ImageBlob);
-
-            //if (ImageUtilities.ValidatePictureSizeFunc(chkBlob, newRecipe.ImageBlob, 1))
-            //{
-            //    return BadRequest("Invalid picture size. Keep the images under 1MB");
-            //}
-
-            //byte[] imageBytes = null;
-            //string fileExtension = "";
-            //string relativePath = "";
-
-            //if (!chkBlob)
-            //{
-            //    var dataParts = ImageUtilities.Base64DataParts(newRecipe.ImageBlob);
-            //    var mimeType = ImageUtilities.GetMimeType(dataParts, 0);                    
-            //    fileExtension = ImageUtilities.ValidateFileExtensionFunc(mimeType);
-            //    imageBytes = ImageUtilities.ConvertBase64ToByteArray(dataParts, 1);
-            //}
-
-            //var uploadsFolder = ImageUtilities.GetUploadsFolder(_enviroment.WebRootPath, "uploads");
-
-            //var pictures = await _pictureService.GetAllAsync();
-
-            //var image = pictures.Items.Find(pic => pic.Name == newRecipe.ImageName);
-
-            //newRecipe.Text = Sanitize.HtmlSanitize(newRecipe.Text);
-
-            //var recipe = _mapper.MapReadToCreateDTO(newRecipe);
-
-            //recipe.Picture = ImageUtilities.IntermediaryPicture(newRecipe.ImageName, 
-            //    await ImageUtilities.ChcPictureNullThenUpload(image, newRecipe.ImageName, fileExtension,
-            //    uploadsFolder, relativePath, imageBytes));
-
-            //var response = await _service.CreateAsync(recipe);
-
-            //if (response.IsSuccess == false)
-            //{
-            //    return BadRequest(response.Message.ToString());
-            //}
-
-            //return Ok(response.Message.ToString());
 
         }
 

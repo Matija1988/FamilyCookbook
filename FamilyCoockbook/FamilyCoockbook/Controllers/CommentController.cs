@@ -1,10 +1,4 @@
-﻿using Autofac.Core;
-using FamilyCookbook.Common.Filters;
-using FamilyCookbook.Mapping.MapperWrappers;
-using FamilyCookbook.Model;
-using FamilyCookbook.Service.Common;
-using Microsoft.AspNetCore.Mvc;
-using static FamilyCookbook.REST_Models.Comment.CommentModels;
+﻿using static FamilyCookbook.REST_Models.Comment.CommentModels;
 
 namespace FamilyCookbook.Controllers
 {
