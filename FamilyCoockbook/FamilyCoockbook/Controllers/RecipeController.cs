@@ -98,11 +98,6 @@ namespace FamilyCookbook.Controllers
         [Route("create")]
         public async Task<IActionResult> CreateAsync(RecipeCreate newRecipe)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var existingPictures = await _pictureService.GetAllAsync().ContinueWith(pic => 
             pic.Result.Items.Find(x => x.Name == newRecipe.ImageName));
 
@@ -115,10 +110,10 @@ namespace FamilyCookbook.Controllers
 
             var response = await _service.CreateAsync(recipe);
 
-            if(!response.IsSuccess)
-            {
-                return BadRequest(response.Message.ToString());
-            }
+            //if(!response.IsSuccess)
+            //{
+            //    return BadRequest(response.Message.ToString());
+            //}
 
             return Ok(response.Message.ToString());
 

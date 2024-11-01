@@ -1,3 +1,5 @@
+using FamilyCookbook.Exceptions.Handler;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -11,7 +13,10 @@ builder.Host.ConfigureContainer<ContainerBuilder>(builder => {
     builder.RegisterModule(new AutofacControllerModule());
 });
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(opts =>
+{
+    opts.Filters.Add<ModelValidationFilter>();
+});
 
 builder.Services.AddCors(options =>
 {
@@ -118,6 +123,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.UseExceptionHandler(opts => { });
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
