@@ -1,6 +1,9 @@
 ﻿namespace FamilyCookbook.Repository.Common
 {
-    public interface IRoleRepository : IRepository<Role, RoleFilter>
+    public interface IRoleRepository 
     {
+        Task<RepositoryResponse<Lazy<List<Role>>>> GetAllAsync();
+
+        Task<RepositoryResponse<Role>> GetByIdAsync(int id);
     }
 }

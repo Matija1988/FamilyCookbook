@@ -16,7 +16,7 @@
         [Authorize(Roles = "Admin")]
         [HttpGet]
         
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAllAsync()
         {
             
             var response = await _roleService.GetAllAsync();
@@ -26,14 +26,14 @@
                 return NotFound(response.Message.ToString());
             }
 
-            return Ok(response.Items);
+            return Ok(response.Items.Value);
         }
 
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
         [Route("{id:int}")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetByIdAsync(int id)
         {
             var response = await _roleService.GetByIdAsync(id);
 

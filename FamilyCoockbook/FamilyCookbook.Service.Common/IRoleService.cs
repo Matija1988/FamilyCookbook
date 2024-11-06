@@ -2,7 +2,7 @@
 {
     public interface IRoleService
     {
-        Task<RepositoryResponse<List<Role>>> GetAllAsync();
+        Task<RepositoryResponse<Lazy<List<Role>>>> GetAllAsync();
 
         Task<RepositoryResponse<Role>> GetByIdAsync(int id);
     }

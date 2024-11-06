@@ -8,7 +8,7 @@
             _repository = repository;
         }
 
-        public async Task<RepositoryResponse<List<Role>>> GetAllAsync()
+        public async Task<RepositoryResponse<Lazy<List<Role>>>> GetAllAsync()
         {
             return await _repository.GetAllAsync();
         }

@@ -60,13 +60,7 @@ namespace FamilyCookbook.Controllers
         {
             var response = await _service.PaginateAsync(paging, filter);
 
-            if (response.Success == false)
-            {
-                return NotFound(response.Message.ToString());
-            }
-          
             var recipes = _mapper.MapToReadList(response.Items.Value);
-
             var finalResponse = new PaginatedList<List<RecipeRead>>();
 
             finalResponse.Items = recipes;
@@ -143,8 +137,6 @@ namespace FamilyCookbook.Controllers
             {
                 return BadRequest(ModelState);
             }
-
-
 
             byte[] imageBytes = null;
             string fileExtension = "";
